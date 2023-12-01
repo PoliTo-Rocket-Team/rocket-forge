@@ -22,7 +22,7 @@ def main():
         sys.exit("ValueError\n" + usage)
 
     if epsc < 0 :
-        epsc -= None
+        epsc = None
 
     pamb = 101325
 
