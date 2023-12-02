@@ -12,12 +12,12 @@ def main():
     try:
         ox = sys.argv[1]
         fuel = sys.argv[2]
-        pc = float(sys.argv[3]) * 100000  # 40 bar
-        mr = float(sys.argv[4])  # 2.9
-        eps = float(sys.argv[5])  # 2.7
-        epsc = float(sys.argv[6])  # 8
-        At = float(sys.argv[7]) / 10**4  # 8.72 cm^2
-        iter = int(sys.argv[8]) + 1  # 10
+        pc = float(sys.argv[3]) * 100000
+        mr = float(sys.argv[4])
+        eps = float(sys.argv[5])
+        epsc = float(sys.argv[6])
+        At = float(sys.argv[7]) / 10**4
+        iter = int(sys.argv[8]) + 1
     except ValueError:
         sys.exit("ValueError\n" + usage)
 
