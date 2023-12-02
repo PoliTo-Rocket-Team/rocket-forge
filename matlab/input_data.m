@@ -1,6 +1,8 @@
+%% Load input file (TODO)
 disp('Loading input file...')
 
-% Load input file (TODO)
+% Enable cea (1: enabled, 0: disabled)
+cea = 0;
 
 % Chamber
 Oxidizer = 'LOX';
