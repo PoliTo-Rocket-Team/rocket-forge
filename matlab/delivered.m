@@ -12,8 +12,8 @@ m_ox_d = m_f_d * MR;
 % Specific impulse
 Fe = Ae / m_d;
 Is_vac_d = z_c * z_n * Is_vac;
-Is_opt_d = Is_vac_d - Fe * pe;
-Is_SL_d = Is_vac_d - Fe * pSL;
+Is_opt_d = Is_vac_d - Fe * pe / 9.80655;
+Is_SL_d = Is_vac_d - Fe * pSL / 9.80655;
 
 % Thrust coefficient
 CF_vac_d = Is_vac_d * 9.80655 / cstar_d;
