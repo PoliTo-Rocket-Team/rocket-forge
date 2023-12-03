@@ -1,6 +1,6 @@
 from rocketcea.cea_obj_w_units import CEA_Obj
 from tabulate import tabulate
-import sys
+import sys, math
 
 
 def main():
@@ -26,8 +26,15 @@ def main():
 
     pamb = 101325
 
-    get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter)
-    get_delivered_performance()
+    Le = 0.05344
+    theta_ex = 8 / 180 * math.pi
+
+    Z, Cs = 0, 0
+
+    h0, a, b = 0, 1, 1
+
+    pe, cstar, Is_vac, Tc, Te, we = get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter)
+    get_delivered_performance(pc, pe, mr, eps, At, Le, theta_ex, cstar, Is_vac, Tc, Te, we, Z, Cs, h0, a, b, pamb)
 
 
 def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
@@ -79,7 +86,7 @@ def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
     Me = C.get_MachNumber(Pc=pc, MR=mr, eps=eps)
     ac, at, ae = C.get_SonicVelocities(Pc=pc, MR=mr, eps=eps)
     Hc, Ht, He = C.get_Enthalpies(Pc=pc, MR=mr, eps=eps)
-    we_opt = Me * ae
+    we = Me * ae
 
     T_vac = CF_vac * pc * At
     T_opt = CF_opt * pc * At
@@ -167,8 +174,6 @@ def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
     ]
     print(tabulate(results, headers, numalign="right"))
 
-    print()
-
     headers = ["Parameter", "Chamber"]
     for x in range(iter):
         headers.append(f"{x / (iter - 1) * 100:.2f}%")
@@ -177,11 +182,97 @@ def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
     headers.append("Unit")
 
     results = [p, T, rho, cp, mu, l, Pr, gamma, M, a, H]
+    # print()
+    # print(tabulate(results, headers, numalign="right"))
+
+    return pe, cstar, Isp_vac, Tc, Te, we 
+
+
+def get_delivered_performance(pc, pe, MR, eps, At, Le, theta_ex, cstar, Is_vac, Tc, Te, we, Z, Cs, h0, a, b, pSL):
+
+    Ae = At * eps
+    re = math.sqrt(Ae / math.pi)
+    rt = math.sqrt(At / math.pi)
+
+    # Finite reaction rate combustion factor
+    er1 = (h0 / rt)**a * (pSL / pc)**b * math.log10(re /rt)
+    er2 = max(0, 0.021 - 0.01 * math.log(pc / 2 / 10**6))
+    z_r = (1 - er1) * (1 - er2)
+
+    # Multi-phase loss factor
+    z_zw = 1 - Z * Cs / we**2 * (Tc - Te * (1 + math.log(Tc / Te)))
+    z_zt = 1 - Z / 2
+    z_z = 0.2 * z_zw + 0.8 * z_zt
+
+    # Divergence loss factor
+    alpha = math.atan((re - rt) / Le)
+    z_d = 0.5 * (1 + math.cos((alpha + theta_ex) / 2))
+
+    # Friction loss factor (TODO)
+    z_f = 0.98695
+
+    # Drag correction factor
+    z_drag = z_r * z_f * z_z
+
+    # Nozzle correction factor
+    z_n = z_f * z_d * z_z
+
+    # Chamber correction factor
+    z_c = z_r
+    cstar_d = z_c * cstar
+
+    # Mass flow
+    m_d = pc * At / cstar_d
+    m_f_d = m_d / (MR + 1)
+    m_ox_d = m_f_d * MR
+
+    # Specific impulse
+    Fe = Ae / m_d
+    Is_vac_d = z_c * z_n * Is_vac
+    Is_opt_d = Is_vac_d - Fe * pe / 9.80655
+    Is_SL_d = Is_vac_d - Fe * pSL / 9.80655
+
+    # Thrust coefficient
+    CF_vac_d = Is_vac_d * 9.80655 / cstar_d
+    CF_opt_d = Is_opt_d * 9.80655 / cstar_d
+    CF_SL_d = Is_SL_d * 9.80655 / cstar_d
+
+    # Chamber thrust
+    T_vac_d = CF_vac_d * At * pc
+    T_opt_d = CF_opt_d * At * pc
+    T_SL_d = CF_SL_d * At * pc
+    
+    print("\n\033[1mDelivered Performance\033[0m\n")
+    headers = ["Parameter", "SL", "Opt", "Vac", "Unit"]
+    results = [
+        [
+            "Characteristic velocity",
+            f"{cstar_d:.2f}",
+            f"{cstar_d:.2f}",
+            f"{cstar_d:.2f}",
+            "m/s",
+        ],
+        [
+            "Effective exhaust velocity",
+            f"{Is_SL_d * 9.80655:.2f}",
+            f"{Is_opt_d * 9.80655:.2f}",
+            f"{Is_vac_d * 9.80655:.2f}",
+            "m/s",
+        ],
+        ["Specific impulse", f"{Is_SL_d:.2f}", f"{Is_opt_d:.2f}", f"{Is_vac_d:.2f}", "s"],
+        ["Thrust coefficient", f"{CF_SL_d:.5f}", f"{CF_opt_d:.5f}", f"{CF_vac_d:.5f}", ""],
+        [
+            "Chamber Thrust",
+            f"{T_SL_d / 1000:.4f}",
+            f"{T_opt_d / 1000:.4f}",
+            f"{T_vac_d / 1000:.4f}",
+            "kN",
+        ],
+        ["Mass flow rate", f"{m_d:.4f}", f"{m_d:.4f}", f"{m_d:.4f}", "kg/s"],
+        ["Fuel flow rate", f"{m_f_d:.4f}", f"{m_f_d:.4f}", f"{m_f_d:.4f}", "kg/s"],
+        ["Oxidizer flow rate", f"{m_ox_d:.4f}", f"{m_ox_d:.4f}", f"{m_ox_d:.4f}", "kg/s"],
+    ]
     print(tabulate(results, headers, numalign="right"))
-
-
-def get_delivered_performance():
-    # TODO
     return
 
 
