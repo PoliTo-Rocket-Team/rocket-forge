@@ -47,7 +47,7 @@ def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
             specific_heat_units="J/kg-K",
         )
     except Exception:
-        sys.exit(usage)
+        sys.exit("Abort: unknown oxidizer or fuel.\n")
 
     cstar = C.get_Cstar(Pc=pc, MR=mr)
     m = pc * At / cstar
