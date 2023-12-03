@@ -4,34 +4,29 @@ import sys, math
 
 
 def main():
-    if len(sys.argv) > 9:
-        sys.exit("Too many input arguments.\n" + usage)
-    if len(sys.argv) < 9:
-        sys.exit("Too few input arguments.\n" + usage)
-
     try:
-        ox = sys.argv[1]
-        fuel = sys.argv[2]
-        pc = float(sys.argv[3]) * 100000
-        mr = float(sys.argv[4])
-        eps = float(sys.argv[5])
-        epsc = float(sys.argv[6])
-        At = float(sys.argv[7]) / 10**4
-        iter = int(sys.argv[8]) + 1
+        ox = input('Oxidizer (for example LOX or MON3): ')
+        fuel = input('Fuel (for example LH2, CH4, or MMH): ')
+        pc = float(input('Chamber pressure [bar]: ')) * 100000
+        mr = float(input('Mixture ratio: '))
+        eps = float(input('Supersonic area ratio: '))
+        epsc = float(input('Contraction ratio of finite area combustor\n(use -1 for infinite area combustor): '))
+        At = float(input('Throat area [cm2]: ')) / 10**4
+        Le = float(input('Divergent nozzle length [cm]: ')) / 100
+        iter = int(input('Number of stations (integer >= 1): ')) + 1
+        theta_ex = float(input('Nozzle exit angle [deg]: ')) * math.pi / 180
+        h0 = float(input('Propellant coefficient h0: '))
+        a = float(input('Propellant coefficient a: '))
+        b = float(input('Propellant coefficient b: '))
+        Z = float(input('Mass fraction of condensed phase at nozzle exit: '))
+        Cs = float(input('Condensed phase heat capacity: '))
     except ValueError:
-        sys.exit("ValueError\n" + usage)
+        sys.exit("Abort: ValueError.\n")
 
     if epsc < 0 :
         epsc = None
-
+    
     pamb = 101325
-
-    Le = 0.05344
-    theta_ex = 8 / 180 * math.pi
-
-    Z, Cs = 0, 0
-
-    h0, a, b = 0, 1, 1
 
     pe, cstar, Is_vac, Tc, Te, we = get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter)
     get_delivered_performance(pc, pe, mr, eps, At, Le, theta_ex, cstar, Is_vac, Tc, Te, we, Z, Cs, h0, a, b, pamb)
@@ -276,20 +271,6 @@ def get_delivered_performance(pc, pe, MR, eps, At, Le, theta_ex, cstar, Is_vac, 
     return
 
 
-usage = (
-    "usage: python "
-    + sys.argv[0]
-    + " <Oxidizer> <Fuel> <Pc> <MR> <eps> <epsc> <At> <N>\n"
-    + "<Oxidizer>: oxidizer (for example LOX or MON3)\n"
-    + "<Fuel>: fuel (for example LH2, CH4, or MMH)\n"
-    + "<Pc>: chamber pressure [Bar]\n"
-    + "<MR>: mixture ratio\n"
-    + "<eps>: supersonic area ratio\n"
-    + "<epsc>: contraction ratio of finite area combustor (use -1 for infinite area combustor)\n"
-    + "<At>: throat area [cm^2]\n"
-    + "<N>: number of stations (integer >= 1)"
-)
-
 if __name__ == "__main__":
-    print("\033[1mEfesto Rocket Forge\033[0m")
+    print("\033[1mEfesto Rocket Forge\033[0m\n")
     main()
