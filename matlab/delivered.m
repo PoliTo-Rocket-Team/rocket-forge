@@ -16,9 +16,9 @@ Is_opt_d = Is_vac_d - Fe * pe;
 Is_SL_d = Is_vac_d - Fe * pSL;
 
 % Thrust coefficient
-CF_vac_d = Is_vac_d / cstar_d;
-CF_opt_d = Is_opt_d / cstar_d;
-CF_SL_d = Is_SL_d / cstar_d;
+CF_vac_d = Is_vac_d * 9.80655 / cstar_d;
+CF_opt_d = Is_opt_d * 9.80655 / cstar_d;
+CF_SL_d = Is_SL_d * 9.80655 / cstar_d;
 
 % Chamber thrust
 T_vac_d = CF_vac_d * At * pc;
