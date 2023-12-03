@@ -8,13 +8,19 @@ if cea == 1
     Te = double(x(1));
     Tc = double(x(2));
     we = double(x(3));
+    cstar = double(x(4));
+    Is_vac = double(x(5));
+    pe = double(x(6));
     
     clear x
     
 else
     % Load rocketcea input file (TODO)
     disp('Rocketcea is disabled. Loading preexisting data...')
-    Te = 2554.31;
+    Te = 2523.94;
     Tc = 3370.19;
     we = 1094.74 * 2.20581;
+    cstar = 1859.64182;
+    Is_vac = 292.0319;
+    pe = 327862.74;
 end

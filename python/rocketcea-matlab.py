@@ -70,7 +70,7 @@ def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
     H = [Hc]
 
     for x in range(iter):
-        x = 1 + x * (eps - 1) / iter
+        x = 1 + x * (eps - 1) / (iter - 1)
         p.append(pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=x))
         T.append(C.get_Temperatures(Pc=pc, MR=mr, eps=x)[2])
         rho.append(C.get_Densities(Pc=pc, MR=mr, eps=x)[2])
@@ -83,7 +83,7 @@ def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
         a.append(C.get_SonicVelocities(Pc=pc, MR=mr, eps=x)[2])
         H.append(C.get_Enthalpies(Pc=pc, MR=mr, eps=x)[2])
     
-    return [Te, Tc, we]
+    return [Te, Tc, we, cstar, Isp_vac, pe]
 
 
 usage = (
