@@ -92,11 +92,11 @@ usage = (
     + " <Oxidizer> <Fuel> <Pc> <MR> <eps> <epsc> <At> <N>\n"
     + "<Oxidizer>: oxidizer (for example LOX or MON3)\n"
     + "<Fuel>: fuel (for example LH2, CH4, or MMH)\n"
-    + "<Pc>: chamber pressure [Bar]\n"
+    + "<Pc>: chamber pressure [Pa]\n"
     + "<MR>: mixture ratio\n"
     + "<eps>: supersonic area ratio\n"
     + "<epsc>: contraction ratio of finite area combustor (use -1 for infinite area combustor)\n"
-    + "<At>: throat area [cm^2]\n"
+    + "<At>: throat area [m^2]\n"
     + "<N>: number of stations (integer >= 1)"
 )
 
