@@ -78,7 +78,9 @@ xlabel('Chamber pressure $\times$ throat diameter $[psia \times in]$',Interprete
 legend('$\varepsilon$ = 3','$\varepsilon$ = 5',Interpreter='latex')
 title('Digitized curves from NASA SP 8120',Interpreter='latex')
 
-zeta_f = 1-hypfit3_1(pxd)/100;
+z_f = 1-hypfit3_1(pxd)/100;
 
-mytitleText = ['Viscous-drag losses = ',  num2str(hypfit3_1(pxd)), ' %% \nViscous-drag efficiency = ', num2str(zeta_f), '\n'];
+mytitleText = ['Viscous-drag losses = ',  num2str(hypfit3_1(pxd)), ' %% \nViscous-drag efficiency = ', num2str(z_f), '\n'];
 fprintf(mytitleText)
+
+clear mytitleText pxd A3_1 a3_1 a5_1 A5_1 b3_1 b5_1 c3_1 c5_1 hypfit3_1 hypfit5_1 x3_1 x5_1 xdom y3_1 y5_1

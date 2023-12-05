@@ -15,9 +15,6 @@ z_z = 0.2 * z_zw + 0.8 * z_zt;
 alpha = atan((re - rt) / Le);
 z_d = 0.5 * (1 + cos((alpha + theta_ex) / 2));
 
-% Friction loss factor (TODO)
-z_f = 0.98695;
-
 % Drag correction factor
 z_drag = z_r * z_f * z_z;
 
