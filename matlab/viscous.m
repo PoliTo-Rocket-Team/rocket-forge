@@ -63,24 +63,24 @@ pxd = 761.048463461;
 
 hypfit5_1 = @(x) a5_1*x.^(b5_1) + c5_1;
 
-semilogx(xdom,hypfit3_1(xdom),'b','LineWidth',1)
-hold on
-semilogx(x3_1, y3_1, '.b', 'MarkerSize',10,'HandleVisibility','off')
-semilogx(xdom,hypfit5_1(xdom),'r','LineWidth',1)
-semilogx(x5_1, y5_1, '.r', 'MarkerSize',10,'HandleVisibility','off')
-xline(pxd, '--k','LineWidth',0.5,'HandleVisibility','off')
-grid on
-grid minor
-ylim([0 2])
-xlim([10 1000])
-ylabel('Viscous-drag performance loss $[\%]$',Interpreter='latex')
-xlabel('Chamber pressure $\times$ throat diameter $[psia \times in]$',Interpreter='latex')
-legend('$\varepsilon$ = 3','$\varepsilon$ = 5',Interpreter='latex')
-title('Digitized curves from NASA SP 8120',Interpreter='latex')
+% semilogx(xdom,hypfit3_1(xdom),'b','LineWidth',1)
+% hold on
+% semilogx(x3_1, y3_1, '.b', 'MarkerSize',10,'HandleVisibility','off')
+% semilogx(xdom,hypfit5_1(xdom),'r','LineWidth',1)
+% semilogx(x5_1, y5_1, '.r', 'MarkerSize',10,'HandleVisibility','off')
+% xline(pxd, '--k','LineWidth',0.5,'HandleVisibility','off')
+% grid on
+% grid minor
+% ylim([0 2])
+% xlim([10 1000])
+% ylabel('Viscous-drag performance loss $[\%]$',Interpreter='latex')
+% xlabel('Chamber pressure $\times$ throat diameter $[psia \times in]$',Interpreter='latex')
+% legend('$\varepsilon$ = 3','$\varepsilon$ = 5',Interpreter='latex')
+% title('Digitized curves from NASA SP 8120',Interpreter='latex')
 
 z_f = 1-hypfit3_1(pxd)/100;
 
-mytitleText = ['Viscous-drag losses = ',  num2str(hypfit3_1(pxd)), ' %% \nViscous-drag efficiency = ', num2str(z_f), '\n'];
-fprintf(mytitleText)
+% mytitleText = ['Viscous-drag losses = ',  num2str(hypfit3_1(pxd)), ' %% \nViscous-drag efficiency = ', num2str(z_f), '\n'];
+% fprintf(mytitleText)
 
 clear mytitleText pxd A3_1 a3_1 a5_1 A5_1 b3_1 b5_1 c3_1 c5_1 hypfit3_1 hypfit5_1 x3_1 x5_1 xdom y3_1 y5_1
