@@ -15,9 +15,6 @@ def main():
         Le = float(input('Divergent nozzle length [cm]: ')) / 100
         iter = int(input('Number of stations (integer >= 1): ')) + 1
         theta_ex = float(input('Nozzle exit angle [deg]: ')) * math.pi / 180
-        h0 = float(input('Propellant coefficient h0: '))
-        a = float(input('Propellant coefficient a: '))
-        b = float(input('Propellant coefficient b: '))
         Z = float(input('Mass fraction of condensed phase at nozzle exit: '))
         Cs = float(input('Condensed phase heat capacity: '))
     except ValueError:
@@ -28,8 +25,8 @@ def main():
     
     pamb = 101325
 
-    pe, cstar, Is_vac, Tc, Te, we = get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter)
-    get_delivered_performance(pc, pe, mr, eps, At, Le, theta_ex, cstar, Is_vac, Tc, Te, we, Z, Cs, h0, a, b, pamb)
+    pe, cstar, Is_vac, Tc, Te, we, Is_vac_frozen = get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter)
+    get_delivered_performance(pc, pe, mr, eps, At, Le, theta_ex, cstar, Is_vac, Is_vac_frozen, Tc, Te, we, Z, Cs, pamb)
 
 
 def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
@@ -60,6 +57,8 @@ def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
     Isp_vac = C.get_Isp(Pc=pc, MR=mr, eps=eps)
     Isp_sl = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pamb)[0]
     Isp_opt = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pe)[0]
+
+    Is_vac_frozen = C.get_Isp(Pc=pc, MR=mr, eps=eps, frozen=1)
 
     c_vac = Isp_vac * 9.80655
     c_sl = Isp_sl * 9.80655
@@ -180,17 +179,17 @@ def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
     # print()
     # print(tabulate(results, headers, numalign="right"))
 
-    return pe, cstar, Isp_vac, Tc, Te, we 
+    return pe, cstar, Isp_vac, Tc, Te, we, Is_vac_frozen
 
 
-def get_delivered_performance(pc, pe, MR, eps, At, Le, theta_ex, cstar, Is_vac, Tc, Te, we, Z, Cs, h0, a, b, pSL):
+def get_delivered_performance(pc, pe, MR, eps, At, Le, theta_ex, cstar, Is_vac, Is_vac_frozen, Tc, Te, we, Z, Cs, pSL):
 
     Ae = At * eps
     re = math.sqrt(Ae / math.pi)
     rt = math.sqrt(At / math.pi)
 
     # Finite reaction rate combustion factor
-    er1 = (h0 / rt)**a * (pSL / pc)**b * math.log10(re /rt)
+    er1 = 0.34 - 0.34 * Is_vac_frozen / Is_vac
     er2 = max(0, 0.021 - 0.01 * math.log(pc / 2 / 10**6))
     z_r = (1 - er1) * (1 - er2)
 
@@ -203,8 +202,8 @@ def get_delivered_performance(pc, pe, MR, eps, At, Le, theta_ex, cstar, Is_vac, 
     alpha = math.atan((re - rt) / Le)
     z_d = 0.5 * (1 + math.cos((alpha + theta_ex) / 2))
 
-    # Friction loss factor (TODO)
-    z_f = 0.98695
+    # Friction loss factor
+    z_f = z_f = 0.997732 - 0.403077 * (pc * rt) ** (-0.5598)
 
     # Drag correction factor
     z_drag = z_r * z_f * z_z

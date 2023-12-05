@@ -31,6 +31,8 @@ def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
     Isp_sl = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pamb)[0]
     Isp_opt = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pe)[0]
 
+    Is_vac_frozen = C.get_Isp(Pc=pc, MR=mr, eps=eps, frozen=1)
+
     c_vac = Isp_vac * 9.80655
     c_sl = Isp_sl * 9.80655
     c_opt = Isp_opt * 9.80655
@@ -83,7 +85,7 @@ def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
         a.append(C.get_SonicVelocities(Pc=pc, MR=mr, eps=x)[2])
         H.append(C.get_Enthalpies(Pc=pc, MR=mr, eps=x)[2])
     
-    return [Te, Tc, we, cstar, Isp_vac, pe]
+    return [Te, Tc, we, cstar, Isp_vac, pe, Is_vac_frozen]
 
 
 usage = (

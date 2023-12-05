@@ -11,7 +11,7 @@ if cea == 1
     cstar = double(x(4));
     Is_vac = double(x(5));
     pe = double(x(6));
-    Is_vac_frozen = 2788.3 / 9.80655;
+    Is_vac_frozen = double(x(7));
     clear x
     
 else
@@ -23,6 +23,6 @@ else
     cstar = 1859.64182;
     Is_vac = 292.0319;
     pe = 327862.74;
-    Is_vac_frozen = 2788.3 / 9.80655;
+    Is_vac_frozen = 284.28542;
     
 end
