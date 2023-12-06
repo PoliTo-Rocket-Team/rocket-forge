@@ -36,7 +36,7 @@ hypfit3_1 = @(x) a3_1*x.^(b3_1) + c3_1;
 
 % Pressure x Throat Diameter in psia*inch
 
-pxd = (pc / 6895) * (2 * rt * 39.37);
+pxd = (pc * psia) * (2 * rt * inch);
 z_f = 1 - hypfit3_1(pxd) / 100;
 
 clear pxd a3_1 b3_1 c3_1 hypfit3_1
