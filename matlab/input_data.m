@@ -16,11 +16,23 @@ N = 10;                     % Number of rocketcea stations
 epsilon = 2.7;              % Supersonic area ratio
 epsc = 8;                   % Contraction ratio of finite area combustor
 At = 8.72E-4;               % Throat area
-theta_ex = 8 * pi / 180;    % Angle of nozzle exit
-Le = 53.44E-3;              % Divergent nozzle length
 Ae = At * epsilon;          % Exit area
-re = sqrt(Ae / pi);         % Exit radius
+theta_n = 14.32 * pi / 180; % Initial parabola angle
+theta_ex = 8 * pi / 180;    % Final parabola angle
+theta_b = 35 * pi / 180;    % Contraction angle
 rt = sqrt(At / pi);         % Throat radius
+re = sqrt(Ae / pi);         % Exit radius
+rc = 47.115E-3;             % Chamber radius
+Dt = 2 * rt;                % Throat diameter
+De = 2 * re;                % Exit diameter
+Dc = 2 * rc;                % Chamber diameter
+R1 = 24.99E-3;              % Convergent-Throat curvature
+R2 = 71.72E-3;              % Chamber-convergent curvature
+Rn = 6.36E-3;               % Throat-Divergent curvature
+Le = 53.44E-3;              % Divergent nozzle length
+Lc = 155.89E-3;             % Chamber length
+Lcyl = 81.9E-3;             % Cylindrical chamber length
+LeOvc15 = 1.3095;           % Relative to 15 deg cone nozzle
 
 % Multiphase coefficients
 Cs = 0;                     % Condensed phase heat capacity
