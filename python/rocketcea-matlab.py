@@ -85,7 +85,13 @@ def get_ideal_performance(ox, fuel, pamb, pc, mr, eps, epsc, At, iter):
         a.append(C.get_SonicVelocities(Pc=pc, MR=mr, eps=x)[2])
         H.append(C.get_Enthalpies(Pc=pc, MR=mr, eps=x)[2])
     
-    return [Te, Tc, we, cstar, Isp_vac, pe, Is_vac_frozen]
+    return [
+        p, T, rho, cp, mu, l, Pr, gamma, M, a, H,
+        cstar, m, mf, mox, we,
+        Isp_sl, Isp_opt, Isp_vac, Is_vac_frozen,
+        CF_sl, CF_opt, CF_vac,
+        T_sl, T_opt, T_vac
+    ]
 
 
 usage = (
