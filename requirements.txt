@@ -1,5 +1,7 @@
 numpy
 scipy
+pillow
+matplotlib
 future
 tabulate
-rocketcea
+customtkinter
