@@ -3,9 +3,6 @@ import tkinter as tk
 import sys, os
 from rocketforge.performance import theoretical
 
-ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("blue")
-
 appWidth, appHeight = 800, 600
 
 
@@ -182,7 +179,7 @@ class App(ctk.CTk):
             conv_factor = 6894.8
 
         try:
-            return theoretical(
+            x = theoretical(
                 self.oxvar.get(),
                 self.fuelvar.get(),
                 float(self.pcEntry.get()) * conv_factor,
@@ -191,7 +188,8 @@ class App(ctk.CTk):
                 epsc,
                 int(self.iterEntry.get()),
                 self.frozenVar.get(),
-            )[-2]
+            )
+            return x[-2] + 3 * "\n" + x[-1]
         except Exception as err:
             return err
 
@@ -206,5 +204,7 @@ def resource_path(relative_path):
 
 
 if __name__ == "__main__":
+    ctk.set_appearance_mode("dark")
+    ctk.set_default_color_theme(resource_path("theme.json"))
     app = App(className="Rocket Forge")
     app.mainloop()
