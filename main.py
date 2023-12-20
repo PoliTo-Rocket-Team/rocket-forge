@@ -4,7 +4,7 @@ import sys, os
 from rocketforge.performance import theoretical
 
 ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("theme.json")
+ctk.set_default_color_theme("blue")
 
 appWidth, appHeight = 800, 600
 
