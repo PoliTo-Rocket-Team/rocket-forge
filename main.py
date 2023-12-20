@@ -12,8 +12,14 @@ class App(ctk.CTk):
 
         self.title("Rocket Forge")
         self.geometry(f"{appWidth}x{appHeight}")
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.resizable(False, False)
-        self.after(201, lambda :self.iconphoto(False, tk.PhotoImage(file=resource_path('icon.png'))))
+        self.after(
+            201,
+            lambda: self.iconphoto(
+                False, tk.PhotoImage(file=resource_path("icon.png"))
+            ),
+        )
 
         self.oxLabel = ctk.CTkLabel(self, text="Oxidizer", font=("Sans", 16))
         self.oxLabel.place(relx=0.05, rely=0.1, anchor="w")
@@ -63,21 +69,15 @@ class App(ctk.CTk):
         )
         self.fuelopt.place(relx=0.95, rely=0.1, anchor="e")
 
-        self.pcLabel = ctk.CTkLabel(
-            self, text="Chamber pressure", font=("Sans", 16)
-        )
+        self.pcLabel = ctk.CTkLabel(self, text="Chamber pressure", font=("Sans", 16))
         self.pcLabel.place(relx=0.05, rely=0.2, anchor="w")
 
-        self.pcEntry = ctk.CTkEntry(self, placeholder_text="0", font=("Sans", 16), width=65)
+        self.pcEntry = ctk.CTkEntry(
+            self, placeholder_text="0", font=("Sans", 16), width=65
+        )
         self.pcEntry.place(relx=0.275, rely=0.2, anchor="w")
 
-        uom = [
-            "bar",
-            "Pa",
-            "MPa",
-            "atm",
-            "psia"
-        ]
+        uom = ["bar", "Pa", "MPa", "atm", "psia"]
         self.pcvar = ctk.StringVar(value="bar")
         self.pcopt = ctk.CTkOptionMenu(
             self, values=uom, variable=self.pcvar, font=("Sans", 16), width=75
@@ -149,9 +149,13 @@ class App(ctk.CTk):
         self.button.place(relx=0.5, rely=0.61, anchor="center")
 
         if os.name == "nt":
-            self.textbox = ctk.CTkTextbox(self, width=750, height=190, wrap="none", font=("Courier New", 12))
+            self.textbox = ctk.CTkTextbox(
+                self, width=750, height=190, wrap="none", font=("Courier New", 12)
+            )
         else:
-            self.textbox = ctk.CTkTextbox(self, width=750, height=190, wrap="none", font=("Mono", 12))
+            self.textbox = ctk.CTkTextbox(
+                self, width=750, height=190, wrap="none", font=("Mono", 12)
+            )
         self.textbox.place(relx=0.5, rely=0.66, anchor="n")
 
     def printResults(self):
@@ -193,6 +197,12 @@ class App(ctk.CTk):
         except Exception as err:
             return err
 
+    def on_closing(self):
+        """close the program"""
+        quit_ = tk.messagebox.askokcancel(title="Exit?", message="Do you want to exit?")
+        if quit_:
+            self.destroy()
+
 
 def resource_path(relative_path):
     try:
@@ -204,7 +214,7 @@ def resource_path(relative_path):
 
 
 if __name__ == "__main__":
-    ctk.set_appearance_mode("dark")
+    ctk.set_appearance_mode("system")
     ctk.set_default_color_theme(resource_path("theme.json"))
     app = App(className="Rocket Forge")
     app.mainloop()
