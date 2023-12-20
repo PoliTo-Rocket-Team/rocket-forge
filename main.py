@@ -4,7 +4,7 @@ import sys, os
 from rocketforge.performance import theoretical
 
 ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("dark-blue")
+ctk.set_default_color_theme("theme.json")
 
 appWidth, appHeight = 800, 600
 
@@ -71,8 +71,8 @@ class App(ctk.CTk):
         )
         self.pcLabel.place(relx=0.05, rely=0.2, anchor="w")
 
-        self.pcEntry = ctk.CTkEntry(self, placeholder_text="0", font=("Sans", 16))
-        self.pcEntry.place(relx=0.45, rely=0.2, anchor="e")
+        self.pcEntry = ctk.CTkEntry(self, placeholder_text="0", font=("Sans", 16), width=65)
+        self.pcEntry.place(relx=0.275, rely=0.2, anchor="w")
 
         uom = [
             "bar",
@@ -83,7 +83,7 @@ class App(ctk.CTk):
         ]
         self.pcvar = ctk.StringVar(value="bar")
         self.pcopt = ctk.CTkOptionMenu(
-            self, values=uom, variable=self.pcvar, font=("Sans", 16), width=12
+            self, values=uom, variable=self.pcvar, font=("Sans", 16), width=75
         )
         self.pcopt.place(relx=0.45, rely=0.2, anchor="e")
 
