@@ -70,7 +70,7 @@ SET "FOLDER=C:\path\to\that\folder"
 
 Use PyInstaller to compile the software using the %FOLDER% variable:
 ```
-pyinstaller --windowed --onefile --add-data "%FOLDER%\rocketcea:rocketcea/" --add-data "%FOLDER%\customtkinter:customtkinter/" --add-data "icon.png:." --icon=icon.png --clean main.py 
+pyinstaller --windowed --onefile --add-data "%FOLDER%\rocketcea:rocketcea/" --add-data "%FOLDER%\customtkinter:customtkinter/" --add-data "icon.png:." --add-data "theme.json:." --icon=icon.png --clean main.py 
 ```
 
 ## Build from source on Linux
@@ -98,5 +98,5 @@ FOLDER=/path/to/your/python/libraries/folder
 ```
 Use PyInstaller to compile the software using the $FOLDER variable:
 ```
-pyinstaller --windowed --onefile --add-data "$FOLDER/rocketcea:rocketcea/" --add-data "$FOLDER/customtkinter:customtkinter/" --add-data "icon.png:." --icon=icon.png --clean main.py 
+pyinstaller --windowed --onefile --add-data "$FOLDER/rocketcea:rocketcea/" --add-data "$FOLDER/customtkinter:customtkinter/" --add-data "icon.png:." --add-data "theme.json:." --icon=icon.png --clean main.py 
 ```
