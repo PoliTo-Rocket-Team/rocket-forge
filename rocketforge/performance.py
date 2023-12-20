@@ -92,7 +92,6 @@ def theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen):
     a.append("m/s")
     H.append("kJ/kg")
 
-    print("\n\033[1mTheoretical Performance (RocketCEA)\033[0m\n")
     headers = ["Parameter", "SL", "Opt", "Vac", "Unit"]
     results = [
         [
@@ -258,7 +257,7 @@ def delivered(pc, eps, pe, MR, At, cstar, Is_vac, pSL, z_c, z_n):
             "kg/s",
         ],
     ]
-    output = "\n\033[1mDelivered Performance\033[0m\n" + tabulate(
+    output = tabulate(
         results, headers, numalign="right"
     )
 
