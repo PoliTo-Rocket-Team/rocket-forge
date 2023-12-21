@@ -265,17 +265,15 @@ class InitialFrame(ctk.CTkFrame):
         return tabulate(results, headers, numalign="right")
 
         
-def convert_pressure_uom(uom):
-    if uom == "bar":
-        return 100000
-    elif uom == "Pa":
-        return 1
-    elif uom == "MPa":
-        return 1000000
-    elif uom == "atm":
-        return 101325
-    elif uom == "psia":
-        return 6894.8
+def convert_pressure_uom(uom: str) -> float:
+    uoms = {
+        "Pa": 1,
+        "MPa": 1000000,
+        "bar": 100000,
+        "atm": 101325,
+        "psia": 6894.8
+    }
+    return uoms[uom]
 
 
 if __name__ == "__main__":
