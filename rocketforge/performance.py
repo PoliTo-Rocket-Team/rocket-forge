@@ -13,7 +13,8 @@ class PerformanceFrame(ctk.CTkFrame):
         self.topframe.configure(border_width=5, height=100, width=950)
         self.toplabel = CTkLabel(self.topframe)
         self.toplabel.configure(
-            font=CTkFont("Sans", 36, None, "roman", False, False), text="Performance Analysis"
+            font=CTkFont("Sans", 36, None, "roman", False, False),
+            text="Performance Analysis",
         )
         self.toplabel.place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
         self.topframe.place(anchor="n", relx=0.5, rely=0.02, x=0, y=0)
@@ -177,7 +178,16 @@ def correction_factors(
     z_d = 0.5 * (1 + math.cos((alpha + theta_ex) / 2))
 
     # Friction loss factor
-    z_f = z_f = 0.997732 - 0.403077 * (pc * rt) ** (-0.5598)
+    # Coefficients from NASA SP8120 Boundary Layer Loss Recommendation
+    a = 0.13956490814036465
+    b = 0.4839954048378114
+    c = -1.5290708783162201
+    d = 1.8872208607881908
+    e = 1.2281287531868839
+    f = 1.1165014352424605
+    g = 0.08873349847277191
+    pxd = 2 * pc * rt * 0.00014503773800722 * 39.37007874
+    z_f = g * eps / pxd + (c + d * math.log(e + eps * f)) / (a + b * math.log(pxd))
 
     # Drag correction factor
     z_drag = z_r * z_f * z_z
@@ -275,9 +285,7 @@ def delivered(pc, eps, pe, MR, At, cstar, Is_vac, pSL, z_c, z_n):
             "kg/s",
         ],
     ]
-    output = tabulate(
-        results, headers, numalign="right"
-    )
+    output = tabulate(results, headers, numalign="right")
 
     return (
         cstar_d,
