@@ -130,6 +130,10 @@ class RocketForge:
         # Raise initial frame
         self.initialframe.tkraise()
 
+        # Top level windows
+        self.about = None
+        self.preferences = None
+
         # Main widget
         self.mainwindow = ctk1
 
@@ -137,49 +141,55 @@ class RocketForge:
         self.mainwindow.mainloop()
 
     def about_window(self):
-        about = ctk.CTkToplevel()
-        about.title("About")
-        about.configure(width=300, height=200)
-        about.resizable(False, False)
-        about.after(
-            201,
-            lambda: about.iconphoto(
-                False, tk.PhotoImage(file=resource_path("icon.png"))
-            ),
-        )
+        if self.about is None or not self.about.winfo_exists():
+            self.about = ctk.CTkToplevel()
+            self.about.title("About")
+            self.about.configure(width=300, height=200)
+            self.about.resizable(False, False)
+            self.about.after(
+                201,
+                lambda: self.about.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                ),
+            )
 
-        aboutimage = CTkImage(Image.open(resource_path("icon.png")), size=(128, 128))
-        self.aboutimage = CTkLabel(about, text="", image=aboutimage)
-        self.aboutimage.place(anchor="center", relx=0.5, rely=0.28)
-        self.aboutname = CTkLabel(about, text="Rocket Forge", font=("Sans", 20))
-        self.aboutname.place(anchor="center", relx=0.5, rely=0.6)
-        self.aboutversion = CTkLabel(about, text="Version "+version)
-        self.aboutversion.place(anchor="center", relx=0.5, rely=0.75)
-        self.copyright = CTkLabel(about, text=copyright)
-        self.copyright.place(anchor="center", relx=0.5, rely=0.9)
+            aboutimage = CTkImage(Image.open(resource_path("icon.png")), size=(128, 128))
+            self.aboutimage = CTkLabel(self.about, text="", image=aboutimage)
+            self.aboutimage.place(anchor="center", relx=0.5, rely=0.28)
+            self.aboutname = CTkLabel(self.about, text="Rocket Forge", font=("Sans", 20))
+            self.aboutname.place(anchor="center", relx=0.5, rely=0.6)
+            self.aboutversion = CTkLabel(self.about, text="Version "+version)
+            self.aboutversion.place(anchor="center", relx=0.5, rely=0.75)
+            self.copyright = CTkLabel(self.about, text=copyright)
+            self.copyright.place(anchor="center", relx=0.5, rely=0.9)
+
+        self.about.focus()
 
     def preferences_window(self):
-        preferences = ctk.CTkToplevel()
-        preferences.title("Preferences")
-        preferences.configure(width=400, height=300)
-        preferences.resizable(False, False)
-        preferences.after(
-            201,
-            lambda: preferences.iconphoto(
-                False, tk.PhotoImage(file=resource_path("icon.png"))
-            ),
-        )
+        if self.preferences is None or not self.preferences.winfo_exists():
+            self.preferences = ctk.CTkToplevel()
+            self.preferences.title("Preferences")
+            self.preferences.configure(width=400, height=300)
+            self.preferences.resizable(False, False)
+            self.preferences.after(
+                201,
+                lambda: self.preferences.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                ),
+            )
 
-        self.appearance_mode_label = CTkLabel(
-            preferences, text="Appearance Mode:", anchor="w"
-        )
-        self.appearance_mode_label.place(anchor="w", relx=0.1, rely=0.1)
-        self.appearance_mode_optionemenu = ctk.CTkOptionMenu(
-            preferences,
-            values=["System", "Light", "Dark"],
-            command=self.change_appearance_mode_event,
-        )
-        self.appearance_mode_optionemenu.place(anchor="w", relx=0.5, rely=0.1)
+            self.appearance_mode_label = CTkLabel(
+                self.preferences, text="Appearance Mode:", anchor="w"
+            )
+            self.appearance_mode_label.place(anchor="w", relx=0.1, rely=0.1)
+            self.appearance_mode_optionemenu = ctk.CTkOptionMenu(
+                self.preferences,
+                values=["System", "Light", "Dark"],
+                command=self.change_appearance_mode_event,
+            )
+            self.appearance_mode_optionemenu.place(anchor="w", relx=0.5, rely=0.1)
+
+        self.preferences.focus()
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         ctk.set_appearance_mode(new_appearance_mode)
