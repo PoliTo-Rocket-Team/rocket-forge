@@ -132,50 +132,50 @@ class InitialFrame(ctk.CTkFrame):
         self.exitcondlabel.configure(text="Nozzle exit condition")
         self.exitcondlabel.place(anchor="w", relx=0.55, rely=0.47, x=0, y=0)
 
-        self.exitcondition = ctk.IntVar(value=1)
+        self.exitcondition = ctk.IntVar(value=0)
 
-        self.peRB = ctk.CTkRadioButton(
+        self.epsRB = ctk.CTkRadioButton(
             self,
-            text="Pressure",
+            text="Expansion area ratio",
             variable=self.exitcondition,
             value=0,
         )
-        self.peRB.place(anchor="w", relx=0.55, rely=0.52)
+        self.epsRB.place(anchor="w", relx=0.55, rely=0.52)
+
+        self.epsentry = CTkEntry(self)
+        self.epsentry.configure(placeholder_text=0, width=200)
+        self.epsentry.place(anchor="w", relx=0.75, rely=0.52, x=0, y=0)
+
+        self.peratioRB = ctk.CTkRadioButton(
+            self,
+            text="Expansion pressure ratio",
+            variable=self.exitcondition,
+            value=1,
+        )
+        self.peratioRB.place(anchor="w", relx=0.55, rely=0.57)
+
+        self.peratioentry = CTkEntry(self)
+        self.peratioentry.configure(placeholder_text=0, width=200)
+        self.peratioentry.place(anchor="w", relx=0.75, rely=0.57, x=0, y=0)
+
+        self.peRB = ctk.CTkRadioButton(
+            self,
+            text="Exit Pressure",
+            variable=self.exitcondition,
+            value=2,
+        )
+        self.peRB.place(anchor="w", relx=0.55, rely=0.62)
 
         self.peentry = CTkEntry(self)
         self.peentry.configure(placeholder_text=0, width=100)
-        self.peentry.place(anchor="w", relx=0.75, rely=0.52, x=0, y=0)
+        self.peentry.place(anchor="w", relx=0.75, rely=0.62, x=0, y=0)
 
         self.peoptmenu = CTkOptionMenu(self)
         self.peuom = tk.StringVar(value="bar")
         self.peoptmenu.configure(
             values=["MPa", "bar", "Pa", "psia", "atm"], variable=self.peuom, width=100
         )
-        self.peoptmenu.place(anchor="w", relx=0.85, rely=0.52, x=0, y=0)
-
-        self.epsRB = ctk.CTkRadioButton(
-            self,
-            text="Expansion area ratio",
-            variable=self.exitcondition,
-            value=1,
-        )
-        self.epsRB.place(anchor="w", relx=0.55, rely=0.57)
-
-        self.epsentry = CTkEntry(self)
-        self.epsentry.configure(placeholder_text=0, width=200)
-        self.epsentry.place(anchor="w", relx=0.75, rely=0.57, x=0, y=0)
-
-        self.peratioRB = ctk.CTkRadioButton(
-            self,
-            text="Expansion pressure ratio",
-            variable=self.exitcondition,
-            value=2,
-        )
-        self.peratioRB.place(anchor="w", relx=0.55, rely=0.62)
-
-        self.peratioentry = CTkEntry(self)
-        self.peratioentry.configure(placeholder_text=0, width=200)
-        self.peratioentry.place(anchor="w", relx=0.75, rely=0.62, x=0, y=0)
+        self.peoptmenu.place(anchor="w", relx=0.85, rely=0.62, x=0, y=0)
 
         self.theoreticallabel = CTkLabel(self)
         self.theoreticallabel.configure(text="Theoretical (ideal) performance")
@@ -223,14 +223,14 @@ class InitialFrame(ctk.CTkFrame):
             cstar = C.get_Cstar(Pc=pc, MR=mr)
 
             if self.exitcondition.get() == 0:
-                pe = float(self.peentry.get()) * convert_pressure_uom(self.peuom.get())
-                eps = C.get_eps_at_PcOvPe(MR=mr, PcOvPe=pc/pe)
-            elif self.exitcondition.get() == 1:
                 eps = float(self.epsentry.get())
                 pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
-            elif self.exitcondition.get() == 2:
-                eps = C.get_eps_at_PcOvPe(MR=mr, PcOvPe=float(self.peratioentry.get()))
+            elif self.exitcondition.get() == 1:
+                eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=float(self.peratioentry.get()))
                 pe = pc / float(self.peratioentry.get())
+            elif self.exitcondition.get() == 2:
+                pe = float(self.peentry.get()) * convert_pressure_uom(self.peuom.get())
+                eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc/pe)
 
             Isp_vac = C.get_Isp(Pc=pc, MR=mr, eps=eps)
             Isp_sl = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pamb)[0]
@@ -245,7 +245,7 @@ class InitialFrame(ctk.CTkFrame):
         except Exception as err:
             return err
 
-        headers = ["Parameter", "SL", "Opt", "Vac", "Unit"]
+        headers = ["Parameter", "Sea level", "Optimum", "Vacuum", "Unit"]
         results = [
             [
                 "Characteristic velocity",
@@ -263,6 +263,9 @@ class InitialFrame(ctk.CTkFrame):
             ],
             ["Specific impulse", f"{Isp_sl:.2f}", f"{Isp_opt:.2f}", f"{Isp_vac:.2f}", "s"],
             ["Thrust coefficient", f"{CF_sl:.5f}", f"{CF_opt:.5f}", f"{CF_vac:.5f}", ""],
+            ["Expansion Area Ratio", f"{eps:.3f}", f"{eps:.3f}", f"{eps:.3f}", ""],
+            ["Expansion pressure ratio", f"{pc/pe:.3f}", f"{pc/pe:.3f}", f"{pc/pe:.3f}", ""],
+            ["Exit Pressure", f"{pe/100000:.3f}", f"{pe/100000:.3f}", f"{pe/100000:.3f}", "bar"],
         ]
         return tabulate(results, headers, numalign="right")
 
