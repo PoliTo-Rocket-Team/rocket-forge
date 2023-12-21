@@ -133,6 +133,7 @@ class RocketForge:
         # Top level windows
         self.about = None
         self.preferences = None
+        self.appearance_mode = tk.StringVar(value="System")
 
         # Main widget
         self.mainwindow = ctk1
@@ -190,6 +191,7 @@ class RocketForge:
             self.appearance_mode_optionemenu = ctk.CTkOptionMenu(
                 self.preferences,
                 values=["System", "Light", "Dark"],
+                variable=self.appearance_mode,
                 command=self.change_appearance_mode_event,
             )
             self.appearance_mode_optionemenu.place(anchor="w", relx=0.5, rely=0.1)
