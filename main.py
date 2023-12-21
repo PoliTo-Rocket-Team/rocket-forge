@@ -163,7 +163,12 @@ class RocketForge:
             self.copyright = CTkLabel(self.about, text=copyright)
             self.copyright.place(anchor="center", relx=0.5, rely=0.9)
 
-        self.about.focus()
+            self.about.after(50, self.about.lift)
+            self.about.after(50, self.about.focus)
+
+        else:
+            self.about.lift()
+            self.about.focus()
 
     def preferences_window(self):
         if self.preferences is None or not self.preferences.winfo_exists():
@@ -189,7 +194,12 @@ class RocketForge:
             )
             self.appearance_mode_optionemenu.place(anchor="w", relx=0.5, rely=0.1)
 
-        self.preferences.focus()
+            self.preferences.after(50, self.preferences.lift)
+            self.preferences.after(50, self.preferences.focus)
+
+        else:
+            self.preferences.lift()
+            self.preferences.focus()
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         ctk.set_appearance_mode(new_appearance_mode)
