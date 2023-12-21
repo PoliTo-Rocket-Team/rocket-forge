@@ -120,7 +120,7 @@ class RocketForge:
         self.statusbar = CTkFrame(ctk1)
         self.statusbar.configure(border_width=5, corner_radius=0, height=50, width=1200)
         self.runbutton = CTkButton(self.statusbar)
-        self.runbutton.configure(text="Run")
+        self.runbutton.configure(text="Run", command=self.execute)
         self.runbutton.place(anchor="e", relx=0.98, rely=0.5, x=0, y=0)
         self.statuslabel = CTkLabel(self.statusbar)
         self.statuslabel.configure(justify="right", text="Current status: idle")
@@ -140,6 +140,9 @@ class RocketForge:
 
     def run(self):
         self.mainwindow.mainloop()
+
+    def execute(self):
+        self.initialframe.expressrun()
 
     def about_window(self):
         if self.about is None or not self.about.winfo_exists():
