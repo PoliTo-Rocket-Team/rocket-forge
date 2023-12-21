@@ -182,16 +182,18 @@ class InitialFrame(ctk.CTkFrame):
         self.theoreticallabel.place(anchor="w", relx=0.05, rely=0.7, x=0, y=0)
 
         if os.name == "nt":
-            self.textbox = ctk.CTkTextbox(self, width=850, height=175, wrap="none", font=("Courier New", 12))
+            self.textbox = ctk.CTkTextbox(self, width=850, height=175, state="disabled", wrap="none", font=("Courier New", 12))
         else:
-            self.textbox = ctk.CTkTextbox(self, width=850, height=175, wrap="none", font=("Mono", 12))
+            self.textbox = ctk.CTkTextbox(self, width=850, height=175, state="disabled", wrap="none", font=("Mono", 12))
         self.textbox.place(relwidth=.9, relx=0.05, rely=0.73, anchor="nw")
 
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
 
     def expressrun(self):
+        self.textbox.configure(state="normal")
         self.textbox.delete("0.0", "200.0")
         self.textbox.insert("0.0", self.computeResults())
+        self.textbox.configure(state="disabled")
 
     def computeResults(self):
 
