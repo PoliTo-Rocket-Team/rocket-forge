@@ -141,6 +141,12 @@ class RocketForge:
         about.title("About")
         about.configure(width=300, height=200)
         about.resizable(False, False)
+        about.after(
+            201,
+            lambda: about.iconphoto(
+                False, tk.PhotoImage(file=resource_path("icon.png"))
+            ),
+        )
 
         aboutimage = CTkImage(Image.open(resource_path("icon.png")), size=(128, 128))
         self.aboutimage = CTkLabel(about, text="", image=aboutimage)
@@ -157,6 +163,12 @@ class RocketForge:
         preferences.title("Preferences")
         preferences.configure(width=400, height=300)
         preferences.resizable(False, False)
+        preferences.after(
+            201,
+            lambda: preferences.iconphoto(
+                False, tk.PhotoImage(file=resource_path("icon.png"))
+            ),
+        )
 
         self.appearance_mode_label = CTkLabel(
             preferences, text="Appearance Mode:", anchor="w"
