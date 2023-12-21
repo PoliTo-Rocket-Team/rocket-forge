@@ -214,11 +214,14 @@ class InitialFrame(ctk.CTkFrame):
             )
 
             pc = float(self.pcentry.get()) * convert_pressure_uom(self.pcuom.get())
+            mr_s = C.getMRforER(ERphi=1)
 
             if self.mruom.get() == "O/F":
                 mr = float(self.mrentry.get())
+                alpha = mr / mr_s
             elif self.mruom.get() == "alpha":
-                mr = float(self.mrentry.get()) - 1
+                alpha = float(self.mrentry.get())
+                mr = alpha * mr_s
 
             cstar = C.get_Cstar(Pc=pc, MR=mr)
 
@@ -263,11 +266,20 @@ class InitialFrame(ctk.CTkFrame):
             ],
             ["Specific impulse", f"{Isp_sl:.2f}", f"{Isp_opt:.2f}", f"{Isp_vac:.2f}", "s"],
             ["Thrust coefficient", f"{CF_sl:.5f}", f"{CF_opt:.5f}", f"{CF_vac:.5f}", ""],
-            ["Expansion Area Ratio", f"{eps:.3f}", f"{eps:.3f}", f"{eps:.3f}", ""],
-            ["Expansion pressure ratio", f"{pc/pe:.3f}", f"{pc/pe:.3f}", f"{pc/pe:.3f}", ""],
-            ["Exit Pressure", f"{pe/100000:.3f}", f"{pe/100000:.3f}", f"{pe/100000:.3f}", "bar"],
         ]
-        return tabulate(results, headers, numalign="right")
+        output1 = tabulate(results, headers, numalign="right", tablefmt="plain")
+
+        results = [
+            ["Expansion Area Ratio", eps, ""],
+            ["Expansion pressure ratio", pc/pe, ""],
+            ["Exit Pressure", pe/100000, "bar"],
+            ["Mixture Ratio", mr, ""],
+            ["Mixture Ratio (stoichiometric)", mr_s, ""],
+            ["Alpha (oxidizer excess coefficient)", alpha, ""],
+        ]
+        output2 = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".4f")
+
+        return output1 + 2 * "\n" + output2
 
         
 def convert_pressure_uom(uom: str) -> float:
