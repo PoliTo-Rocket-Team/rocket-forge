@@ -6,7 +6,11 @@ from rocketforge.initialframe   import InitialFrame
 from rocketforge.performance    import PerformanceFrame
 from rocketforge.thermal        import ThermalFrame
 from rocketforge.geometry       import GeometryFrame
-from customtkinter              import CTk, CTkButton, CTkFont, CTkFrame, CTkLabel
+from customtkinter              import CTk, CTkButton, CTkFont, CTkFrame, CTkLabel, CTkImage
+from PIL                        import Image
+
+version = "1.0.0"
+copyright = "(C) 2023-2024 Polito Rocket Team"
 
 
 class RocketForge:
@@ -25,6 +29,22 @@ class RocketForge:
                 False, tk.PhotoImage(file=resource_path("icon.png"))
             ),
         )
+
+        # Initial data frame
+        self.initialframe = InitialFrame(ctk1)
+        self.initialframe.grid(column=1, row=0)
+
+        # Performance frame
+        self.performanceframe = PerformanceFrame(ctk1)
+        self.performanceframe.grid(column=1, row=0)
+
+        # Thermal analysis frame
+        self.thermalframe = ThermalFrame(ctk1)
+        self.thermalframe.grid(column=1, row=0)
+
+        # Geometry frame
+        self.geometryframe = GeometryFrame(ctk1)
+        self.geometryframe.grid(column=1, row=0)
 
         # Sidebar
         self.sidebar = CTkFrame(ctk1)
@@ -80,14 +100,17 @@ class RocketForge:
 
         self.logoframe = CTkFrame(self.sidebar)
         self.logoframe.configure(border_width=5, height=100, width=180)
+        logoimage = CTkImage(Image.open(resource_path("icon.png")), size=(90, 90))
+        self.logoimage = CTkLabel(self.logoframe, text="", image=logoimage)
+        self.logoimage.place(anchor="center", relx=0.3, rely=0.5)
         self.logolabel = CTkLabel(self.logoframe)
         self.logolabel.configure(
-            font=CTkFont("Sans", 20, "bold", "roman", False, False),
+            font=CTkFont("Sans", 18, "bold", "roman", False, False),
             justify="center",
             text="Rocket\nForge",
         )
         self.logolabel.place(
-            anchor="center", relheight=0.8, relwidth=0.8, relx=0.5, rely=0.5, x=0, y=0
+            anchor="center", relx=0.7, rely=0.5, x=0, y=0
         )
         self.logoframe.place(anchor="n", relx=0.5, rely=0.02, x=0, y=0)
 
@@ -104,33 +127,30 @@ class RocketForge:
         self.statuslabel.place(anchor="e", relx=0.85, rely=0.5, x=0, y=0)
         self.statusbar.grid(column=0, columnspan=2, row=1)
 
-        # Initial data frame
-        self.initialframe = InitialFrame(ctk1)
-        self.initialframe.grid(column=1, row=0)
-
-        # Performance frame
-        self.performanceframe = PerformanceFrame(ctk1)
-        self.performanceframe.grid(column=1, row=0)
-
-        # Thermal analysis frame
-        self.thermalframe = ThermalFrame(ctk1)
-        self.thermalframe.grid(column=1, row=0)
-
-        # Geometry frame
-        self.geometryframe = GeometryFrame(ctk1)
-        self.geometryframe.grid(column=1, row=0)
-
         # Raise initial frame
         self.initialframe.tkraise()
 
         # Main widget
         self.mainwindow = ctk1
 
+    def run(self):
+        self.mainwindow.mainloop()
+
     def about_window(self):
         about = ctk.CTkToplevel()
         about.title("About")
         about.configure(width=300, height=200)
         about.resizable(False, False)
+
+        aboutimage = CTkImage(Image.open(resource_path("icon.png")), size=(128, 128))
+        self.aboutimage = CTkLabel(about, text="", image=aboutimage)
+        self.aboutimage.place(anchor="center", relx=0.5, rely=0.28)
+        self.aboutname = CTkLabel(about, text="Rocket Forge", font=("Sans", 20))
+        self.aboutname.place(anchor="center", relx=0.5, rely=0.6)
+        self.aboutversion = CTkLabel(about, text="Version "+version)
+        self.aboutversion.place(anchor="center", relx=0.5, rely=0.75)
+        self.copyright = CTkLabel(about, text=copyright)
+        self.copyright.place(anchor="center", relx=0.5, rely=0.9)
 
     def preferences_window(self):
         preferences = ctk.CTkToplevel()
@@ -151,9 +171,6 @@ class RocketForge:
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         ctk.set_appearance_mode(new_appearance_mode)
-
-    def run(self):
-        self.mainwindow.mainloop()
 
     def on_closing(self):
         """close the program"""
