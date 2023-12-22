@@ -28,15 +28,54 @@ class PerformanceFrame(ctk.CTkFrame):
         self.deliveredframe.place(anchor="center", relx=0.5, rely=0.6)
 
         self.thermodynamicbutton = CTkButton(self, width=425)
-        self.thermodynamicbutton.configure(text="Thermodynamic properties", command=lambda: self.thermodynamicframe.tkraise())
+        self.thermodynamicbutton.configure(
+            text="Thermodynamic properties",
+            command=lambda: self.thermodynamicframe.tkraise(),
+        )
         self.thermodynamicbutton.place(anchor="w", relx=0.05, rely=0.2)
 
         self.deliveredbutton = CTkButton(self, width=425)
-        self.deliveredbutton.configure(text="Delivered performance", command=lambda: self.deliveredframe.tkraise())
+        self.deliveredbutton.configure(
+            text="Delivered performance", command=lambda: self.deliveredframe.tkraise()
+        )
         self.deliveredbutton.place(anchor="e", relx=0.95, rely=0.2)
 
         self.thermodynamicframe.tkraise()
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
+
+    def loadengine(self, ox, fuel, mr, pc, eps, geometry):
+        At, Le, theta_e = geometry
+
+        if self.thermodynamicframe.frozenflow.get() == 0:
+            frozen = 0
+            frozenatthroat = 0
+        elif self.thermodynamicframe.frozenflow.get() == 1:
+            frozen = 1
+            frozenatthroat = 0
+        elif self.thermodynamicframe.frozenflow.get() == 2:
+            frozen = 1
+            frozenatthroat = 1
+
+        if self.thermodynamicframe.inletconditions.get() == 0:
+            epsc = None
+        elif self.thermodynamicframe.inletconditions.get() == 1:
+            epsc = None  # TODO
+        elif self.thermodynamicframe.inletconditions.get() == 2:
+            epsc = float(self.thermodynamicframe.contractionentry.get())
+
+        iter = int(self.thermodynamicframe.stationsentry.get()) + 1
+
+        x = theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen, frozenatthroat)
+
+        self.thermodynamicframe.textbox.configure(state="normal")
+        self.thermodynamicframe.textbox.delete("0.0", "200.0")
+        self.thermodynamicframe.textbox.insert("0.0", x[-1])
+        self.thermodynamicframe.textbox.configure(state="disabled")
+
+        cstar = x[0]
+        Isp_vac, Isp_opt, Isp_sl = x[1:3]
+        CF_vac, CF_opt, CF_sl = x[4:5]
+        td_properties = x[6]
 
 
 class ThermodynamicFrame(CTkFrame):
@@ -46,18 +85,12 @@ class ThermodynamicFrame(CTkFrame):
         self.inletconditions = ctk.IntVar(value=0)
 
         self.iacRB = ctk.CTkRadioButton(
-            self,
-            text="Infinite area combustor",
-            variable=self.inletconditions,
-            value=0
+            self, text="Infinite area combustor", variable=self.inletconditions, value=0
         )
         self.iacRB.place(anchor="w", relx=0.05, rely=0.1)
 
         self.massfluxRB = ctk.CTkRadioButton(
-            self,
-            text="Mass flux",
-            variable=self.inletconditions,
-            value=1
+            self, text="Mass flux", variable=self.inletconditions, value=1
         )
         self.massfluxRB.place(anchor="w", relx=0.05, rely=0.17)
 
@@ -73,10 +106,7 @@ class ThermodynamicFrame(CTkFrame):
         self.massfluxoptmenu.place(anchor="w", relx=0.4, rely=0.17)
 
         self.contractionRB = ctk.CTkRadioButton(
-            self,
-            text="Contraction area ratio",
-            variable=self.inletconditions,
-            value=2
+            self, text="Contraction area ratio", variable=self.inletconditions, value=2
         )
         self.contractionRB.place(anchor="w", relx=0.05, rely=0.24)
 
@@ -87,26 +117,17 @@ class ThermodynamicFrame(CTkFrame):
         self.frozenflow = ctk.IntVar(value=0)
 
         self.equilibriumRB = ctk.CTkRadioButton(
-            self,
-            text="Shifting equilibrium flow",
-            variable=self.frozenflow,
-            value=0
+            self, text="Shifting equilibrium flow", variable=self.frozenflow, value=0
         )
         self.equilibriumRB.place(anchor="w", relx=0.65, rely=0.1)
 
         self.frozenRB = ctk.CTkRadioButton(
-            self,
-            text="Frozen equilibrium flow",
-            variable=self.frozenflow,
-            value=1
+            self, text="Frozen equilibrium flow", variable=self.frozenflow, value=1
         )
         self.frozenRB.place(anchor="w", relx=0.65, rely=0.17)
 
         self.frozenatthroatRB = ctk.CTkRadioButton(
-            self,
-            text="Frozen at throat flow",
-            variable=self.frozenflow,
-            value=2
+            self, text="Frozen at throat flow", variable=self.frozenflow, value=2
         )
         self.frozenatthroatRB.place(anchor="w", relx=0.65, rely=0.24)
 
@@ -149,7 +170,7 @@ class DeliveredFrame(CTkFrame):
             text="Consider multiphase flow effects",
             variable=self.multiphase,
             onvalue=1,
-            offvalue=0
+            offvalue=0,
         )
         self.multiphaseCB.place(anchor="w", relx=0.065, rely=0.07)
 
@@ -169,7 +190,9 @@ class DeliveredFrame(CTkFrame):
         self.condheatcapacityoptmenu.place(anchor="w", relx=0.61, rely=0.13)
 
         self.condmassfraclabel = CTkLabel(self)
-        self.condmassfraclabel.configure(text="Mass fraction of condensed phase at nozzle exit")
+        self.condmassfraclabel.configure(
+            text="Mass fraction of condensed phase at nozzle exit"
+        )
         self.condmassfraclabel.place(anchor="w", relx=0.1, rely=0.19)
 
         self.condmassfracentry = CTkEntry(self)
@@ -243,8 +266,7 @@ class DeliveredFrame(CTkFrame):
         self.textbox.place(relwidth=0.9, relx=0.5, rely=0.6, anchor="n")
 
 
-
-def theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen):
+def theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen, frozenatthroat):
     pamb = 101325
 
     C = CEA_Obj(
@@ -262,11 +284,19 @@ def theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen):
 
     cstar = C.get_Cstar(Pc=pc, MR=mr)
 
-    pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps, frozen=frozen)
+    pe = pc / C.get_PcOvPe(
+        Pc=pc, MR=mr, eps=eps, frozen=frozen, frozenAtThroat=frozenatthroat
+    )
 
-    Isp_vac = C.get_Isp(Pc=pc, MR=mr, eps=eps, frozen=frozen)
-    Isp_sl = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pamb, frozen=frozen)[0]
-    Isp_opt = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pe, frozen=frozen)[0]
+    Isp_vac = C.get_Isp(
+        Pc=pc, MR=mr, eps=eps, frozen=frozen, frozenAtThroat=frozenatthroat
+    )
+    Isp_sl = C.estimate_Ambient_Isp(
+        Pc=pc, MR=mr, eps=eps, Pamb=pamb, frozen=frozen, frozenAtThroat=frozenatthroat
+    )[0]
+    Isp_opt = C.estimate_Ambient_Isp(
+        Pc=pc, MR=mr, eps=eps, Pamb=pe, frozen=frozen, frozenAtThroat=frozenatthroat
+    )[0]
 
     c_vac = Isp_vac * 9.80655
     c_sl = Isp_sl * 9.80655
@@ -275,13 +305,21 @@ def theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen):
     CF_opt, CF_sl, mode = C.get_PambCf(Pamb=pamb, Pc=pc, MR=mr, eps=eps)
     CF_vac = c_vac / cstar
 
-    Tc, Tt, Te = C.get_Temperatures(Pc=pc, MR=mr, eps=eps, frozen=frozen)
-    rhoc, rhot, rhoe = C.get_Densities(Pc=pc, MR=mr, eps=eps, frozen=frozen)
+    Tc, Tt, Te = C.get_Temperatures(
+        Pc=pc, MR=mr, eps=eps, frozen=frozen, frozenAtThroat=frozenatthroat
+    )
+    rhoc, rhot, rhoe = C.get_Densities(
+        Pc=pc, MR=mr, eps=eps, frozen=frozen, frozenAtThroat=frozenatthroat
+    )
 
     cpc, muc, lc, Prc = C.get_Chamber_Transport(Pc=pc, MR=mr, eps=eps, frozen=frozen)
 
-    ac, at, ae = C.get_SonicVelocities(Pc=pc, MR=mr, eps=eps, frozen=frozen)
-    Hc, Ht, He = C.get_Enthalpies(Pc=pc, MR=mr, eps=eps, frozen=frozen)
+    ac, at, ae = C.get_SonicVelocities(
+        Pc=pc, MR=mr, eps=eps, frozen=frozen, frozenAtThroat=frozenatthroat
+    )
+    Hc, Ht, He = C.get_Enthalpies(
+        Pc=pc, MR=mr, eps=eps, frozen=frozen, frozenAtThroat=frozenatthroat
+    )
 
     p = [pc / 100000]
     T = [Tc]
@@ -297,17 +335,63 @@ def theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen):
 
     for x in range(iter):
         x = 1 + x * (eps - 1) / (iter - 1)
-        p.append(pc / 100000 / C.get_PcOvPe(Pc=pc, MR=mr, eps=x, frozen=frozen))
-        T.append(C.get_Temperatures(Pc=pc, MR=mr, eps=x, frozen=frozen)[2])
-        rho.append(C.get_Densities(Pc=pc, MR=mr, eps=x, frozen=frozen)[2])
-        cp.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=frozen)[0])
-        mu.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=frozen)[1])
-        l.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=frozen)[2])
-        Pr.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=frozen)[3])
-        gamma.append(C.get_exit_MolWt_gamma(Pc=pc, MR=mr, eps=x, frozen=frozen)[1])
-        M.append(C.get_MachNumber(Pc=pc, MR=mr, eps=x, frozen=frozen))
-        a.append(C.get_SonicVelocities(Pc=pc, MR=mr, eps=x, frozen=frozen)[2])
-        H.append(C.get_Enthalpies(Pc=pc, MR=mr, eps=x, frozen=frozen)[2])
+        p.append(
+            pc
+            / 100000
+            / C.get_PcOvPe(
+                Pc=pc, MR=mr, eps=x, frozen=frozen, frozenAtThroat=frozenatthroat
+            )
+        )
+        T.append(
+            C.get_Temperatures(
+                Pc=pc, MR=mr, eps=x, frozen=frozen, frozenAtThroat=frozenatthroat
+            )[2]
+        )
+        rho.append(
+            C.get_Densities(
+                Pc=pc, MR=mr, eps=x, frozen=frozen, frozenAtThroat=frozenatthroat
+            )[2]
+        )
+        cp.append(
+            C.get_Exit_Transport(
+                Pc=pc, MR=mr, eps=x, frozen=frozen, frozenAtThroat=frozenatthroat
+            )[0]
+        )
+        mu.append(
+            C.get_Exit_Transport(
+                Pc=pc, MR=mr, eps=x, frozen=frozen, frozenAtThroat=frozenatthroat
+            )[1]
+        )
+        l.append(
+            C.get_Exit_Transport(
+                Pc=pc, MR=mr, eps=x, frozen=frozen, frozenAtThroat=frozenatthroat
+            )[2]
+        )
+        Pr.append(
+            C.get_Exit_Transport(
+                Pc=pc, MR=mr, eps=x, frozen=frozen, frozenAtThroat=frozenatthroat
+            )[3]
+        )
+        gamma.append(
+            C.get_exit_MolWt_gamma(
+                Pc=pc, MR=mr, eps=x, frozen=frozen, frozenAtThroat=frozenatthroat
+            )[1]
+        )
+        M.append(
+            C.get_MachNumber(
+                Pc=pc, MR=mr, eps=x, frozen=frozen, frozenAtThroat=frozenatthroat
+            )
+        )
+        a.append(
+            C.get_SonicVelocities(
+                Pc=pc, MR=mr, eps=x, frozen=frozen, frozenAtThroat=frozenatthroat
+            )[2]
+        )
+        H.append(
+            C.get_Enthalpies(
+                Pc=pc, MR=mr, eps=x, frozen=frozen, frozenAtThroat=frozenatthroat
+            )[2]
+        )
 
     p.insert(0, "Pressure")
     T.insert(0, "Temperature")

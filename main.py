@@ -146,6 +146,11 @@ class RocketForge:
             ox, fuel, mr, pc, eps = self.initialframe.expressrun()
             geometry = self.geometryframe.loadgeometry()
         except Exception as err:
+            geometry = (0, 0, 0)
+
+        try:
+            self.performanceframe.loadengine(ox, fuel, mr, pc, eps, geometry)
+        except Exception as err:
             pass
 
     def about_window(self):
