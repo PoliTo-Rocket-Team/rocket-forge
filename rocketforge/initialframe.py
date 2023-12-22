@@ -19,10 +19,6 @@ class InitialFrame(ctk.CTkFrame):
         self.toplabel.place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
         self.topframe.place(anchor="n", relx=0.5, rely=0.02, x=0, y=0)
 
-        self.enginedefinitionlabel = CTkLabel(self)
-        self.enginedefinitionlabel.configure(text="Engine Definition")
-        self.enginedefinitionlabel.place(anchor="w", relx=0.05, rely=0.19, x=0, y=0)
-
         self.enginenamelabel = CTkLabel(self)
         self.enginenamelabel.configure(text="Engine name:")
         self.enginenamelabel.place(anchor="w", relx=0.05, rely=0.24, x=0, y=0)
@@ -56,13 +52,9 @@ class InitialFrame(ctk.CTkFrame):
         )
         self.pcoptmenu.place(anchor="w", relx=0.3, rely=0.39, x=0, y=0)
 
-        self.propellantlabel = CTkLabel(self)
-        self.propellantlabel.configure(text="Propellant Specification")
-        self.propellantlabel.place(anchor="w", relx=0.05, rely=0.47, x=0, y=0)
-
         self.oxidizerlabel = CTkLabel(self)
         self.oxidizerlabel.configure(text="Oxidizer:")
-        self.oxidizerlabel.place(anchor="w", relx=0.05, rely=0.52, x=0, y=0)
+        self.oxidizerlabel.place(anchor="w", relx=0.05, rely=0.44, x=0, y=0)
 
         self.oxoptmenu = CTkOptionMenu(self)
         self.oxvar = tk.StringVar(value="LOX")
@@ -83,11 +75,11 @@ class InitialFrame(ctk.CTkFrame):
             variable=self.oxvar,
             width=200,
         )
-        self.oxoptmenu.place(anchor="w", relx=0.2, rely=0.52, x=0, y=0)
+        self.oxoptmenu.place(anchor="w", relx=0.2, rely=0.44, x=0, y=0)
 
         self.fuellabel = CTkLabel(self)
         self.fuellabel.configure(text="Fuel:")
-        self.fuellabel.place(anchor="w", relx=0.05, rely=0.57, x=0, y=0)
+        self.fuellabel.place(anchor="w", relx=0.05, rely=0.49, x=0, y=0)
 
         self.fueloptmenu = CTkOptionMenu(self)
         self.fuelvar = tk.StringVar(value="CH4")
@@ -112,26 +104,26 @@ class InitialFrame(ctk.CTkFrame):
             variable=self.fuelvar,
             width=200,
         )
-        self.fueloptmenu.place(anchor="w", relx=0.2, rely=0.57, x=0, y=0)
+        self.fueloptmenu.place(anchor="w", relx=0.2, rely=0.49, x=0, y=0)
 
         self.mrlabel = CTkLabel(self)
         self.mrlabel.configure(text="Mixture Ratio:")
-        self.mrlabel.place(anchor="w", relx=0.05, rely=0.62, x=0, y=0)
+        self.mrlabel.place(anchor="w", relx=0.05, rely=0.54, x=0, y=0)
 
         self.mrentry = CTkEntry(self)
         self.mrentry.configure(placeholder_text="0", width=100)
-        self.mrentry.place(anchor="w", relx=0.2, rely=0.62, x=0, y=0)
+        self.mrentry.place(anchor="w", relx=0.2, rely=0.54, x=0, y=0)
 
         self.mroptmenu = CTkOptionMenu(self)
         self.mruom = tk.StringVar(value="O/F")
         self.mroptmenu.configure(
             values=["O/F", "alpha"], variable=self.mruom, width=100
         )
-        self.mroptmenu.place(anchor="w", relx=0.3, rely=0.62, x=0, y=0)
+        self.mroptmenu.place(anchor="w", relx=0.3, rely=0.54, x=0, y=0)
 
         self.exitcondlabel = CTkLabel(self)
-        self.exitcondlabel.configure(text="Nozzle exit condition")
-        self.exitcondlabel.place(anchor="w", relx=0.55, rely=0.47, x=0, y=0)
+        self.exitcondlabel.configure(text="Nozzle exit conditions")
+        self.exitcondlabel.place(anchor="w", relx=0.55, rely=0.39, x=0, y=0)
 
         self.exitcondition = ctk.IntVar(value=0)
 
@@ -141,11 +133,11 @@ class InitialFrame(ctk.CTkFrame):
             variable=self.exitcondition,
             value=0,
         )
-        self.epsRB.place(anchor="w", relx=0.55, rely=0.52)
+        self.epsRB.place(anchor="w", relx=0.55, rely=0.44)
 
         self.epsentry = CTkEntry(self)
         self.epsentry.configure(placeholder_text=0, width=200)
-        self.epsentry.place(anchor="w", relx=0.75, rely=0.52, x=0, y=0)
+        self.epsentry.place(anchor="w", relx=0.75, rely=0.44, x=0, y=0)
 
         self.peratioRB = ctk.CTkRadioButton(
             self,
@@ -153,11 +145,11 @@ class InitialFrame(ctk.CTkFrame):
             variable=self.exitcondition,
             value=1,
         )
-        self.peratioRB.place(anchor="w", relx=0.55, rely=0.57)
+        self.peratioRB.place(anchor="w", relx=0.55, rely=0.49)
 
         self.peratioentry = CTkEntry(self)
         self.peratioentry.configure(placeholder_text=0, width=200)
-        self.peratioentry.place(anchor="w", relx=0.75, rely=0.57, x=0, y=0)
+        self.peratioentry.place(anchor="w", relx=0.75, rely=0.49, x=0, y=0)
 
         self.peRB = ctk.CTkRadioButton(
             self,
@@ -165,32 +157,32 @@ class InitialFrame(ctk.CTkFrame):
             variable=self.exitcondition,
             value=2,
         )
-        self.peRB.place(anchor="w", relx=0.55, rely=0.62)
+        self.peRB.place(anchor="w", relx=0.55, rely=0.54)
 
         self.peentry = CTkEntry(self)
         self.peentry.configure(placeholder_text=0, width=100)
-        self.peentry.place(anchor="w", relx=0.75, rely=0.62, x=0, y=0)
+        self.peentry.place(anchor="w", relx=0.75, rely=0.54, x=0, y=0)
 
         self.peoptmenu = CTkOptionMenu(self)
         self.peuom = tk.StringVar(value="bar")
         self.peoptmenu.configure(
             values=["MPa", "bar", "Pa", "psia", "atm"], variable=self.peuom, width=100
         )
-        self.peoptmenu.place(anchor="w", relx=0.85, rely=0.62, x=0, y=0)
+        self.peoptmenu.place(anchor="w", relx=0.85, rely=0.54, x=0, y=0)
 
         self.theoreticallabel = CTkLabel(self)
         self.theoreticallabel.configure(text="Theoretical (ideal) performance")
-        self.theoreticallabel.place(anchor="w", relx=0.05, rely=0.7, x=0, y=0)
+        self.theoreticallabel.place(anchor="w", relx=0.05, rely=0.62, x=0, y=0)
 
         if os.name == "nt":
             self.textbox = ctk.CTkTextbox(self, height=195, state="disabled", wrap="none", font=("Courier New", 12))
         else:
-            self.textbox = ctk.CTkTextbox(self, height=195, state="disabled", wrap="none", font=("Mono", 12))
-        self.textbox.place(relwidth=.48, relx=0.05, rely=0.72, anchor="nw")
+            self.textbox = ctk.CTkTextbox(self, height=195, state="disabled", wrap="none", font=("Sans", 12))
+        self.textbox.place(relwidth=.48, relx=0.05, rely=0.645, anchor="nw")
 
         self.optimizationlabel = CTkLabel(self)
-        self.optimizationlabel.configure(text="Optimize results")
-        self.optimizationlabel.place(anchor="w", relx=0.55, rely=0.7, x=0, y=0)
+        self.optimizationlabel.configure(text="Mixture ratio optimization")
+        self.optimizationlabel.place(anchor="w", relx=0.55, rely=0.67, x=0, y=0)
 
         self.optimizationmode = ctk.IntVar(value=0)
 
@@ -200,7 +192,7 @@ class InitialFrame(ctk.CTkFrame):
             variable=self.optimizationmode,
             value=0,
         )
-        self.nooptimizationRB.place(anchor="w", relx=0.55, rely=0.75)
+        self.nooptimizationRB.place(anchor="w", relx=0.55, rely=0.72)
 
         self.peratioRB = ctk.CTkRadioButton(
             self,
@@ -208,7 +200,7 @@ class InitialFrame(ctk.CTkFrame):
             variable=self.optimizationmode,
             value=1,
         )
-        self.peratioRB.place(anchor="w", relx=0.55, rely=0.8)
+        self.peratioRB.place(anchor="w", relx=0.55, rely=0.77)
 
         self.peRB = ctk.CTkRadioButton(
             self,
@@ -216,7 +208,7 @@ class InitialFrame(ctk.CTkFrame):
             variable=self.optimizationmode,
             value=2,
         )
-        self.peRB.place(anchor="w", relx=0.55, rely=0.85)
+        self.peRB.place(anchor="w", relx=0.55, rely=0.82)
 
         self.peRB = ctk.CTkRadioButton(
             self,
@@ -224,7 +216,7 @@ class InitialFrame(ctk.CTkFrame):
             variable=self.optimizationmode,
             value=3,
         )
-        self.peRB.place(anchor="w", relx=0.55, rely=0.9)
+        self.peRB.place(anchor="w", relx=0.55, rely=0.87)
 
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
 
