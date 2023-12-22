@@ -540,7 +540,8 @@ def correction_factors(
     f = 1.1165014352424605
     g = 0.08873349847277191
     pxd = 2 * pc * rt * 0.00014503773800722 * 39.37007874
-    z_f = g * eps / pxd + (c + d * math.log(e + eps * f)) / (a + b * math.log(pxd))
+    loss = g*eps/pxd + (c + d * math.log(e + eps*f))/( a + b*math.log(pxd))
+    z_f = (100.0 - loss) / 100.0
 
     # Nozzle correction factor
     z_n = z_f * z_d * z_z
