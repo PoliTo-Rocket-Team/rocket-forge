@@ -284,18 +284,9 @@ class InitialFrame(ctk.CTkFrame):
                     pe = pc / float(self.peratioentry.get())
                 elif self.exitcondition.get() == 2:
                     pe = float(self.peentry.get()) * convert_pressure_uom(self.peuom.get())
-
                 mr = optimizermr_at_pe(C, pc, pe, self.optimizationmode.get())
                 eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc/pe)
                 alpha = mr / mr_s
-
-                # mr0 = 0
-                # mr = 1
-                # while abs(mr-mr0) > 10**(-5):
-                #     mr0 = mr
-                #     eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc/pe)
-                #     mr = optimizemr(C, pc, eps, self.optimizationmode.get())
-                
                 
             cstar = C.get_Cstar(Pc=pc, MR=mr)
 
