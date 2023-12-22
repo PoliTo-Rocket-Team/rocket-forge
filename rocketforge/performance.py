@@ -91,29 +91,18 @@ class PerformanceFrame(ctk.CTkFrame):
 
         z_r, z_n, z_overall, z_f, z_d, z_z = correction_factors(pc, eps, At, Le, theta_e, Isp_vac_eq, Isp_vac_frozen, Tc, Te, we, Z, Cs)
 
-        self.deliveredframe.reactioneffentry.configure(state="normal")
-        self.deliveredframe.reactioneffentry.insert("0", f"{z_r:.4f}")
-        self.deliveredframe.reactioneffentry.configure(state="disabled")
+        def updateentry(entry: CTkEntry, result: float) -> None:
+            entry.configure(state="normal")
+            entry.delete("0", "200")
+            entry.insert("0", f"{result:.4f}")
+            entry.configure(state="disabled")
 
-        self.deliveredframe.nozzleeffentry.configure(state="normal")
-        self.deliveredframe.nozzleeffentry.insert("0", f"{z_n:.4f}")
-        self.deliveredframe.nozzleeffentry.configure(state="disabled")
-
-        self.deliveredframe.overalleffentry.configure(state="normal")
-        self.deliveredframe.overalleffentry.insert("0", f"{z_overall:.4f}")
-        self.deliveredframe.overalleffentry.configure(state="disabled")
-
-        self.deliveredframe.BLeffentry.configure(state="normal")
-        self.deliveredframe.BLeffentry.insert("0", f"{z_f:.4f}")
-        self.deliveredframe.BLeffentry.configure(state="disabled")
-
-        self.deliveredframe.diveffentry.configure(state="normal")
-        self.deliveredframe.diveffentry.insert("0", f"{z_d:.4f}")
-        self.deliveredframe.diveffentry.configure(state="disabled")
-
-        self.deliveredframe.multiphaseeffentry.configure(state="normal")
-        self.deliveredframe.multiphaseeffentry.insert("0", f"{z_z:.4f}")
-        self.deliveredframe.multiphaseeffentry.configure(state="disabled")
+        updateentry(self.deliveredframe.reactioneffentry, z_r)
+        updateentry(self.deliveredframe.nozzleeffentry, z_n)
+        updateentry(self.deliveredframe.overalleffentry, z_overall)
+        updateentry(self.deliveredframe.BLeffentry, z_f)
+        updateentry(self.deliveredframe.diveffentry, z_d)
+        updateentry(self.deliveredframe.multiphaseeffentry, z_z)
 
         x = delivered(pc, eps, pe, mr, At, cstar, Isp_vac, z_r, z_n)
 
