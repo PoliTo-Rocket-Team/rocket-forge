@@ -73,9 +73,54 @@ class PerformanceFrame(ctk.CTkFrame):
         self.thermodynamicframe.textbox.configure(state="disabled")
 
         cstar = x[0]
-        Isp_vac, Isp_opt, Isp_sl = x[1:3]
-        CF_vac, CF_opt, CF_sl = x[4:5]
-        td_properties = x[6]
+        Isp_vac = x[1]
+        Isp_vac_eq = x[2]
+        Isp_vac_frozen = x[3]
+        td_properties = x[-2]
+
+        pe = float(td_properties[0][-2]) * 100000
+        Tc = float(td_properties[1][1])
+        Te = float(td_properties[1][-2])
+        we = float(td_properties[8][-2]) * float(td_properties[9][-2])
+
+        if self.deliveredframe.multiphase.get() == 0:
+            Z, Cs = 0, 0
+        else:
+            Z = float(self.deliveredframe.condmassfracentry.get())
+            Cs = 0 # TODO
+
+        z_r, z_n, z_overall, z_f, z_d, z_z = correction_factors(pc, eps, At, Le, theta_e, Isp_vac_eq, Isp_vac_frozen, Tc, Te, we, Z, Cs)
+
+        self.deliveredframe.reactioneffentry.configure(state="normal")
+        self.deliveredframe.reactioneffentry.insert("0", f"{z_r:.4f}")
+        self.deliveredframe.reactioneffentry.configure(state="disabled")
+
+        self.deliveredframe.nozzleeffentry.configure(state="normal")
+        self.deliveredframe.nozzleeffentry.insert("0", f"{z_n:.4f}")
+        self.deliveredframe.nozzleeffentry.configure(state="disabled")
+
+        self.deliveredframe.overalleffentry.configure(state="normal")
+        self.deliveredframe.overalleffentry.insert("0", f"{z_overall:.4f}")
+        self.deliveredframe.overalleffentry.configure(state="disabled")
+
+        self.deliveredframe.BLeffentry.configure(state="normal")
+        self.deliveredframe.BLeffentry.insert("0", f"{z_f:.4f}")
+        self.deliveredframe.BLeffentry.configure(state="disabled")
+
+        self.deliveredframe.diveffentry.configure(state="normal")
+        self.deliveredframe.diveffentry.insert("0", f"{z_d:.4f}")
+        self.deliveredframe.diveffentry.configure(state="disabled")
+
+        self.deliveredframe.multiphaseeffentry.configure(state="normal")
+        self.deliveredframe.multiphaseeffentry.insert("0", f"{z_z:.4f}")
+        self.deliveredframe.multiphaseeffentry.configure(state="disabled")
+
+        x = delivered(pc, eps, pe, mr, At, cstar, Isp_vac, z_r, z_n)
+
+        self.deliveredframe.textbox.configure(state="normal")
+        self.deliveredframe.textbox.delete("0.0", "200.0")
+        self.deliveredframe.textbox.insert("0.0", x[-1])
+        self.deliveredframe.textbox.configure(state="disabled")
 
 
 class ThermodynamicFrame(CTkFrame):
@@ -204,48 +249,48 @@ class DeliveredFrame(CTkFrame):
         self.reactionefflabel.place(anchor="w", relx=0.05, rely=0.3)
 
         self.reactioneffentry = CTkEntry(self)
-        self.reactioneffentry.configure(placeholder_text="1")
+        self.reactioneffentry.configure(state="disabled")
         self.reactioneffentry.place(anchor="w", relx=0.29, rely=0.3)
 
         self.nozzleefflabel = CTkLabel(self)
         self.nozzleefflabel.configure(text="Nozzle efficiency")
         self.nozzleefflabel.place(anchor="w", relx=0.05, rely=0.37)
 
-        self.reactioneffentry = CTkEntry(self)
-        self.reactioneffentry.configure(placeholder_text="1")
-        self.reactioneffentry.place(anchor="w", relx=0.29, rely=0.37)
+        self.nozzleeffentry = CTkEntry(self)
+        self.nozzleeffentry.configure(state="disabled")
+        self.nozzleeffentry.place(anchor="w", relx=0.29, rely=0.37)
 
         self.overallefflabel = CTkLabel(self)
         self.overallefflabel.configure(text="Overall efficiency")
         self.overallefflabel.place(anchor="w", relx=0.05, rely=0.44)
 
-        self.reactioneffentry = CTkEntry(self)
-        self.reactioneffentry.configure(placeholder_text="1")
-        self.reactioneffentry.place(anchor="w", relx=0.29, rely=0.44)
+        self.overalleffentry = CTkEntry(self)
+        self.overalleffentry.configure(state="disabled")
+        self.overalleffentry.place(anchor="w", relx=0.29, rely=0.44)
 
         self.BLefflabel = CTkLabel(self)
         self.BLefflabel.configure(text="Boundary layer efficiency")
         self.BLefflabel.place(anchor="w", relx=0.55, rely=0.3)
 
-        self.reactioneffentry = CTkEntry(self)
-        self.reactioneffentry.configure(placeholder_text="1")
-        self.reactioneffentry.place(anchor="w", relx=0.79, rely=0.3)
+        self.BLeffentry = CTkEntry(self)
+        self.BLeffentry.configure(state="disabled")
+        self.BLeffentry.place(anchor="w", relx=0.79, rely=0.3)
 
         self.divefflabel = CTkLabel(self)
         self.divefflabel.configure(text="Divergence efficiency")
         self.divefflabel.place(anchor="w", relx=0.55, rely=0.37)
 
-        self.reactioneffentry = CTkEntry(self)
-        self.reactioneffentry.configure(placeholder_text="1")
-        self.reactioneffentry.place(anchor="w", relx=0.79, rely=0.37)
+        self.diveffentry = CTkEntry(self)
+        self.diveffentry.configure(state="disabled")
+        self.diveffentry.place(anchor="w", relx=0.79, rely=0.37)
 
         self.multiphaseefflabel = CTkLabel(self)
         self.multiphaseefflabel.configure(text="Multiphase flow efficiency")
         self.multiphaseefflabel.place(anchor="w", relx=0.55, rely=0.44)
 
-        self.reactioneffentry = CTkEntry(self)
-        self.reactioneffentry.configure(placeholder_text="1")
-        self.reactioneffentry.place(anchor="w", relx=0.79, rely=0.44)
+        self.multiphaseeffentry = CTkEntry(self)
+        self.multiphaseeffentry.configure(state="disabled")
+        self.multiphaseeffentry.place(anchor="w", relx=0.79, rely=0.44)
 
         self.deliveredlabel = CTkLabel(self)
         self.deliveredlabel.configure(text="Estimated delivered performance")
@@ -290,6 +335,12 @@ def theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen, frozenatthroat):
 
     Isp_vac = C.get_Isp(
         Pc=pc, MR=mr, eps=eps, frozen=frozen, frozenAtThroat=frozenatthroat
+    )
+    Isp_vac_eq = C.get_Isp(
+        Pc=pc, MR=mr, eps=eps
+    )
+    Isp_vac_fr = C.get_Isp(
+        Pc=pc, MR=mr, eps=eps, frozen=1
     )
     Isp_sl = C.estimate_Ambient_Isp(
         Pc=pc, MR=mr, eps=eps, Pamb=pamb, frozen=frozen, frozenAtThroat=frozenatthroat
@@ -451,13 +502,9 @@ def theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen, frozenatthroat):
     return (
         cstar,
         Isp_vac,
-        Isp_opt,
-        Isp_sl,
-        CF_vac,
-        CF_opt,
-        CF_sl,
+        Isp_vac_eq,
+        Isp_vac_fr,
         results,
-        output,
         output2,
     )
 
@@ -495,29 +542,18 @@ def correction_factors(
     pxd = 2 * pc * rt * 0.00014503773800722 * 39.37007874
     z_f = g * eps / pxd + (c + d * math.log(e + eps * f)) / (a + b * math.log(pxd))
 
-    # Drag correction factor
-    z_drag = z_r * z_f * z_z
-
     # Nozzle correction factor
     z_n = z_f * z_d * z_z
 
-    # Chamber correction factor
-    z_c = z_r
+    # Overall correction factor
+    z_overall = z_n * z_r
 
-    results = [
-        ["Chamber correction factor", z_c],
-        ["Nozzle correction factor", z_n],
-        ["Drag correction factor", z_drag],
-        ["Friction loss factor", z_f],
-        ["Divergence correction factor", z_d],
-        ["Multi-phase loss factor", z_z],
-    ]
-    output = tabulate(results)
-
-    return z_r, z_c, z_z, z_d, z_f, z_n, z_drag, output
+    return z_r, z_n, z_overall, z_f, z_d, z_z
 
 
-def delivered(pc, eps, pe, MR, At, cstar, Is_vac, pSL, z_c, z_n):
+def delivered(pc, eps, pe, MR, At, cstar, Is_vac, z_c, z_n):
+
+    pSL = 101325
     Ae = At * eps
 
     # Characteristic velocity
