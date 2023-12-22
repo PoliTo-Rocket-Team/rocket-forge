@@ -5,6 +5,7 @@ import os, math
 from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu
 from rocketcea.cea_obj_w_units import CEA_Obj
 from tabulate import tabulate
+from scipy.optimize import fminbound
 
 class InitialFrame(ctk.CTkFrame):
     def __init__(self, master=None, **kw):
@@ -182,10 +183,48 @@ class InitialFrame(ctk.CTkFrame):
         self.theoreticallabel.place(anchor="w", relx=0.05, rely=0.7, x=0, y=0)
 
         if os.name == "nt":
-            self.textbox = ctk.CTkTextbox(self, width=850, height=175, state="disabled", wrap="none", font=("Courier New", 12))
+            self.textbox = ctk.CTkTextbox(self, height=195, state="disabled", wrap="none", font=("Courier New", 12))
         else:
-            self.textbox = ctk.CTkTextbox(self, width=850, height=175, state="disabled", wrap="none", font=("Mono", 12))
-        self.textbox.place(relwidth=.9, relx=0.05, rely=0.73, anchor="nw")
+            self.textbox = ctk.CTkTextbox(self, height=195, state="disabled", wrap="none", font=("Mono", 12))
+        self.textbox.place(relwidth=.48, relx=0.05, rely=0.72, anchor="nw")
+
+        self.optimizationlabel = CTkLabel(self)
+        self.optimizationlabel.configure(text="Optimize results")
+        self.optimizationlabel.place(anchor="w", relx=0.55, rely=0.7, x=0, y=0)
+
+        self.optimizationmode = ctk.IntVar(value=0)
+
+        self.nooptimizationRB = ctk.CTkRadioButton(
+            self,
+            text="Use input mixture ratio",
+            variable=self.optimizationmode,
+            value=0,
+        )
+        self.nooptimizationRB.place(anchor="w", relx=0.55, rely=0.75)
+
+        self.peratioRB = ctk.CTkRadioButton(
+            self,
+            text="Maximize vacuum specific impulse",
+            variable=self.optimizationmode,
+            value=1,
+        )
+        self.peratioRB.place(anchor="w", relx=0.55, rely=0.8)
+
+        self.peRB = ctk.CTkRadioButton(
+            self,
+            text="Maximize specific impulse at optimum expansion",
+            variable=self.optimizationmode,
+            value=2,
+        )
+        self.peRB.place(anchor="w", relx=0.55, rely=0.85)
+
+        self.peRB = ctk.CTkRadioButton(
+            self,
+            text="Maximize sea level specific impulse",
+            variable=self.optimizationmode,
+            value=3,
+        )
+        self.peRB.place(anchor="w", relx=0.55, rely=0.9)
 
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
 
@@ -216,24 +255,44 @@ class InitialFrame(ctk.CTkFrame):
             pc = float(self.pcentry.get()) * convert_pressure_uom(self.pcuom.get())
             mr_s = C.getMRforER(ERphi=1)
 
-            if self.mruom.get() == "O/F":
-                mr = float(self.mrentry.get())
-                alpha = mr / mr_s
-            elif self.mruom.get() == "alpha":
-                alpha = float(self.mrentry.get())
-                mr = alpha * mr_s
+            if self.optimizationmode.get() == 0:
+                if self.mruom.get() == "O/F":
+                    mr = float(self.mrentry.get())
+                    alpha = mr / mr_s
+                elif self.mruom.get() == "alpha":
+                    alpha = float(self.mrentry.get())
+                    mr = alpha * mr_s
 
-            cstar = C.get_Cstar(Pc=pc, MR=mr)
+                if self.exitcondition.get() == 0:
+                    eps = float(self.epsentry.get())
+                    pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
+                elif self.exitcondition.get() == 1:
+                    eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=float(self.peratioentry.get()))
+                    pe = pc / float(self.peratioentry.get())
+                elif self.exitcondition.get() == 2:
+                    pe = float(self.peentry.get()) * convert_pressure_uom(self.peuom.get())
+                    eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc/pe)
 
-            if self.exitcondition.get() == 0:
+            elif self.exitcondition.get() == 0:
                 eps = float(self.epsentry.get())
+                mr = optimizemr(C, pc, eps, self.optimizationmode.get())
+                alpha = mr / mr_s
                 pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
-            elif self.exitcondition.get() == 1:
-                eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=float(self.peratioentry.get()))
-                pe = pc / float(self.peratioentry.get())
-            elif self.exitcondition.get() == 2:
-                pe = float(self.peentry.get()) * convert_pressure_uom(self.peuom.get())
-                eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc/pe)
+            
+            else:
+                if self.exitcondition.get() == 1:
+                    pe = pc / float(self.peratioentry.get())
+                elif self.exitcondition.get() == 2:
+                    pe = float(self.peentry.get()) * convert_pressure_uom(self.peuom.get())
+                mr0 = 0
+                mr = 1
+                while abs(mr-mr0) > 10**(-5):
+                    mr0 = mr
+                    eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc/pe)
+                    mr = optimizemr(C, pc, eps, self.optimizationmode.get())
+                alpha = mr / mr_s
+                
+            cstar = C.get_Cstar(Pc=pc, MR=mr)
 
             Isp_vac = C.get_Isp(Pc=pc, MR=mr, eps=eps)
             Isp_sl = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pamb)[0]
@@ -277,11 +336,23 @@ class InitialFrame(ctk.CTkFrame):
             ["Mixture Ratio (stoichiometric)", mr_s, ""],
             ["Alpha (oxidizer excess coefficient)", alpha, ""],
         ]
-        output2 = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".4f")
+        output2 = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".3f")
 
         return output1 + 2 * "\n" + output2
+    
 
-        
+def optimizemr(C: CEA_Obj, pc: float, eps: float, optmode: int) -> float:
+    if optmode == 1:
+        f = lambda x: -C.get_Isp(Pc=pc, MR=x, eps=eps)
+    elif optmode == 2:
+        def f(x: float) -> float:
+            pe = pc / C.get_PcOvPe(Pc=pc, MR=x, eps=eps)
+            return -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=pe)[0]
+    elif optmode == 3:
+        f = lambda x: -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=101325)[0]
+    return fminbound(f, 0.5, 15)
+
+
 def convert_pressure_uom(uom: str) -> float:
     uoms = {
         "Pa": 1,
