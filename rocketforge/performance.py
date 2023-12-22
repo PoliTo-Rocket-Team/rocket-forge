@@ -142,6 +142,107 @@ class DeliveredFrame(CTkFrame):
     def __init__(self, master=None, **kw):
         super(DeliveredFrame, self).__init__(master, **kw)
 
+        self.multiphase = ctk.IntVar(value=0)
+
+        self.multiphaseCB = ctk.CTkCheckBox(
+            self,
+            text="Consider multiphase flow effects",
+            variable=self.multiphase,
+            onvalue=1,
+            offvalue=0
+        )
+        self.multiphaseCB.place(anchor="w", relx=0.065, rely=0.07)
+
+        self.condheatcapacitylabel = CTkLabel(self)
+        self.condheatcapacitylabel.configure(text="Condensed phase heat capacity")
+        self.condheatcapacitylabel.place(anchor="w", relx=0.1, rely=0.13)
+
+        self.condheatcapacityentry = CTkEntry(self)
+        self.condheatcapacityentry.configure(placeholder_text="0")
+        self.condheatcapacityentry.place(anchor="w", relx=0.45, rely=0.13)
+
+        self.condheatcapacityoptmenu = ctk.CTkOptionMenu(self)
+        self.condheatcapacityuom = tk.StringVar(value="")
+        self.condheatcapacityoptmenu.configure(
+            values=["", ""], variable=self.condheatcapacityuom, width=90
+        )
+        self.condheatcapacityoptmenu.place(anchor="w", relx=0.61, rely=0.13)
+
+        self.condmassfraclabel = CTkLabel(self)
+        self.condmassfraclabel.configure(text="Mass fraction of condensed phase at nozzle exit")
+        self.condmassfraclabel.place(anchor="w", relx=0.1, rely=0.19)
+
+        self.condmassfracentry = CTkEntry(self)
+        self.condmassfracentry.configure(placeholder_text="0")
+        self.condmassfracentry.place(anchor="w", relx=0.45, rely=0.19)
+
+        self.reactionefflabel = CTkLabel(self)
+        self.reactionefflabel.configure(text="Reaction efficiency")
+        self.reactionefflabel.place(anchor="w", relx=0.05, rely=0.3)
+
+        self.reactioneffentry = CTkEntry(self)
+        self.reactioneffentry.configure(placeholder_text="1")
+        self.reactioneffentry.place(anchor="w", relx=0.29, rely=0.3)
+
+        self.nozzleefflabel = CTkLabel(self)
+        self.nozzleefflabel.configure(text="Nozzle efficiency")
+        self.nozzleefflabel.place(anchor="w", relx=0.05, rely=0.37)
+
+        self.reactioneffentry = CTkEntry(self)
+        self.reactioneffentry.configure(placeholder_text="1")
+        self.reactioneffentry.place(anchor="w", relx=0.29, rely=0.37)
+
+        self.overallefflabel = CTkLabel(self)
+        self.overallefflabel.configure(text="Overall efficiency")
+        self.overallefflabel.place(anchor="w", relx=0.05, rely=0.44)
+
+        self.reactioneffentry = CTkEntry(self)
+        self.reactioneffentry.configure(placeholder_text="1")
+        self.reactioneffentry.place(anchor="w", relx=0.29, rely=0.44)
+
+        self.BLefflabel = CTkLabel(self)
+        self.BLefflabel.configure(text="Boundary layer efficiency")
+        self.BLefflabel.place(anchor="w", relx=0.55, rely=0.3)
+
+        self.reactioneffentry = CTkEntry(self)
+        self.reactioneffentry.configure(placeholder_text="1")
+        self.reactioneffentry.place(anchor="w", relx=0.79, rely=0.3)
+
+        self.divefflabel = CTkLabel(self)
+        self.divefflabel.configure(text="Divergence efficiency")
+        self.divefflabel.place(anchor="w", relx=0.55, rely=0.37)
+
+        self.reactioneffentry = CTkEntry(self)
+        self.reactioneffentry.configure(placeholder_text="1")
+        self.reactioneffentry.place(anchor="w", relx=0.79, rely=0.37)
+
+        self.multiphaseefflabel = CTkLabel(self)
+        self.multiphaseefflabel.configure(text="Multiphase flow efficiency")
+        self.multiphaseefflabel.place(anchor="w", relx=0.55, rely=0.44)
+
+        self.reactioneffentry = CTkEntry(self)
+        self.reactioneffentry.configure(placeholder_text="1")
+        self.reactioneffentry.place(anchor="w", relx=0.79, rely=0.44)
+
+        self.deliveredlabel = CTkLabel(self)
+        self.deliveredlabel.configure(text="Estimated delivered performance")
+        self.deliveredlabel.place(anchor="w", relx=0.05, rely=0.55)
+
+        if os.name == "nt":
+            self.textbox = ctk.CTkTextbox(
+                self,
+                height=200,
+                state="disabled",
+                wrap="none",
+                font=("Courier New", 12),
+            )
+        else:
+            self.textbox = ctk.CTkTextbox(
+                self, height=200, state="disabled", wrap="none", font=("Mono", 12)
+            )
+        self.textbox.place(relwidth=0.9, relx=0.5, rely=0.6, anchor="n")
+
+
 
 def theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen):
     pamb = 101325
