@@ -143,6 +143,7 @@ class RocketForge:
 
     def execute(self):
         self.initialframe.expressrun()
+        geometry = self.geometryframe.loadgeometry()
 
     def about_window(self):
         if self.about is None or not self.about.winfo_exists():
