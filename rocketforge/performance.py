@@ -2,8 +2,8 @@ from rocketcea.cea_obj_w_units import CEA_Obj
 from tabulate import tabulate
 import tkinter as tk
 import customtkinter as ctk
-from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel
-import math
+from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkButton
+import math, os
 
 
 class PerformanceFrame(ctk.CTkFrame):
@@ -19,7 +19,128 @@ class PerformanceFrame(ctk.CTkFrame):
         self.toplabel.place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
         self.topframe.place(anchor="n", relx=0.5, rely=0.02, x=0, y=0)
 
+        self.thermodynamicframe = ThermodynamicFrame(self)
+        self.thermodynamicframe.configure(height=550, width=900)
+        self.thermodynamicframe.place(anchor="center", relx=0.5, rely=0.6)
+
+        self.deliveredframe = DeliveredFrame(self)
+        self.deliveredframe.configure(height=550, width=900)
+        self.deliveredframe.place(anchor="center", relx=0.5, rely=0.6)
+
+        self.thermodynamicbutton = CTkButton(self, width=425)
+        self.thermodynamicbutton.configure(text="Thermodynamic properties", command=lambda: self.thermodynamicframe.tkraise())
+        self.thermodynamicbutton.place(anchor="w", relx=0.05, rely=0.2)
+
+        self.deliveredbutton = CTkButton(self, width=425)
+        self.deliveredbutton.configure(text="Delivered performance", command=lambda: self.deliveredframe.tkraise())
+        self.deliveredbutton.place(anchor="e", relx=0.95, rely=0.2)
+
+        self.thermodynamicframe.tkraise()
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
+
+
+class ThermodynamicFrame(CTkFrame):
+    def __init__(self, master=None, **kw):
+        super(ThermodynamicFrame, self).__init__(master, **kw)
+
+        self.inletconditions = ctk.IntVar(value=0)
+
+        self.iacRB = ctk.CTkRadioButton(
+            self,
+            text="Infinite area combustor",
+            variable=self.inletconditions,
+            value=0
+        )
+        self.iacRB.place(anchor="w", relx=0.05, rely=0.1)
+
+        self.massfluxRB = ctk.CTkRadioButton(
+            self,
+            text="Mass flux",
+            variable=self.inletconditions,
+            value=1
+        )
+        self.massfluxRB.place(anchor="w", relx=0.05, rely=0.17)
+
+        self.massfluxentry = CTkEntry(self)
+        self.massfluxentry.configure(placeholder_text="0", width=90)
+        self.massfluxentry.place(anchor="w", relx=0.3, rely=0.17)
+
+        self.massfluxoptmenu = ctk.CTkOptionMenu(self)
+        self.massfluxuom = tk.StringVar(value="kg/s")
+        self.massfluxoptmenu.configure(
+            values=["kg/s", "lb/s"], variable=self.massfluxuom, width=90
+        )
+        self.massfluxoptmenu.place(anchor="w", relx=0.4, rely=0.17)
+
+        self.contractionRB = ctk.CTkRadioButton(
+            self,
+            text="Contraction area ratio",
+            variable=self.inletconditions,
+            value=2
+        )
+        self.contractionRB.place(anchor="w", relx=0.05, rely=0.24)
+
+        self.contractionentry = CTkEntry(self)
+        self.contractionentry.configure(placeholder_text="0", width=180)
+        self.contractionentry.place(anchor="w", relx=0.3, rely=0.24)
+
+        self.frozenflow = ctk.IntVar(value=0)
+
+        self.equilibriumRB = ctk.CTkRadioButton(
+            self,
+            text="Shifting equilibrium flow",
+            variable=self.frozenflow,
+            value=0
+        )
+        self.equilibriumRB.place(anchor="w", relx=0.65, rely=0.1)
+
+        self.frozenRB = ctk.CTkRadioButton(
+            self,
+            text="Frozen equilibrium flow",
+            variable=self.frozenflow,
+            value=1
+        )
+        self.frozenRB.place(anchor="w", relx=0.65, rely=0.17)
+
+        self.frozenatthroatRB = ctk.CTkRadioButton(
+            self,
+            text="Frozen at throat flow",
+            variable=self.frozenflow,
+            value=2
+        )
+        self.frozenatthroatRB.place(anchor="w", relx=0.65, rely=0.24)
+
+        self.thermodynamiclabel = CTkLabel(self)
+        self.thermodynamiclabel.configure(text="Thermodynamic properties")
+        self.thermodynamiclabel.place(anchor="w", relx=0.05, rely=0.38)
+
+        self.stationslabel = CTkLabel(self)
+        self.stationslabel.configure(text="Number of stations")
+        self.stationslabel.place(anchor="w", relx=0.05, rely=0.45)
+
+        self.stationsentry = CTkEntry(self)
+        self.stationsentry.configure(placeholder_text="1", width=180)
+        self.stationsentry.insert("0", "1")
+        self.stationsentry.place(anchor="w", relx=0.3, rely=0.45)
+
+        if os.name == "nt":
+            self.textbox = ctk.CTkTextbox(
+                self,
+                height=220,
+                state="disabled",
+                wrap="none",
+                font=("Courier New", 12),
+            )
+        else:
+            self.textbox = ctk.CTkTextbox(
+                self, height=220, state="disabled", wrap="none", font=("Mono", 12)
+            )
+        self.textbox.place(relwidth=0.9, relx=0.5, rely=0.52, anchor="n")
+
+
+class DeliveredFrame(CTkFrame):
+    def __init__(self, master=None, **kw):
+        super(DeliveredFrame, self).__init__(master, **kw)
 
 
 def theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen):
