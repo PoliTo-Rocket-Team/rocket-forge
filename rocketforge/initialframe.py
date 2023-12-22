@@ -284,13 +284,18 @@ class InitialFrame(ctk.CTkFrame):
                     pe = pc / float(self.peratioentry.get())
                 elif self.exitcondition.get() == 2:
                     pe = float(self.peentry.get()) * convert_pressure_uom(self.peuom.get())
-                mr0 = 0
-                mr = 1
-                while abs(mr-mr0) > 10**(-5):
-                    mr0 = mr
-                    eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc/pe)
-                    mr = optimizemr(C, pc, eps, self.optimizationmode.get())
+
+                mr = optimizermr_at_pe(C, pc, pe, self.optimizationmode.get())
+                eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc/pe)
                 alpha = mr / mr_s
+
+                # mr0 = 0
+                # mr = 1
+                # while abs(mr-mr0) > 10**(-5):
+                #     mr0 = mr
+                #     eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc/pe)
+                #     mr = optimizemr(C, pc, eps, self.optimizationmode.get())
+                
                 
             cstar = C.get_Cstar(Pc=pc, MR=mr)
 
@@ -350,6 +355,22 @@ def optimizemr(C: CEA_Obj, pc: float, eps: float, optmode: int) -> float:
             return -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=pe)[0]
     elif optmode == 3:
         f = lambda x: -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=101325)[0]
+    return fminbound(f, 0.5, 15)
+
+
+def optimizermr_at_pe(C: CEA_Obj, pc: float, pe: float, optmode: int) -> float:
+    if optmode == 1:
+        def f(x: float) -> float:
+            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=x, PcOvPe=pc/pe)
+            return -C.get_Isp(Pc=pc, MR=x, eps=eps)
+    elif optmode == 2:
+        def f(x: float) -> float:
+            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=x, PcOvPe=pc/pe)
+            return -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=pe)[0]
+    elif optmode == 3:
+        def f(x: float) -> float:
+            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=x, PcOvPe=pc/pe)
+            return -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=101325)[0]
     return fminbound(f, 0.5, 15)
 
 
