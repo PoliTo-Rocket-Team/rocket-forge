@@ -7,6 +7,7 @@ from rocketcea.cea_obj_w_units import CEA_Obj
 from tabulate import tabulate
 from scipy.optimize import fminbound
 
+
 class InitialFrame(ctk.CTkFrame):
     def __init__(self, master=None, **kw):
         super(InitialFrame, self).__init__(master, **kw)
@@ -32,9 +33,7 @@ class InitialFrame(ctk.CTkFrame):
         self.descriptionlabel.place(anchor="w", relx=0.05, rely=0.29, x=0, y=0)
 
         self.description = ctk.CTkTextbox(self)
-        self.description.configure(
-            width=750, height=66
-        )
+        self.description.configure(width=750, height=66)
         self.description.place(anchor="nw", relx=0.2, rely=0.27, x=0, y=0)
 
         self.pclabel = CTkLabel(self)
@@ -175,10 +174,18 @@ class InitialFrame(ctk.CTkFrame):
         self.theoreticallabel.place(anchor="w", relx=0.05, rely=0.62, x=0, y=0)
 
         if os.name == "nt":
-            self.textbox = ctk.CTkTextbox(self, height=195, state="disabled", wrap="none", font=("Courier New", 12))
+            self.textbox = ctk.CTkTextbox(
+                self,
+                height=195,
+                state="disabled",
+                wrap="none",
+                font=("Courier New", 12),
+            )
         else:
-            self.textbox = ctk.CTkTextbox(self, height=195, state="disabled", wrap="none", font=("Mono", 12))
-        self.textbox.place(relwidth=.48, relx=0.05, rely=0.645, anchor="nw")
+            self.textbox = ctk.CTkTextbox(
+                self, height=195, state="disabled", wrap="none", font=("Mono", 12)
+            )
+        self.textbox.place(relwidth=0.48, relx=0.05, rely=0.645, anchor="nw")
 
         self.optimizationlabel = CTkLabel(self)
         self.optimizationlabel.configure(text="Mixture ratio optimization")
@@ -220,14 +227,19 @@ class InitialFrame(ctk.CTkFrame):
 
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
 
-    def expressrun(self):
+    def expressrun(self) -> None:
+        """
+        Updates InitialFrame textbox with theoretical performance results
+        """
         self.textbox.configure(state="normal")
         self.textbox.delete("0.0", "200.0")
         self.textbox.insert("0.0", self.computeResults())
         self.textbox.configure(state="disabled")
 
-    def computeResults(self):
-
+    def computeResults(self) -> str:
+        """
+        Returns theoretical performance summary
+        """
         pamb = 101325
 
         try:
@@ -259,27 +271,33 @@ class InitialFrame(ctk.CTkFrame):
                     eps = float(self.epsentry.get())
                     pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
                 elif self.exitcondition.get() == 1:
-                    eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=float(self.peratioentry.get()))
+                    eps = C.get_eps_at_PcOvPe(
+                        Pc=pc, MR=mr, PcOvPe=float(self.peratioentry.get())
+                    )
                     pe = pc / float(self.peratioentry.get())
                 elif self.exitcondition.get() == 2:
-                    pe = float(self.peentry.get()) * convert_pressure_uom(self.peuom.get())
-                    eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc/pe)
+                    pe = float(self.peentry.get()) * convert_pressure_uom(
+                        self.peuom.get()
+                    )
+                    eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
 
             elif self.exitcondition.get() == 0:
                 eps = float(self.epsentry.get())
                 mr = optimizemr(C, pc, eps, self.optimizationmode.get())
                 alpha = mr / mr_s
                 pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
-            
+
             else:
                 if self.exitcondition.get() == 1:
                     pe = pc / float(self.peratioentry.get())
                 elif self.exitcondition.get() == 2:
-                    pe = float(self.peentry.get()) * convert_pressure_uom(self.peuom.get())
+                    pe = float(self.peentry.get()) * convert_pressure_uom(
+                        self.peuom.get()
+                    )
                 mr = optimizermr_at_pe(C, pc, pe, self.optimizationmode.get())
-                eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc/pe)
+                eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
                 alpha = mr / mr_s
-                
+
             cstar = C.get_Cstar(Pc=pc, MR=mr)
 
             Isp_vac = C.get_Isp(Pc=pc, MR=mr, eps=eps)
@@ -293,7 +311,7 @@ class InitialFrame(ctk.CTkFrame):
             CF_opt, CF_sl, mode = C.get_PambCf(Pamb=pamb, Pc=pc, MR=mr, eps=eps)
             CF_vac = c_vac / cstar
         except Exception as err:
-            return err
+            return str(err)
 
         headers = ["Parameter", "Sea level", "Optimum", "Vacuum", "Unit"]
         results = [
@@ -311,15 +329,27 @@ class InitialFrame(ctk.CTkFrame):
                 f"{c_vac:.2f}",
                 "m/s",
             ],
-            ["Specific impulse", f"{Isp_sl:.2f}", f"{Isp_opt:.2f}", f"{Isp_vac:.2f}", "s"],
-            ["Thrust coefficient", f"{CF_sl:.5f}", f"{CF_opt:.5f}", f"{CF_vac:.5f}", ""],
+            [
+                "Specific impulse",
+                f"{Isp_sl:.2f}",
+                f"{Isp_opt:.2f}",
+                f"{Isp_vac:.2f}",
+                "s",
+            ],
+            [
+                "Thrust coefficient",
+                f"{CF_sl:.5f}",
+                f"{CF_opt:.5f}",
+                f"{CF_vac:.5f}",
+                "",
+            ],
         ]
         output1 = tabulate(results, headers, numalign="right", tablefmt="plain")
 
         results = [
             ["Expansion Area Ratio", eps, ""],
-            ["Expansion pressure ratio", pc/pe, ""],
-            ["Exit Pressure", pe/100000, "bar"],
+            ["Expansion pressure ratio", pc / pe, ""],
+            ["Exit Pressure", pe / 100000, "bar"],
             ["Mixture Ratio", mr, ""],
             ["Mixture Ratio (stoichiometric)", mr_s, ""],
             ["Alpha (oxidizer excess coefficient)", alpha, ""],
@@ -327,44 +357,61 @@ class InitialFrame(ctk.CTkFrame):
         output2 = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".3f")
 
         return output1 + 2 * "\n" + output2
-    
+
 
 def optimizemr(C: CEA_Obj, pc: float, eps: float, optmode: int) -> float:
+    """
+    #### Optimize Mixture Ratio at defined expansion area ratio.
+    `optmode == 1`: Maximize vacuum specific impulse
+    `optmode == 2`: Maximize specific impulse at optimum expansion
+    `optmode == 3`: Maximize sea level specific impulse
+    """
     if optmode == 1:
         f = lambda x: -C.get_Isp(Pc=pc, MR=x, eps=eps)
     elif optmode == 2:
+
         def f(x: float) -> float:
             pe = pc / C.get_PcOvPe(Pc=pc, MR=x, eps=eps)
             return -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=pe)[0]
+
     elif optmode == 3:
         f = lambda x: -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=101325)[0]
     return fminbound(f, 0.5, 15)
 
 
 def optimizermr_at_pe(C: CEA_Obj, pc: float, pe: float, optmode: int) -> float:
+    """
+    #### Optimize Mixture Ratio at constant exit pressure.
+    `optmode == 1`: Maximize vacuum specific impulse
+    `optmode == 2`: Maximize specific impulse at optimum expansion
+    `optmode == 3`: Maximize sea level specific impulse
+    """
     if optmode == 1:
+
         def f(x: float) -> float:
-            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=x, PcOvPe=pc/pe)
+            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=x, PcOvPe=pc / pe)
             return -C.get_Isp(Pc=pc, MR=x, eps=eps)
+
     elif optmode == 2:
+
         def f(x: float) -> float:
-            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=x, PcOvPe=pc/pe)
+            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=x, PcOvPe=pc / pe)
             return -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=pe)[0]
+
     elif optmode == 3:
+
         def f(x: float) -> float:
-            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=x, PcOvPe=pc/pe)
+            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=x, PcOvPe=pc / pe)
             return -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=101325)[0]
+
     return fminbound(f, 0.5, 15)
 
 
 def convert_pressure_uom(uom: str) -> float:
-    uoms = {
-        "Pa": 1,
-        "MPa": 1000000,
-        "bar": 100000,
-        "atm": 101325,
-        "psia": 6894.8
-    }
+    """
+    Converts pressure unit of measure to Pascal
+    """
+    uoms = {"Pa": 1, "MPa": 1000000, "bar": 100000, "atm": 101325, "psia": 6894.8}
     return uoms[uom]
 
 
