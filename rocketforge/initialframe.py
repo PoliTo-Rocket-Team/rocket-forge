@@ -177,7 +177,7 @@ class InitialFrame(ctk.CTkFrame):
         if os.name == "nt":
             self.textbox = ctk.CTkTextbox(self, height=195, state="disabled", wrap="none", font=("Courier New", 12))
         else:
-            self.textbox = ctk.CTkTextbox(self, height=195, state="disabled", wrap="none", font=("Sans", 12))
+            self.textbox = ctk.CTkTextbox(self, height=195, state="disabled", wrap="none", font=("Mono", 12))
         self.textbox.place(relwidth=.48, relx=0.05, rely=0.645, anchor="nw")
 
         self.optimizationlabel = CTkLabel(self)
