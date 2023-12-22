@@ -227,25 +227,19 @@ class InitialFrame(ctk.CTkFrame):
 
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
 
-    def expressrun(self) -> None:
+    def expressrun(self):
         """
-        Updates InitialFrame textbox with theoretical performance results
-        """
-        self.textbox.configure(state="normal")
-        self.textbox.delete("0.0", "200.0")
-        self.textbox.insert("0.0", self.computeResults())
-        self.textbox.configure(state="disabled")
-
-    def computeResults(self) -> str:
-        """
-        Returns theoretical performance summary
+        Compute theoretical performance
         """
         pamb = 101325
 
         try:
+            ox = self.oxoptmenu.get()
+            fuel = self.fueloptmenu.get()
+
             C = CEA_Obj(
-                oxName=self.oxoptmenu.get(),
-                fuelName=self.fueloptmenu.get(),
+                oxName=ox,
+                fuelName=fuel,
                 fac_CR=None,
                 cstar_units="m/s",
                 pressure_units="Pa",
@@ -310,53 +304,59 @@ class InitialFrame(ctk.CTkFrame):
 
             CF_opt, CF_sl, mode = C.get_PambCf(Pamb=pamb, Pc=pc, MR=mr, eps=eps)
             CF_vac = c_vac / cstar
+
+            headers = ["Parameter", "Sea level", "Optimum", "Vacuum", "Unit"]
+            results = [
+                [
+                    "Characteristic velocity",
+                    f"{cstar:.2f}",
+                    f"{cstar:.2f}",
+                    f"{cstar:.2f}",
+                    "m/s",
+                ],
+                [
+                    "Effective exhaust velocity",
+                    f"{c_sl:.2f}",
+                    f"{c_opt:.2f}",
+                    f"{c_vac:.2f}",
+                    "m/s",
+                ],
+                [
+                    "Specific impulse",
+                    f"{Isp_sl:.2f}",
+                    f"{Isp_opt:.2f}",
+                    f"{Isp_vac:.2f}",
+                    "s",
+                ],
+                [
+                    "Thrust coefficient",
+                    f"{CF_sl:.5f}",
+                    f"{CF_opt:.5f}",
+                    f"{CF_vac:.5f}",
+                    "",
+                ],
+            ]
+            output1 = tabulate(results, headers, numalign="right", tablefmt="plain")
+
+            results = [
+                ["Expansion Area Ratio", eps, ""],
+                ["Expansion pressure ratio", pc / pe, ""],
+                ["Exit Pressure", pe / 100000, "bar"],
+                ["Mixture Ratio", mr, ""],
+                ["Mixture Ratio (stoichiometric)", mr_s, ""],
+                ["Alpha (oxidizer excess coefficient)", alpha, ""],
+            ]
+            output2 = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".3f")
+            output = output1 + 2 * "\n" + output2
         except Exception as err:
-            return str(err)
+            output = str(err)
 
-        headers = ["Parameter", "Sea level", "Optimum", "Vacuum", "Unit"]
-        results = [
-            [
-                "Characteristic velocity",
-                f"{cstar:.2f}",
-                f"{cstar:.2f}",
-                f"{cstar:.2f}",
-                "m/s",
-            ],
-            [
-                "Effective exhaust velocity",
-                f"{c_sl:.2f}",
-                f"{c_opt:.2f}",
-                f"{c_vac:.2f}",
-                "m/s",
-            ],
-            [
-                "Specific impulse",
-                f"{Isp_sl:.2f}",
-                f"{Isp_opt:.2f}",
-                f"{Isp_vac:.2f}",
-                "s",
-            ],
-            [
-                "Thrust coefficient",
-                f"{CF_sl:.5f}",
-                f"{CF_opt:.5f}",
-                f"{CF_vac:.5f}",
-                "",
-            ],
-        ]
-        output1 = tabulate(results, headers, numalign="right", tablefmt="plain")
+        self.textbox.configure(state="normal")
+        self.textbox.delete("0.0", "200.0")
+        self.textbox.insert("0.0", output)
+        self.textbox.configure(state="disabled")
 
-        results = [
-            ["Expansion Area Ratio", eps, ""],
-            ["Expansion pressure ratio", pc / pe, ""],
-            ["Exit Pressure", pe / 100000, "bar"],
-            ["Mixture Ratio", mr, ""],
-            ["Mixture Ratio (stoichiometric)", mr_s, ""],
-            ["Alpha (oxidizer excess coefficient)", alpha, ""],
-        ]
-        output2 = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".3f")
-
-        return output1 + 2 * "\n" + output2
+        return ox, fuel, mr, pc, eps
 
 
 def optimizemr(C: CEA_Obj, pc: float, eps: float, optmode: int) -> float:

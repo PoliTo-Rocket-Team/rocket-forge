@@ -142,8 +142,11 @@ class RocketForge:
         self.mainwindow.mainloop()
 
     def execute(self):
-        self.initialframe.expressrun()
-        geometry = self.geometryframe.loadgeometry()
+        try:
+            ox, fuel, mr, pc, eps = self.initialframe.expressrun()
+            geometry = self.geometryframe.loadgeometry()
+        except Exception as err:
+            pass
 
     def about_window(self):
         if self.about is None or not self.about.winfo_exists():
