@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import tkinter as tk
 import customtkinter as ctk
-import os, sys
+import os, sys, time
 from rocketforge.initialframe   import InitialFrame
 from rocketforge.performance    import PerformanceFrame
 from rocketforge.thermal        import ThermalFrame
@@ -13,41 +13,41 @@ version = "1.0.0"
 copyright = "(C) 2023-2024 Polito Rocket Team"
 
 
-class RocketForge:
-    def __init__(self):
+class RocketForge(CTk):
+    def __init__(self, *args, **kwargs):
         ctk.set_appearance_mode("system")
         ctk.set_default_color_theme(resource_path("theme.json"))
 
-        ctk1 = CTk(className="Rocket Forge")
-        ctk1.configure(height=800, padx=5, pady=5, width=1200)
-        ctk1.resizable(False, False)
-        ctk1.title("Rocket Forge")
-        ctk1.protocol("WM_DELETE_WINDOW", self.on_closing)
-        ctk1.after(
+        super().__init__(*args, **kwargs)
+        self.configure(height=800, padx=5, pady=5, width=1200)
+        self.resizable(False, False)
+        self.title("Rocket Forge")
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+        self.after(
             201,
-            lambda: ctk1.iconphoto(
+            lambda: self.iconphoto(
                 False, tk.PhotoImage(file=resource_path("icon.png"))
             ),
         )
 
         # Initial data frame
-        self.initialframe = InitialFrame(ctk1)
+        self.initialframe = InitialFrame(self)
         self.initialframe.grid(column=1, row=0)
 
         # Performance frame
-        self.performanceframe = PerformanceFrame(ctk1)
+        self.performanceframe = PerformanceFrame(self)
         self.performanceframe.grid(column=1, row=0)
 
         # Thermal analysis frame
-        self.thermalframe = ThermalFrame(ctk1)
+        self.thermalframe = ThermalFrame(self)
         self.thermalframe.grid(column=1, row=0)
 
         # Geometry frame
-        self.geometryframe = GeometryFrame(ctk1)
+        self.geometryframe = GeometryFrame(self)
         self.geometryframe.grid(column=1, row=0)
 
         # Sidebar
-        self.sidebar = CTkFrame(ctk1)
+        self.sidebar = CTkFrame(self)
         self.sidebar.configure(border_width=5, corner_radius=0, height=750, width=200)
 
         self.aboutbutton = CTkButton(self.sidebar)
@@ -117,10 +117,10 @@ class RocketForge:
         self.sidebar.grid(column=0, row=0)
 
         # Status bar
-        self.statusbar = CTkFrame(ctk1)
+        self.statusbar = CTkFrame(self)
         self.statusbar.configure(border_width=5, corner_radius=0, height=50, width=1200)
         self.runbutton = CTkButton(self.statusbar)
-        self.runbutton.configure(text="Run", command=self.execute)
+        self.runbutton.configure(text="Run", command=self.run)
         self.runbutton.place(anchor="e", relx=0.98, rely=0.5, x=0, y=0)
         self.statuslabel = CTkLabel(self.statusbar)
         self.statuslabel.configure(justify="right", text="Current status: idle")
@@ -135,13 +135,7 @@ class RocketForge:
         self.preferences = None
         self.appearance_mode = tk.StringVar(value="System")
 
-        # Main widget
-        self.mainwindow = ctk1
-
     def run(self):
-        self.mainwindow.mainloop()
-
-    def execute(self):
         try:
             ox, fuel, mr, pc, eps = self.initialframe.expressrun()
             geometry = self.geometryframe.loadgeometry()
@@ -235,4 +229,4 @@ def resource_path(relative_path):
 
 
 if __name__ == "__main__":
-    RocketForge().run()
+    RocketForge(className="Rocket Forge").mainloop()
