@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import tkinter as tk
 import customtkinter as ctk
-import os, sys, time
+import os, sys
 from rocketforge.initialframe   import InitialFrame
 from rocketforge.performance    import PerformanceFrame
 from rocketforge.thermal        import ThermalFrame
@@ -123,7 +123,7 @@ class RocketForge(CTk):
         self.runbutton.configure(text="Run", command=self.run)
         self.runbutton.place(anchor="e", relx=0.98, rely=0.5, x=0, y=0)
         self.statuslabel = CTkLabel(self.statusbar)
-        self.statuslabel.configure(justify="right", text="Current status: idle")
+        self.statuslabel.configure(justify="right", text="Status: idle")
         self.statuslabel.place(anchor="e", relx=0.85, rely=0.5, x=0, y=0)
         self.statusbar.grid(column=0, columnspan=2, row=1)
 
@@ -136,16 +136,20 @@ class RocketForge(CTk):
         self.appearance_mode = tk.StringVar(value="System")
 
     def run(self):
+        self.statuslabel.configure(text="Status: running...")
+        self.statuslabel.update()
         try:
             ox, fuel, mr, pc, eps = self.initialframe.expressrun()
             geometry = self.geometryframe.loadgeometry()
-        except Exception as err:
+        except Exception:
             geometry = (0, 0, 0)
 
         try:
             self.performanceframe.loadengine(ox, fuel, mr, pc, eps, geometry)
-        except Exception as err:
+        except Exception:
             pass
+        self.statuslabel.configure(text="Status: idle")
+        self.statuslabel.update()
 
     def about_window(self):
         if self.about is None or not self.about.winfo_exists():
