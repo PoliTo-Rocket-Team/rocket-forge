@@ -7,6 +7,8 @@ from rocketforge.performance    import PerformanceFrame
 from rocketforge.thermal        import ThermalFrame
 from rocketforge.geometry       import GeometryFrame
 from customtkinter              import CTk, CTkButton, CTkFont, CTkFrame, CTkLabel, CTkImage
+from tkinter                    import filedialog, messagebox
+from configparser               import ConfigParser
 from PIL                        import Image
 
 version = "1.0.0"
@@ -63,11 +65,11 @@ class RocketForge(CTk):
         self.preferencesbutton.place(anchor="center", relx=0.5, rely=0.90, x=0, y=0)
 
         self.loadbutton = CTkButton(self.sidebar)
-        self.loadbutton.configure(text="Load...", width=180)
+        self.loadbutton.configure(text="Load...", width=180, command=self.load_config)
         self.loadbutton.place(anchor="center", relx=0.5, rely=0.85, x=0, y=0)
 
         self.savebutton = CTkButton(self.sidebar)
-        self.savebutton.configure(text="Save...", width=180)
+        self.savebutton.configure(text="Save...", width=180, command=self.save_config)
         self.savebutton.place(anchor="center", relx=0.5, rely=0.8, x=0, y=0)
 
         self.initialdatabutton = CTkButton(self.sidebar)
@@ -218,9 +220,123 @@ class RocketForge(CTk):
 
     def on_closing(self):
         """close the program"""
-        quit_ = tk.messagebox.askokcancel(title="Exit?", message="Do you want to exit?")
+        quit_ = messagebox.askokcancel(title="Exit?", message="Do you want to exit?")
         if quit_:
             sys.exit(0)
+
+    def save_config(self):
+        self.statuslabel.configure(text="Status: saving configuration file...")
+        self.statuslabel.update()
+
+        try:
+            config = ConfigParser()
+            config["InitialData"] = {
+                "name": self.initialframe.enginenameentry.get(),
+                "description": self.initialframe.description.get("1.0",'end-1c'),
+                "chamber_pressure": self.initialframe.pcentry.get(),
+                "chamber_pressure_uom": self.initialframe.pcuom.get(),
+                "oxidizer": self.initialframe.oxvar.get(),
+                "fuel": self.initialframe.fuelvar.get(),
+                "mixture_ratio": self.initialframe.mrentry.get(),
+                "mixture_ratio_uom": self.initialframe.mruom.get(),
+                "expansion_area_ratio": self.initialframe.epsentry.get(),
+                "expansion_pressure_ratio": self.initialframe.peratioentry.get(),
+                "exit_pressure": self.initialframe.peentry.get(),
+                "exit_pressure_uom": self.initialframe.peuom.get(),
+                "exit_condition": self.initialframe.exitcondition.get(),
+                "mixture_ratio_optimization": self.initialframe.optimizationmode.get(),
+            }
+            tf = self.performanceframe.thermodynamicframe
+            df = self.performanceframe.deliveredframe
+            config["Performance"] = {
+                "inlet_conditions": tf.inletconditions.get(),
+                "mass_flux": tf.massfluxentry.get(),
+                "mass_flux_uom": tf.massfluxuom.get(),
+                "contraction_ratio": tf.contractionentry.get(),
+                "flow_model": tf.frozenflow.get(),
+                "number_of_stations": tf.stationsentry.get(),
+                "consider_multiphase": df.multiphase.get(),
+                "condensed_heat_capacity": df.condheatcapacityentry.get(),
+                "condensed_heat_capacity_uom": df.condheatcapacityuom.get(),
+                "mass_frac_condensed": df.condmassfracentry.get(),
+            }
+            config["Geometry"] = {
+                "throat_area": self.geometryframe.throatareaentry.get(),
+                "throat_area_uom": self.geometryframe.throatareauom.get(),
+                "divergent_length": self.geometryframe.divergentlengthentry.get(),
+                "divergent_length_uom": self.geometryframe.divergentlengthuom.get(),
+                "theta_e": self.geometryframe.thetaexentry.get(),
+                "theta_e_uom": self.geometryframe.thetaexuom.get(),
+            }
+
+            with open(filedialog.asksaveasfilename(), "w") as f:
+                config.write(f)
+
+        except Exception:
+            pass
+
+        self.statuslabel.configure(text="Status: idle")
+        self.statuslabel.update()
+        
+
+    def load_config(self):
+        self.statuslabel.configure(text="Status: loading configuration file...")
+        self.statuslabel.update()
+
+        try:
+            config = ConfigParser()
+            config.read(filedialog.askopenfilename())
+
+            def updateentry(entry: ctk.CTkEntry, value):
+                entry.delete("0", "200")
+                entry.insert("0", value)
+
+            idf = self.initialframe
+
+            updateentry(idf.enginenameentry, config.get("InitialData", "name"))
+            idf.description.delete("0.0", "200.0")
+            idf.description.insert("0.0", config.get("InitialData", "description"))
+            updateentry(idf.pcentry, config.get("InitialData", "chamber_pressure"))
+            idf.pcuom.set(config.get("InitialData", "chamber_pressure_uom"))
+            idf.oxvar.set(config.get("InitialData", "oxidizer"))
+            idf.fuelvar.set(config.get("InitialData", "fuel"))
+            updateentry(idf.mrentry, config.get("InitialData", "mixture_ratio"))
+            idf.mruom.set(config.get("InitialData", "mixture_ratio_uom"))
+            updateentry(idf.epsentry, config.get("InitialData", "expansion_area_ratio"))
+            updateentry(idf.peratioentry, config.get("InitialData", "expansion_pressure_ratio"))
+            updateentry(idf.peentry, config.get("InitialData", "exit_pressure"))
+            idf.peuom.set(config.get("InitialData", "exit_pressure_uom"))
+            idf.exitcondition.set(config.get("InitialData", "exit_condition"))
+            idf.optimizationmode.set(config.get("InitialData", "mixture_ratio_optimization"))
+
+            tf = self.performanceframe.thermodynamicframe
+            df = self.performanceframe.deliveredframe
+
+            tf.inletconditions.set(config.get("Performance", "inlet_conditions"))
+            updateentry(tf.massfluxentry, config.get("Performance", "mass_flux"))
+            tf.massfluxuom.set(config.get("Performance", "mass_flux_uom"))
+            updateentry(tf.contractionentry, config.get("Performance", "contraction_ratio"))
+            tf.frozenflow.set(config.get("Performance", "flow_model"))
+            updateentry(tf.stationsentry, config.get("Performance", "number_of_stations"))
+            df.multiphase.set(config.get("Performance", "consider_multiphase"))
+            updateentry(df.condheatcapacityentry, config.get("Performance", "condensed_heat_capacity"))
+            df.condheatcapacityuom.set(config.get("Performance", "condensed_heat_capacity_uom"))
+            updateentry(df.condmassfracentry, config.get("Performance", "mass_frac_condensed"))
+
+            gf = self.geometryframe
+
+            updateentry(gf.throatareaentry, config.get("Geometry", "throat_area"))
+            gf.throatareauom.set(config.get("Geometry", "throat_area_uom"))
+            updateentry(gf.divergentlengthentry, config.get("Geometry", "divergent_length"))
+            gf.divergentlengthuom.set(config.get("Geometry", "divergent_length_uom"))
+            updateentry(gf.thetaexentry, config.get("Geometry", "theta_e"))
+            gf.thetaexuom.set(config.get("Geometry", "theta_e_uom"))
+
+        except Exception:
+            pass
+
+        self.statuslabel.configure(text="Status: idle")
+        self.statuslabel.update()
 
 
 def resource_path(relative_path):
