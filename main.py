@@ -1,15 +1,15 @@
-#!/usr/bin/python3
 import tkinter as tk
 import customtkinter as ctk
-import os, sys
-from rocketforge.initialframe   import InitialFrame
-from rocketforge.performance    import PerformanceFrame
-from rocketforge.thermal        import ThermalFrame
-from rocketforge.geometry       import GeometryFrame
-from customtkinter              import CTk, CTkButton, CTkFont, CTkFrame, CTkLabel, CTkImage
-from tkinter                    import filedialog, messagebox
-from configparser               import ConfigParser
-from PIL                        import Image
+import sys
+from rocketforge.gui.initialframe   import InitialFrame
+from rocketforge.gui.performance    import PerformanceFrame
+from rocketforge.gui.thermal        import ThermalFrame
+from rocketforge.gui.geometry       import GeometryFrame
+from rocketforge.utils.resources    import resource_path
+from customtkinter                  import CTk, CTkButton, CTkFont, CTkFrame, CTkLabel, CTkImage
+from tkinter                        import filedialog, messagebox
+from configparser                   import ConfigParser
+from PIL                            import Image
 
 version = "1.0.0"
 copyright = "(C) 2023-2024 Polito Rocket Team"
@@ -278,14 +278,13 @@ class RocketForge(CTk):
         self.statuslabel.configure(text="Status: idle")
         self.statuslabel.update()
         
-
     def load_config(self):
         self.statuslabel.configure(text="Status: loading configuration file...")
         self.statuslabel.update()
 
         try:
             config = ConfigParser()
-            config.read(filedialog.askopenfilename())
+            config.read(filedialog.askopenfilename(title="Load..."))
 
             def updateentry(entry: ctk.CTkEntry, value):
                 entry.delete("0", "200")
@@ -337,15 +336,6 @@ class RocketForge(CTk):
 
         self.statuslabel.configure(text="Status: idle")
         self.statuslabel.update()
-
-
-def resource_path(relative_path):
-    try:
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
 
 
 if __name__ == "__main__":

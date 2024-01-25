@@ -1,7 +1,7 @@
-#!/usr/bin/python3
 import tkinter as tk
 import customtkinter as ctk
 from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu
+from rocketforge.utils.conversions import angle_uom, area_uom, length_uom
 
 
 class GeometryFrame(ctk.CTkFrame):
@@ -64,37 +64,8 @@ class GeometryFrame(ctk.CTkFrame):
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
 
     def loadgeometry(self):
-
-        areauoms = {
-            "m2": 1,
-            "cm2": 10**(-4),
-            "mm2": 10**(-6),
-            "sq in": 0.00064516,
-            "sq ft": 0.09290304,
-        }
-
-        lengthuoms = {
-            "m": 1,
-            "cm": 0.01,
-            "mm": 0.001,
-            "in": 0.0254,
-            "ft": 0.3048,
-        }
-
-        angleuoms = {
-            "deg": 0.01745329,
-            "rad": 1,
-        }
-
         geometry = []
-        geometry.append(float(self.throatareaentry.get()) * areauoms[self.throatareauom.get()])
-        geometry.append(float(self.divergentlengthentry.get()) * lengthuoms[self.divergentlengthuom.get()])
-        geometry.append(float(self.thetaexentry.get()) * angleuoms[self.thetaexuom.get()])
+        geometry.append(float(self.throatareaentry.get()) * area_uom(self.throatareauom.get()))
+        geometry.append(float(self.divergentlengthentry.get()) * length_uom(self.divergentlengthuom.get()))
+        geometry.append(float(self.thetaexentry.get()) * angle_uom(self.thetaexuom.get()))
         return geometry
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    widget = GeometryFrame(root)
-    widget.pack(expand=True, fill="both")
-    root.mainloop()

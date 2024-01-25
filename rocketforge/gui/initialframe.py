@@ -1,11 +1,12 @@
-#!/usr/bin/python3
 import tkinter as tk
 import customtkinter as ctk
-import os, math
+import os
 from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu
 from rocketcea.cea_obj_w_units import CEA_Obj
 from tabulate import tabulate
-from scipy.optimize import fminbound
+from rocketforge.utils.conversions import pressure_uom
+from rocketforge.performance.mixtureratio import optimizemr, optimizermr_at_pe
+from rocketforge.performance.theoreticalperf import theoretical
 
 
 class InitialFrame(ctk.CTkFrame):
@@ -59,17 +60,36 @@ class InitialFrame(ctk.CTkFrame):
         self.oxvar = tk.StringVar(value="LOX")
         self.oxoptmenu.configure(
             values=[
-                "LOX",
-                "MON3",
-                "MON10",
-                "N2O4",
-                "N2O3",
+                "90_H2O2",
+                "98_H2O2",
                 "AIR",
+                "AIRSIMP",
+                "CLF3",
+                "CLF5",
                 "F2",
+                "GO2",
                 "GOX",
+                "H2O",
+                "H2O2",
+                "HAN315",
                 "HNO3",
-                "N2F4",
                 "IRFNA",
+                "LO2",
+                "LO2_NASA",
+                "LOX",
+                "MON15",
+                "MON25",
+                "MON3",
+                "N2F4",
+                "N2H4",
+                "N2O",
+                "N2O3",
+                "N2O4",
+                "N2O_nbp",
+                "O2",
+                "OF2",
+                "Peroxide90",
+                "Peroxide98",
             ],
             variable=self.oxvar,
             width=200,
@@ -84,21 +104,57 @@ class InitialFrame(ctk.CTkFrame):
         self.fuelvar = tk.StringVar(value="CH4")
         self.fueloptmenu.configure(
             values=[
-                "LH2",
-                "CH4",
-                "MMH",
-                "CH3OH",
-                "JetA",
-                "UDMH",
-                "H2O",
-                "GH2",
-                "M20",
-                "RP1",
+                "A50",
+                "Acetylene",
+                "AL",
+                "AP",
+                "B2H6",
                 "C2H2",
-                "N2H4",
-                "Methanol",
-                "Propane",
+                "C2H5OH",
+                "C2H6",
+                "C2H6_167",
+                "C3H8",
+                "CFx",
+                "CH3OH",
+                "CH4",
+                "CINCH",
+                "DMAZ",
+                "ECP_dimer",
+                "Ethanol",
+                "ETHANOL",
+                "Gasoline",
+                "GCH4",
+                "GH2",
+                "GH2_160",
+                "H2",
+                "H2O",
                 "HTPB",
+                "Isopropanol",
+                "JetA",
+                "JP10",
+                "JP4",
+                "JPX",
+                "Kerosene",
+                "Kerosene90_H2O10",
+                "LCH4_NASA",
+                "LH2",
+                "LH2_NASA",
+                "M20",
+                "M20_NH3",
+                "Methanol",
+                "METHANOL",
+                "MHF3",
+                "MMH",
+                "N2H4",
+                "NH3",
+                "NITROMETHANE",
+                "Propane",
+                "Propylene",
+                "propylene",
+                "RP1",
+                "RP1_NASA",
+                "RP_1",
+                "UDMH",
             ],
             variable=self.fuelvar,
             width=200,
@@ -228,14 +284,10 @@ class InitialFrame(ctk.CTkFrame):
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
 
     def expressrun(self):
-        """
-        Compute theoretical performance
-        """
-        pamb = 101325
-
         try:
             ox = self.oxoptmenu.get()
             fuel = self.fueloptmenu.get()
+            pc = float(self.pcentry.get()) * pressure_uom(self.pcuom.get())
 
             C = CEA_Obj(
                 oxName=ox,
@@ -250,7 +302,6 @@ class InitialFrame(ctk.CTkFrame):
                 specific_heat_units="J/kg-K",
             )
 
-            pc = float(self.pcentry.get()) * convert_pressure_uom(self.pcuom.get())
             mr_s = C.getMRforER(ERphi=1)
 
             if self.optimizationmode.get() == 0:
@@ -270,9 +321,7 @@ class InitialFrame(ctk.CTkFrame):
                     )
                     pe = pc / float(self.peratioentry.get())
                 elif self.exitcondition.get() == 2:
-                    pe = float(self.peentry.get()) * convert_pressure_uom(
-                        self.peuom.get()
-                    )
+                    pe = float(self.peentry.get()) * pressure_uom(self.peuom.get())
                     eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
 
             elif self.exitcondition.get() == 0:
@@ -285,58 +334,12 @@ class InitialFrame(ctk.CTkFrame):
                 if self.exitcondition.get() == 1:
                     pe = pc / float(self.peratioentry.get())
                 elif self.exitcondition.get() == 2:
-                    pe = float(self.peentry.get()) * convert_pressure_uom(
-                        self.peuom.get()
-                    )
+                    pe = float(self.peentry.get()) * pressure_uom(self.peuom.get())
                 mr = optimizermr_at_pe(C, pc, pe, self.optimizationmode.get())
                 eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
                 alpha = mr / mr_s
 
-            cstar = C.get_Cstar(Pc=pc, MR=mr)
-
-            Isp_vac = C.get_Isp(Pc=pc, MR=mr, eps=eps)
-            Isp_sl = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pamb)[0]
-            Isp_opt = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pe)[0]
-
-            c_vac = Isp_vac * 9.80655
-            c_sl = Isp_sl * 9.80655
-            c_opt = Isp_opt * 9.80655
-
-            CF_opt, CF_sl, mode = C.get_PambCf(Pamb=pamb, Pc=pc, MR=mr, eps=eps)
-            CF_vac = c_vac / cstar
-
-            headers = ["Parameter", "Sea level", "Optimum", "Vacuum", "Unit"]
-            results = [
-                [
-                    "Characteristic velocity",
-                    f"{cstar:.2f}",
-                    f"{cstar:.2f}",
-                    f"{cstar:.2f}",
-                    "m/s",
-                ],
-                [
-                    "Effective exhaust velocity",
-                    f"{c_sl:.2f}",
-                    f"{c_opt:.2f}",
-                    f"{c_vac:.2f}",
-                    "m/s",
-                ],
-                [
-                    "Specific impulse",
-                    f"{Isp_sl:.2f}",
-                    f"{Isp_opt:.2f}",
-                    f"{Isp_vac:.2f}",
-                    "s",
-                ],
-                [
-                    "Thrust coefficient",
-                    f"{CF_sl:.5f}",
-                    f"{CF_opt:.5f}",
-                    f"{CF_vac:.5f}",
-                    "",
-                ],
-            ]
-            output1 = tabulate(results, headers, numalign="right", tablefmt="plain")
+            output1 = theoretical(ox, fuel, pc, mr, eps)[-3]
 
             results = [
                 ["Expansion Area Ratio", eps, ""],
@@ -357,66 +360,3 @@ class InitialFrame(ctk.CTkFrame):
         self.textbox.configure(state="disabled")
 
         return ox, fuel, mr, pc, eps
-
-
-def optimizemr(C: CEA_Obj, pc: float, eps: float, optmode: int) -> float:
-    """
-    #### Optimize Mixture Ratio at defined expansion area ratio.
-    `optmode == 1`: Maximize vacuum specific impulse
-    `optmode == 2`: Maximize specific impulse at optimum expansion
-    `optmode == 3`: Maximize sea level specific impulse
-    """
-    if optmode == 1:
-        f = lambda x: -C.get_Isp(Pc=pc, MR=x, eps=eps)
-    elif optmode == 2:
-
-        def f(x: float) -> float:
-            pe = pc / C.get_PcOvPe(Pc=pc, MR=x, eps=eps)
-            return -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=pe)[0]
-
-    elif optmode == 3:
-        f = lambda x: -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=101325)[0]
-    return fminbound(f, 0.5, 15)
-
-
-def optimizermr_at_pe(C: CEA_Obj, pc: float, pe: float, optmode: int) -> float:
-    """
-    #### Optimize Mixture Ratio at constant exit pressure.
-    `optmode == 1`: Maximize vacuum specific impulse
-    `optmode == 2`: Maximize specific impulse at optimum expansion
-    `optmode == 3`: Maximize sea level specific impulse
-    """
-    if optmode == 1:
-
-        def f(x: float) -> float:
-            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=x, PcOvPe=pc / pe)
-            return -C.get_Isp(Pc=pc, MR=x, eps=eps)
-
-    elif optmode == 2:
-
-        def f(x: float) -> float:
-            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=x, PcOvPe=pc / pe)
-            return -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=pe)[0]
-
-    elif optmode == 3:
-
-        def f(x: float) -> float:
-            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=x, PcOvPe=pc / pe)
-            return -C.estimate_Ambient_Isp(Pc=pc, MR=x, eps=eps, Pamb=101325)[0]
-
-    return fminbound(f, 0.5, 15)
-
-
-def convert_pressure_uom(uom: str) -> float:
-    """
-    Converts pressure unit of measure to Pascal
-    """
-    uoms = {"Pa": 1, "MPa": 1000000, "bar": 100000, "atm": 101325, "psia": 6894.8}
-    return uoms[uom]
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    widget = InitialFrame(root)
-    widget.pack(expand=True, fill="both")
-    root.mainloop()
