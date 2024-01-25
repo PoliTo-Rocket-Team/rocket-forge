@@ -5,6 +5,7 @@ from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu
 from rocketcea.cea_obj_w_units import CEA_Obj
 from tabulate import tabulate
 from rocketforge.utils.conversions import pressure_uom
+from rocketforge.utils.helpers import updatetextbox
 from rocketforge.performance.mixtureratio import optimizemr, optimizermr_at_pe
 from rocketforge.performance.theoreticalperf import theoretical
 
@@ -354,9 +355,6 @@ class InitialFrame(ctk.CTkFrame):
         except Exception as err:
             output = str(err)
 
-        self.textbox.configure(state="normal")
-        self.textbox.delete("0.0", "200.0")
-        self.textbox.insert("0.0", output)
-        self.textbox.configure(state="disabled")
+        updatetextbox(self.textbox, output, True)
 
         return ox, fuel, mr, pc, eps

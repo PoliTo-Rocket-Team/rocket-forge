@@ -6,6 +6,7 @@ from rocketforge.gui.performance    import PerformanceFrame
 from rocketforge.gui.thermal        import ThermalFrame
 from rocketforge.gui.geometry       import GeometryFrame
 from rocketforge.utils.resources    import resource_path
+from rocketforge.utils.helpers      import updateentry, updatetextbox
 from customtkinter                  import CTk, CTkButton, CTkFont, CTkFrame, CTkLabel, CTkImage
 from tkinter                        import filedialog, messagebox
 from configparser                   import ConfigParser
@@ -286,15 +287,10 @@ class RocketForge(CTk):
             config = ConfigParser()
             config.read(filedialog.askopenfilename(title="Load..."))
 
-            def updateentry(entry: ctk.CTkEntry, value):
-                entry.delete("0", "200")
-                entry.insert("0", value)
-
             idf = self.initialframe
 
             updateentry(idf.enginenameentry, config.get("InitialData", "name"))
-            idf.description.delete("0.0", "200.0")
-            idf.description.insert("0.0", config.get("InitialData", "description"))
+            updatetextbox(idf.description, config.get("InitialData", "description"))
             updateentry(idf.pcentry, config.get("InitialData", "chamber_pressure"))
             idf.pcuom.set(config.get("InitialData", "chamber_pressure_uom"))
             idf.oxvar.set(config.get("InitialData", "oxidizer"))

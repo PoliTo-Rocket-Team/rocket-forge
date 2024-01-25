@@ -5,6 +5,7 @@ from customtkinter          import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkBut
 from rocketforge.performance.theoreticalperf  import theoretical
 from rocketforge.performance.corrfactors      import correction_factors
 from rocketforge.performance.deliveredperf    import delivered
+from rocketforge.utils.helpers                import updateentry, updatetextbox
 
 
 class PerformanceFrame(ctk.CTkFrame):
@@ -68,10 +69,7 @@ class PerformanceFrame(ctk.CTkFrame):
 
         x = theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen, frozenatthroat)
 
-        self.thermodynamicframe.textbox.configure(state="normal")
-        self.thermodynamicframe.textbox.delete("0.0", "200.0")
-        self.thermodynamicframe.textbox.insert("0.0", x[-1])
-        self.thermodynamicframe.textbox.configure(state="disabled")
+        updatetextbox(self.thermodynamicframe.textbox, x[-1], True)
 
         cstar = x[0]
         Isp_vac = x[1]
@@ -92,25 +90,16 @@ class PerformanceFrame(ctk.CTkFrame):
 
         z_r, z_n, z_overall, z_f, z_d, z_z = correction_factors(pc, eps, At, Le, theta_e, Isp_vac_eq, Isp_vac_frozen, Tc, Te, we, Z, Cs)
 
-        def updateentry(entry: CTkEntry, result: float) -> None:
-            entry.configure(state="normal")
-            entry.delete("0", "200")
-            entry.insert("0", f"{result:.4f}")
-            entry.configure(state="disabled")
-
-        updateentry(self.deliveredframe.reactioneffentry, z_r)
-        updateentry(self.deliveredframe.nozzleeffentry, z_n)
-        updateentry(self.deliveredframe.overalleffentry, z_overall)
-        updateentry(self.deliveredframe.BLeffentry, z_f)
-        updateentry(self.deliveredframe.diveffentry, z_d)
-        updateentry(self.deliveredframe.multiphaseeffentry, z_z)
+        updateentry(self.deliveredframe.reactioneffentry, z_r, True)
+        updateentry(self.deliveredframe.nozzleeffentry, z_n, True)
+        updateentry(self.deliveredframe.overalleffentry, z_overall, True)
+        updateentry(self.deliveredframe.BLeffentry, z_f, True)
+        updateentry(self.deliveredframe.diveffentry, z_d, True)
+        updateentry(self.deliveredframe.multiphaseeffentry, z_z, True)
 
         x = delivered(pc, eps, pe, mr, At, cstar, Isp_vac, z_r, z_n)
 
-        self.deliveredframe.textbox.configure(state="normal")
-        self.deliveredframe.textbox.delete("0.0", "200.0")
-        self.deliveredframe.textbox.insert("0.0", x[-1])
-        self.deliveredframe.textbox.configure(state="disabled")
+        updatetextbox(self.deliveredframe.textbox, x[-1], True)
 
 
 class ThermodynamicFrame(CTkFrame):
