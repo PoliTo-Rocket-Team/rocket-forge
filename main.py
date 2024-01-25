@@ -270,7 +270,7 @@ class RocketForge(CTk):
                 "theta_e_uom": self.geometryframe.thetaexuom.get(),
             }
 
-            with open(filedialog.asksaveasfilename(), "w") as f:
+            with open(filedialog.asksaveasfilename(defaultextension=".rf"), "w") as f:
                 config.write(f)
 
         except Exception:
@@ -285,7 +285,7 @@ class RocketForge(CTk):
 
         try:
             config = ConfigParser()
-            config.read(filedialog.askopenfilename(title="Load..."))
+            config.read(filedialog.askopenfilename(title="Load configuration file", filetypes=(("Rocket Forge files", "*.rf"), ("all files", "*.*"))))
 
             idf = self.initialframe
 
