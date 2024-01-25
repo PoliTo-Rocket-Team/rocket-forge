@@ -4,7 +4,6 @@ from customtkinter import CTkEntry, CTkTextbox
 def updateentry(entry: CTkEntry, value, disabled=False):
     entry.configure(state="normal")
     entry.delete("0", "200")
-    print(f"{value}: {type(value)}")
     if type(value) == str:
         entry.insert("0", value)
     else:
