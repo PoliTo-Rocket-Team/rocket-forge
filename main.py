@@ -142,7 +142,7 @@ class RocketForge(CTk):
         self.statuslabel.configure(text="Status: running...")
         self.statuslabel.update()
         try:
-            ox, fuel, mr, pc, eps = self.initialframe.expressrun()
+            ox, fuel, pc, mr, eps = self.initialframe.expressrun()
             geometry = self.geometryframe.loadgeometry()
         except Exception:
             geometry = (0, 0, 0)
