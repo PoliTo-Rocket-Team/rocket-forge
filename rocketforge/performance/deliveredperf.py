@@ -46,19 +46,4 @@ def delivered(pc, eps, pe, MR, At, cstar, Is_vac, z_c, z_n):
     ]
     output = tabulate(results, headers, numalign="right")
 
-    return (
-        cstar_d,
-        m_d,
-        m_f_d,
-        m_ox_d,
-        Is_vac_d,
-        Is_opt_d,
-        Is_SL_d,
-        CF_vac_d,
-        CF_opt_d,
-        CF_SL_d,
-        T_vac_d,
-        T_opt_d,
-        T_SL_d,
-        output,
-    )
+    return output

@@ -97,9 +97,9 @@ class PerformanceFrame(ctk.CTkFrame):
         updateentry(self.deliveredframe.diveffentry, z_d, True)
         updateentry(self.deliveredframe.multiphaseeffentry, z_z, True)
 
-        x = delivered(pc, eps, pe, mr, At, cstar, Isp_vac, z_r, z_n)
+        output = delivered(pc, eps, pe, mr, At, cstar, Isp_vac, z_r, z_n)
 
-        updatetextbox(self.deliveredframe.textbox, x[-1], True)
+        updatetextbox(self.deliveredframe.textbox, output, True)
 
 
 class ThermodynamicFrame(CTkFrame):
