@@ -1,7 +1,5 @@
 from tabulate import tabulate
 from rocketcea.cea_obj_w_units import CEA_Obj
-from rocketforge.utils.conversions import pressure_uom
-from rocketforge.performance.mixtureratio import optimizemr, optimizermr_at_pe
 
 
 def theoretical(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0):
@@ -137,71 +135,3 @@ def theoretical(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0):
         results,
         output2,
     )
-
-
-def express(self):
-    ox = self.oxoptmenu.get()
-    fuel = self.fueloptmenu.get()
-    pc = float(self.pcentry.get()) * pressure_uom(self.pcuom.get())
-
-    C = CEA_Obj(
-        oxName=ox,
-        fuelName=fuel,
-        fac_CR=None,
-        cstar_units="m/s",
-        pressure_units="Pa",
-        temperature_units="K",
-        sonic_velocity_units="m/s",
-        enthalpy_units="kJ/kg",
-        density_units="kg/m^3",
-        specific_heat_units="J/kg-K",
-    )
-
-    mr_s = C.getMRforER(ERphi=1)
-
-    if self.optimizationmode.get() == 0:
-        if self.mruom.get() == "O/F":
-            mr = float(self.mrentry.get())
-            alpha = mr / mr_s
-        elif self.mruom.get() == "alpha":
-            alpha = float(self.mrentry.get())
-            mr = alpha * mr_s
-
-        if self.exitcondition.get() == 0:
-            eps = float(self.epsentry.get())
-            pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
-        elif self.exitcondition.get() == 1:
-            eps = C.get_eps_at_PcOvPe(
-                Pc=pc, MR=mr, PcOvPe=float(self.peratioentry.get())
-            )
-            pe = pc / float(self.peratioentry.get())
-        elif self.exitcondition.get() == 2:
-            pe = float(self.peentry.get()) * pressure_uom(self.peuom.get())
-            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
-
-    elif self.exitcondition.get() == 0:
-        eps = float(self.epsentry.get())
-        mr = optimizemr(C, pc, eps, self.optimizationmode.get())
-        alpha = mr / mr_s
-        pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
-
-    else:
-        if self.exitcondition.get() == 1:
-            pe = pc / float(self.peratioentry.get())
-        elif self.exitcondition.get() == 2:
-            pe = float(self.peentry.get()) * pressure_uom(self.peuom.get())
-        mr = optimizermr_at_pe(C, pc, pe, self.optimizationmode.get())
-        eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
-        alpha = mr / mr_s
-
-    results = [
-        ["Expansion Area Ratio", eps, ""],
-        ["Expansion pressure ratio", pc / pe, ""],
-        ["Exit Pressure", pe / 100000, "bar"],
-        ["Mixture Ratio", mr, ""],
-        ["Mixture Ratio (stoichiometric)", mr_s, ""],
-        ["Alpha (oxidizer excess coefficient)", alpha, ""],
-    ]
-    output = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".3f")
-
-    return ox, fuel, pc, mr, eps, output
