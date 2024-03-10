@@ -23,27 +23,49 @@ class PerformanceFrame(ctk.CTkFrame):
 
         self.thermodynamicframe = ThermodynamicFrame(self)
         self.thermodynamicframe.configure(height=550, width=900)
-        self.thermodynamicframe.place(anchor="center", relx=0.5, rely=0.6)
+        self.thermodynamicframe.place(anchor="center", relx=0.5, rely=0.59)
 
         self.deliveredframe = DeliveredFrame(self)
         self.deliveredframe.configure(height=550, width=900)
-        self.deliveredframe.place(anchor="center", relx=0.5, rely=0.6)
+        self.deliveredframe.place(anchor="center", relx=0.5, rely=0.59)
 
-        self.thermodynamicbutton = CTkButton(self, width=425)
+        self.thermodynamicbutton = CTkButton(self, width=450)
         self.thermodynamicbutton.configure(
-            text="Thermodynamic properties",
-            command=lambda: self.thermodynamicframe.tkraise(),
+            text="Thermodynamic properties", command=lambda: self.switchtab(1),
         )
         self.thermodynamicbutton.place(anchor="w", relx=0.05, rely=0.2)
 
-        self.deliveredbutton = CTkButton(self, width=425)
+        self.deliveredbutton = CTkButton(self, width=450)
         self.deliveredbutton.configure(
-            text="Delivered performance", command=lambda: self.deliveredframe.tkraise()
+            text="Delivered performance", command=lambda: self.switchtab(0),
+            fg_color=["gray55","gray25"], hover_color=["gray50","gray20"]
         )
         self.deliveredbutton.place(anchor="e", relx=0.95, rely=0.2)
 
+        self.on = self.thermodynamicbutton.cget("fg_color")
+        self.on_hover = self.thermodynamicbutton.cget("hover_color")
+        self.off = self.deliveredbutton.cget("fg_color")
+        self.off_hover = self.deliveredbutton.cget("hover_color")
         self.thermodynamicframe.tkraise()
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
+
+    def switchtab(self, t):
+        if t == 0:
+            self.deliveredframe.tkraise()
+            self.deliveredbutton.configure(
+                fg_color=self.on, hover_color=self.on_hover,
+            )
+            self.thermodynamicbutton.configure(
+                fg_color=self.off, hover_color=self.off_hover,
+            )
+        else:
+            self.thermodynamicframe.tkraise()
+            self.deliveredbutton.configure(
+                fg_color=self.off, hover_color=self.off_hover,
+            )
+            self.thermodynamicbutton.configure(
+                fg_color=self.on, hover_color=self.on_hover,
+            )
 
     def loadengine(self, ox, fuel, mr, pc, eps, geometry):
         At, Le, theta_e = geometry
