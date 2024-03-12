@@ -116,13 +116,16 @@ class GeometryFrame(ctk.CTkFrame):
         self.plotbutton.place(anchor="center", relx=0.5, rely=0.53)
 
         self.plotframe = CTkFrame(self)
-        self.plotframe.configure(border_width=5, height=200, width=200)
+        self.plotframe.configure(border_width=5, height=300, width=950)
         self.plotframe.place(anchor="center", relx=0.5, rely=0.77, x=0, y=0)
 
-        self.fig = Figure(figsize = (8, 3), dpi=100)
+        self.fig = Figure(figsize = (11.875, 3.75), dpi=80)
+        self.fig.set_facecolor("#c1c1c1")
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.plotframe)
-        self.plot1 = self.fig.add_subplot(111)
-        self.plot1.axis([-1, 1, 0, 4 / 5])
+        self.ax = self.fig.add_subplot(111)
+        self.ax.axis([-1, 1, 0, 2/3])
+        self.ax.grid()
+        self.ax.set_facecolor("#ebebeb")
         self.canvas.get_tk_widget().pack()
 
         self.eps = None
@@ -158,11 +161,11 @@ class GeometryFrame(ctk.CTkFrame):
             else:
                 showwarning(title="Warning", message="Please define the area ratio and run the simulation first.")
 
-            self.plot1.clear()
-            self.plot1.plot(x, y, 'black')
-            # self.plot1.axis([-Lc, Le, 0, 2 * (Le + Lc) / 5])
-            self.plot1.axis([-Le, Le, 0, 4 * Le / 5])
-            self.plot1.grid()
+            self.ax.clear()
+            self.ax.plot(x, y, 'black')
+            # self.ax.axis([-Lc, Le, 0, max(1.1 * Re, 1.1 * Rc, (Le + Lc) / 3)])
+            self.ax.axis([-Le, Le, 0, 2 * Le / 3])
+            self.ax.grid()
             self.canvas.draw()
 
             return At, Le, thetae
