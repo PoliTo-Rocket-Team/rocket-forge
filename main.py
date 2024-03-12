@@ -143,7 +143,7 @@ class RocketForge(CTk):
         self.statuslabel.update()
         try:
             ox, fuel, pc, mr, eps = self.initialframe.expressrun()
-            geometry = self.geometryframe.loadgeometry()
+            geometry = self.geometryframe.loadgeometry(eps)
         except Exception:
             geometry = (0, 0, 0)
 
@@ -268,6 +268,10 @@ class RocketForge(CTk):
                 "divergent_length_uom": self.geometryframe.divergentlengthuom.get(),
                 "theta_e": self.geometryframe.thetaexentry.get(),
                 "theta_e_uom": self.geometryframe.thetaexuom.get(),
+                "custom_theta_e": self.geometryframe.customthetaex.get(),
+                "rnovrt": self.geometryframe.rnovrtentry.get(),
+                "theta_n": self.geometryframe.thetanentry.get(),
+                "theta_n_uom": self.geometryframe.thetanuom.get(),
             }
 
             with open(filedialog.asksaveasfilename(defaultextension=".rf"), "w") as f:
@@ -326,6 +330,10 @@ class RocketForge(CTk):
             gf.divergentlengthuom.set(config.get("Geometry", "divergent_length_uom"))
             updateentry(gf.thetaexentry, config.get("Geometry", "theta_e"))
             gf.thetaexuom.set(config.get("Geometry", "theta_e_uom"))
+            updateentry(gf.thetanentry, config.get("Geometry", "theta_n"))
+            gf.thetanuom.set(config.get("Geometry", "theta_n_uom"))
+            updateentry(gf.rnovrtentry, config.get("Geometry", "rnovrt"))
+            gf.customthetaex.set(config.get("Geometry", "custom_theta_e"))
 
         except Exception:
             pass
