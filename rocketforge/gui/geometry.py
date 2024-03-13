@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter.messagebox import showwarning
 import customtkinter as ctk
 from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu, CTkButton
-from rocketforge.geometry.top import get_geometry123, get_geometry134, lc15
+import rocketforge.geometry.top as top
 from rocketforge.utils.conversions import angle_uom, area_uom, length_uom
 from rocketforge.utils.helpers import updateentry
 from matplotlib.figure import Figure 
@@ -41,39 +41,68 @@ class GeometryFrame(ctk.CTkFrame):
         self.rnovrtlabel.place(anchor="w", relx=0.05, rely=0.27, x=0, y=0)
 
         self.rnovrtentry = CTkEntry(self)
-        self.rnovrtentry.configure(placeholder_text="0.382", width=200)
+        self.rnovrtentry.configure(placeholder_text="0", width=200)
         self.rnovrtentry.place(anchor="w", relx=0.2, rely=0.27, x=0, y=0)
-        updateentry(self.rnovrtentry, "0.382", True)
+        updateentry(self.rnovrtentry, "0.382")
+
+        self.divergentlengthlabel = CTkLabel(self)
+        self.divergentlengthlabel.configure(text="Divergent length:")
+        self.divergentlengthlabel.place(anchor="w", relx=0.05, rely=0.32, x=0, y=0)
+
+        self.customle = ctk.IntVar(value=0)
+
+        self.customleCB = ctk.CTkCheckBox(
+            self,
+            text = "",
+            variable=self.customle,
+            onvalue=1,
+            offvalue=0,
+            width=25
+        )
+        self.customleCB.place(anchor="e", relx=0.205, rely=0.32)
+
+        self.divergentlengthentry = CTkEntry(self)
+        self.divergentlengthentry.configure(placeholder_text="0", width=100)
+        self.divergentlengthentry.place(anchor="w", relx=0.2, rely=0.32, x=0, y=0)
+        updateentry(self.divergentlengthentry, "0.8")
+
+        self.divergentlengthoptmenu = CTkOptionMenu(self)
+        self.divergentlengthuom = tk.StringVar(value="m")
+        self.divergentlengthoptmenu.configure(
+            values=["Le/Lc15", "m", "cm", "mm", "in", "ft"], variable=self.divergentlengthuom, width=100
+        )
+        self.divergentlengthoptmenu.place(anchor="w", relx=0.3, rely=0.32, x=0, y=0)
 
         self.thetanlabel = CTkLabel(self)
         self.thetanlabel.configure(text="Initial parabola angle:")
-        self.thetanlabel.place(anchor="w", relx=0.05, rely=0.32, x=0, y=0)
+        self.thetanlabel.place(anchor="w", relx=0.05, rely=0.37, x=0, y=0)
+
+        self.customthetan = ctk.IntVar(value=0)
+
+        self.customthetanCB = ctk.CTkCheckBox(
+            self,
+            text = "",
+            variable=self.customthetan,
+            onvalue=1,
+            offvalue=0,
+            width=25
+        )
+        self.customthetanCB.place(anchor="e", relx=0.205, rely=0.37)
 
         self.thetanentry = CTkEntry(self)
         self.thetanentry.configure(placeholder_text="0", width=100)
-        self.thetanentry.place(anchor="w", relx=0.2, rely=0.32, x=0, y=0)
+        self.thetanentry.place(anchor="w", relx=0.2, rely=0.37, x=0, y=0)
 
         self.thetanoptmenu = CTkOptionMenu(self)
         self.thetanuom = tk.StringVar(value="deg")
         self.thetanoptmenu.configure(
             values=["deg", "rad"], variable=self.thetanuom, width=100
         )
-        self.thetanoptmenu.place(anchor="w", relx=0.3, rely=0.32, x=0, y=0)
+        self.thetanoptmenu.place(anchor="w", relx=0.3, rely=0.37, x=0, y=0)
 
         self.thetaexlabel = CTkLabel(self)
         self.thetaexlabel.configure(text="Final parabola angle:")
-        self.thetaexlabel.place(anchor="w", relx=0.05, rely=0.37, x=0, y=0)
-
-        self.thetaexentry = CTkEntry(self)
-        self.thetaexentry.configure(placeholder_text="0", width=100)
-        self.thetaexentry.place(anchor="w", relx=0.2, rely=0.37, x=0, y=0)
-
-        self.thetaexoptmenu = CTkOptionMenu(self)
-        self.thetaexuom = tk.StringVar(value="deg")
-        self.thetaexoptmenu.configure(
-            values=["deg", "rad"], variable=self.thetaexuom, width=100
-        )
-        self.thetaexoptmenu.place(anchor="w", relx=0.3, rely=0.37, x=0, y=0)
+        self.thetaexlabel.place(anchor="w", relx=0.05, rely=0.42, x=0, y=0)
 
         self.customthetaex = ctk.IntVar(value=0)
 
@@ -85,22 +114,18 @@ class GeometryFrame(ctk.CTkFrame):
             offvalue=0,
             width=25
         )
-        self.thetaexCB.place(anchor="e", relx=0.20, rely=0.37)
+        self.thetaexCB.place(anchor="e", relx=0.205, rely=0.42)
 
-        self.divergentlengthlabel = CTkLabel(self)
-        self.divergentlengthlabel.configure(text="Divergent length:")
-        self.divergentlengthlabel.place(anchor="w", relx=0.05, rely=0.42, x=0, y=0)
+        self.thetaexentry = CTkEntry(self)
+        self.thetaexentry.configure(placeholder_text="0", width=100)
+        self.thetaexentry.place(anchor="w", relx=0.2, rely=0.42, x=0, y=0)
 
-        self.divergentlengthentry = CTkEntry(self)
-        self.divergentlengthentry.configure(placeholder_text="0", width=100)
-        self.divergentlengthentry.place(anchor="w", relx=0.2, rely=0.42, x=0, y=0)
-
-        self.divergentlengthoptmenu = CTkOptionMenu(self)
-        self.divergentlengthuom = tk.StringVar(value="Le/Lc15")
-        self.divergentlengthoptmenu.configure(
-            values=["Le/Lc15", "m", "cm", "mm", "in", "ft"], variable=self.divergentlengthuom, width=100
+        self.thetaexoptmenu = CTkOptionMenu(self)
+        self.thetaexuom = tk.StringVar(value="deg")
+        self.thetaexoptmenu.configure(
+            values=["deg", "rad"], variable=self.thetaexuom, width=100
         )
-        self.divergentlengthoptmenu.place(anchor="w", relx=0.3, rely=0.42, x=0, y=0)
+        self.thetaexoptmenu.place(anchor="w", relx=0.3, rely=0.42, x=0, y=0)
 
         self.epslabel = CTkLabel(self)
         self.epslabel.configure(text="Expansion Area Ratio:")
@@ -134,29 +159,47 @@ class GeometryFrame(ctk.CTkFrame):
 
     def plot(self):
         try:
-            thetan = float(self.thetanentry.get()) * angle_uom(self.thetanuom.get())
             At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
             RnOvRt = float(self.rnovrtentry.get())
 
-            if self.divergentlengthuom.get() == "Le/Lc15":
-                if self.eps != None:
-                    Le = float(self.divergentlengthentry.get()) * lc15(At, RnOvRt, self.eps)
+            if not (self.customle.get() == 0 and self.customthetaex.get() == 1 and self.customthetan.get() == 1):
+                if self.divergentlengthuom.get() == "Le/Lc15":
+                    if self.eps != None:
+                        Le = float(self.divergentlengthentry.get()) * top.lc15(At, RnOvRt, self.eps)
+                    else:
+                        showwarning(title="Warning", message="Please define the area ratio and run the simulation first.")
+                        raise Exception
                 else:
-                    showwarning(title="Warning", message="Please define the area ratio and run the simulation first.")
-                    raise Exception
+                    Le = float(self.divergentlengthentry.get()) * length_uom(self.divergentlengthuom.get())
 
-            else:
-                Le = float(self.divergentlengthentry.get()) * length_uom(self.divergentlengthuom.get())
+            if self.customthetaex.get() == 0 and self.customthetan.get() == 0 and self.eps != None:
+                showwarning(title="Warning", message="Please define at least one angle")
 
-            if self.customthetaex.get() == 0 and self.eps != None:
-                x, y, thetae = get_geometry123(self.eps, thetan, Le, At, RnOvRt)
+            elif self.customthetaex.get() == 1 and self.customthetan.get() == 0 and self.eps != None:
+                thetae = float(self.thetaexentry.get()) * angle_uom(self.thetaexuom.get())
+                x, y, thetan = top.get_geometry01(self.eps, thetae, Le, At, RnOvRt)
+                updateentry(self.thetanentry, thetan / angle_uom(self.thetanuom.get()))
+                updateentry(self.epsentry, self.eps, True)
+
+            elif self.customthetaex.get() == 0 and self.customthetan.get() == 1 and self.eps != None:
+                thetan = float(self.thetanentry.get()) * angle_uom(self.thetanuom.get())
+                x, y, thetae = top.get_geometry10(self.eps, thetan, Le, At, RnOvRt)
                 updateentry(self.thetaexentry, thetae / angle_uom(self.thetaexuom.get()))
                 updateentry(self.epsentry, self.eps, True)
 
-            elif self.customthetaex.get() == 1:
+            elif self.customthetaex.get() == 1 and self.customthetan.get() == 1:
                 thetae = float(self.thetaexentry.get()) * angle_uom(self.thetaexuom.get())
-                x, y, eps = get_geometry134(thetae, thetan, Le, At, RnOvRt)
-                updateentry(self.epsentry, eps, True)
+                thetan = float(self.thetanentry.get()) * angle_uom(self.thetanuom.get())
+                if self.customle.get() == 1 and self.divergentlengthuom.get() != "Le/Lc15":
+                    x, y, eps = top.get_geometry11(thetae, thetan, Le, At, RnOvRt)
+                    updateentry(self.epsentry, eps, True)
+                else:
+                    x, y, Le = top.get_geometry111(thetae, thetan, self.eps, At, RnOvRt)
+                    if self.divergentlengthuom.get() == "Le/Lc15":
+                        updateentry(self.divergentlengthentry, Le / top.lc15(At, RnOvRt, self.eps))
+                    else:
+                        updateentry(self.divergentlengthentry, Le / length_uom(self.divergentlengthuom.get()))
+                    updateentry(self.epsentry, self.eps, True)
 
             else:
                 showwarning(title="Warning", message="Please define the area ratio and run the simulation first.")
@@ -172,7 +215,6 @@ class GeometryFrame(ctk.CTkFrame):
         
         except Exception:
             pass
-
 
     def loadgeometry(self, eps):
         self.eps = eps
