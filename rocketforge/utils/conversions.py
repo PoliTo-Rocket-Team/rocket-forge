@@ -39,7 +39,7 @@ def angle_uom(uom: str) -> float:
     Converts angle unit of measure to radians
     """
     uoms = {
-        "deg": 0.01745329,
+        "deg": 0.017453292519943295,
         "rad": 1,
     }
     return uoms[uom]
