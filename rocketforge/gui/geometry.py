@@ -49,18 +49,6 @@ class GeometryFrame(ctk.CTkFrame):
         self.divergentlengthlabel.configure(text="Divergent length:")
         self.divergentlengthlabel.place(anchor="w", relx=0.05, rely=0.32, x=0, y=0)
 
-        self.customle = ctk.IntVar(value=0)
-
-        self.customleCB = ctk.CTkCheckBox(
-            self,
-            text = "",
-            variable=self.customle,
-            onvalue=1,
-            offvalue=0,
-            width=25
-        )
-        self.customleCB.place(anchor="e", relx=0.205, rely=0.32)
-
         self.divergentlengthentry = CTkEntry(self)
         self.divergentlengthentry.configure(placeholder_text="0", width=100)
         self.divergentlengthentry.place(anchor="w", relx=0.2, rely=0.32, x=0, y=0)
@@ -77,18 +65,6 @@ class GeometryFrame(ctk.CTkFrame):
         self.thetanlabel.configure(text="Initial parabola angle:")
         self.thetanlabel.place(anchor="w", relx=0.05, rely=0.37, x=0, y=0)
 
-        self.customthetan = ctk.IntVar(value=0)
-
-        self.customthetanCB = ctk.CTkCheckBox(
-            self,
-            text = "",
-            variable=self.customthetan,
-            onvalue=1,
-            offvalue=0,
-            width=25
-        )
-        self.customthetanCB.place(anchor="e", relx=0.205, rely=0.37)
-
         self.thetanentry = CTkEntry(self)
         self.thetanentry.configure(placeholder_text="0", width=100)
         self.thetanentry.place(anchor="w", relx=0.2, rely=0.37, x=0, y=0)
@@ -103,18 +79,6 @@ class GeometryFrame(ctk.CTkFrame):
         self.thetaexlabel = CTkLabel(self)
         self.thetaexlabel.configure(text="Final parabola angle:")
         self.thetaexlabel.place(anchor="w", relx=0.05, rely=0.42, x=0, y=0)
-
-        self.customthetaex = ctk.IntVar(value=0)
-
-        self.thetaexCB = ctk.CTkCheckBox(
-            self,
-            text = "",
-            variable=self.customthetaex,
-            onvalue=1,
-            offvalue=0,
-            width=25
-        )
-        self.thetaexCB.place(anchor="e", relx=0.205, rely=0.42)
 
         self.thetaexentry = CTkEntry(self)
         self.thetaexentry.configure(placeholder_text="0", width=100)
@@ -159,50 +123,28 @@ class GeometryFrame(ctk.CTkFrame):
 
     def plot(self):
         try:
+            if self.eps == None:
+                showwarning(title="Warning", message="Please define the area ratio and run the simulation first.")
+                raise Exception
+            
+            eps = self.eps
+            updateentry(self.epsentry, eps, True)
             At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
             RnOvRt = float(self.rnovrtentry.get())
 
-            if not (self.customle.get() == 0 and self.customthetaex.get() == 1 and self.customthetan.get() == 1):
-                if self.divergentlengthuom.get() == "Le/Lc15":
-                    if self.eps != None:
-                        Le = float(self.divergentlengthentry.get()) * top.lc15(At, RnOvRt, self.eps)
-                    else:
-                        showwarning(title="Warning", message="Please define the area ratio and run the simulation first.")
-                        raise Exception
-                else:
-                    Le = float(self.divergentlengthentry.get()) * length_uom(self.divergentlengthuom.get())
-
-            if self.customthetaex.get() == 0 and self.customthetan.get() == 0 and self.eps != None:
-                showwarning(title="Warning", message="Please define at least one angle")
-
-            elif self.customthetaex.get() == 1 and self.customthetan.get() == 0 and self.eps != None:
-                thetae = float(self.thetaexentry.get()) * angle_uom(self.thetaexuom.get())
-                x, y, thetan = top.get_geometry01(self.eps, thetae, Le, At, RnOvRt)
-                updateentry(self.thetanentry, thetan / angle_uom(self.thetanuom.get()))
-                updateentry(self.epsentry, self.eps, True)
-
-            elif self.customthetaex.get() == 0 and self.customthetan.get() == 1 and self.eps != None:
-                thetan = float(self.thetanentry.get()) * angle_uom(self.thetanuom.get())
-                x, y, thetae = top.get_geometry10(self.eps, thetan, Le, At, RnOvRt)
-                updateentry(self.thetaexentry, thetae / angle_uom(self.thetaexuom.get()))
-                updateentry(self.epsentry, self.eps, True)
-
-            elif self.customthetaex.get() == 1 and self.customthetan.get() == 1:
-                thetae = float(self.thetaexentry.get()) * angle_uom(self.thetaexuom.get())
-                thetan = float(self.thetanentry.get()) * angle_uom(self.thetanuom.get())
-                if self.customle.get() == 1 and self.divergentlengthuom.get() != "Le/Lc15":
-                    x, y, eps = top.get_geometry11(thetae, thetan, Le, At, RnOvRt)
-                    updateentry(self.epsentry, eps, True)
-                else:
-                    x, y, Le = top.get_geometry111(thetae, thetan, self.eps, At, RnOvRt)
-                    if self.divergentlengthuom.get() == "Le/Lc15":
-                        updateentry(self.divergentlengthentry, Le / top.lc15(At, RnOvRt, self.eps))
-                    else:
-                        updateentry(self.divergentlengthentry, Le / length_uom(self.divergentlengthuom.get()))
-                    updateentry(self.epsentry, self.eps, True)
-
+            if self.divergentlengthuom.get() == "Le/Lc15":
+                Le = float(self.divergentlengthentry.get()) * top.lc15(At, RnOvRt, eps)
             else:
-                showwarning(title="Warning", message="Please define the area ratio and run the simulation first.")
+                Le = float(self.divergentlengthentry.get()) * length_uom(self.divergentlengthuom.get())
+
+            thetan = float(self.thetanentry.get()) * angle_uom(self.thetanuom.get())
+            thetae = float(self.thetaexentry.get()) * angle_uom(self.thetaexuom.get())
+
+            if thetan < thetae:
+                showwarning(title="Warning", message="Final parabola angle must be greater than initial parabola angle")
+                raise Exception
+            
+            x, y = top.get_divergent(At, RnOvRt, Le, thetan, thetae, eps)
 
             self.ax.clear()
             self.ax.plot(x, y, 'black')

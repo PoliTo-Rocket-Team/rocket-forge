@@ -272,9 +272,6 @@ class RocketForge(CTk):
                 "divergent_length_uom": self.geometryframe.divergentlengthuom.get(),
                 "theta_e": self.geometryframe.thetaexentry.get(),
                 "theta_e_uom": self.geometryframe.thetaexuom.get(),
-                "custom_le": self.geometryframe.customle.get(),
-                "custom_theta_n": self.geometryframe.customthetan.get(),
-                "custom_theta_e": self.geometryframe.customthetaex.get(),
                 "rnovrt": self.geometryframe.rnovrtentry.get(),
                 "theta_n": self.geometryframe.thetanentry.get(),
                 "theta_n_uom": self.geometryframe.thetanuom.get(),
@@ -339,9 +336,6 @@ class RocketForge(CTk):
             updateentry(gf.thetanentry, config.get("Geometry", "theta_n"))
             gf.thetanuom.set(config.get("Geometry", "theta_n_uom"))
             updateentry(gf.rnovrtentry, config.get("Geometry", "rnovrt"))
-            gf.customle.set(config.get("Geometry", "custom_le"))
-            gf.customthetan.set(config.get("Geometry", "custom_theta_n"))
-            gf.customthetaex.set(config.get("Geometry", "custom_theta_e"))
 
         except Exception:
             pass
