@@ -283,7 +283,13 @@ class RocketForge(CTk):
                 "chamber_length_uom": gf.chamberlengthuom.get(),
                 "contraction_angle": gf.bentry.get(),
                 "contraction_angle_uom": gf.buom.get(),
-                "r2ovr2max": gf.r2ovr2maxentry.get()
+                "r2ovr2max": gf.r2ovr2maxentry.get(),
+                "cselected": gf.cselected.get(),
+                "cle": gf.cleentry.get(),
+                "cle_uom": gf.cleuom.get(),
+                "clf": gf.clfentry.get(),
+                "ctheta": gf.cthetaentry.get(),
+                "ctheta_uom": gf.cthetauom.get(),
             }
 
             with open(filedialog.asksaveasfilename(defaultextension=".rf"), "w") as f:
@@ -337,6 +343,8 @@ class RocketForge(CTk):
             gf = self.geometryframe
 
             gf.shape.set(config.get("Geometry", "shape"))
+            gf.change_shape(config.get("Geometry", "shape"))
+
             updateentry(gf.throatareaentry, config.get("Geometry", "throat_area"))
             gf.throatareauom.set(config.get("Geometry", "throat_area_uom"))
             updateentry(gf.divergentlengthentry, config.get("Geometry", "divergent_length"))
@@ -352,6 +360,12 @@ class RocketForge(CTk):
             gf.chamberlengthuom.set(config.get("Geometry", "chamber_length_uom"))
             updateentry(gf.bentry, config.get("Geometry", "contraction_angle"))
             gf.buom.set(config.get("Geometry", "contraction_angle_uom"))
+            gf.cselected.set(config.get("Geometry", "cselected"))
+            updateentry(gf.cleentry, config.get("Geometry", "cle"))
+            gf.cleuom.set(config.get("Geometry", "cle_uom"))
+            updateentry(gf.clfentry, config.get("Geometry", "clf"))
+            updateentry(gf.cthetaentry, config.get("Geometry", "ctheta"))
+            gf.cthetauom.set(config.get("Geometry", "ctheta_uom"))
 
         except Exception:
             pass

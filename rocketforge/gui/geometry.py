@@ -107,7 +107,8 @@ class GeometryFrame(ctk.CTkFrame):
         self.shapeoptmenu = CTkOptionMenu(self)
         self.shape = tk.StringVar(value="Thrust-optimized parabolic")
         self.shapeoptmenu.configure(
-            values=["Thrust-optimized parabolic", "Truncated ideal contour", "Conical"], variable=self.shape, width=200
+            values=["Thrust-optimized parabolic", "Truncated ideal contour", "Conical"],
+            variable=self.shape, command=self.change_shape, width=200
         )
         self.shapeoptmenu.place(anchor="e", relx=0.95, rely=0.22, x=0, y=0)
 
@@ -190,7 +191,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.cleentry.configure(placeholder_text="0", width=100)
 
         self.cleoptmenu = CTkOptionMenu(self)
-        self.cleuom = tk.StringVar(value="m2")
+        self.cleuom = tk.StringVar(value="m")
         self.cleoptmenu.configure(
             values=["m", "cm", "mm", "in", "ft"], variable=self.cleuom, width=100
         )
@@ -203,7 +204,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.clflabel.configure(text="Relative length Le/Lc15:")
 
         self.clfentry = CTkEntry(self)
-        self.clfentry.configure(placeholder_text="0")
+        self.clfentry.configure(placeholder_text="0", width=200)
 
         self.cthetaRB = ctk.CTkRadioButton(
             self, text="", variable=self.cselected, value=2
@@ -298,6 +299,9 @@ class GeometryFrame(ctk.CTkFrame):
 
                 if selected == 2:
                     thetae = float(self.cthetaentry.get()) * angle_uom(self.cthetauom.get())
+                    if thetae <= 0:
+                        showwarning(title="Warning", message="Divergent angle must be positive")
+                        raise Exception
                     Le = conical.le(At, RnOvRt, eps, thetae)
                     Lf = Le / conical.lc15(At, RnOvRt, eps)
                 
@@ -350,6 +354,59 @@ class GeometryFrame(ctk.CTkFrame):
             return At, Le, thetae
         except Exception:
             pass
+
+    def change_shape(self, shape):
+
+        self.remove_elements()
+
+        if shape == "Thrust-optimized parabolic":
+            self.divergentlengthlabel.place(anchor="w", relx=0.55, rely=0.32, x=0, y=0)
+            self.divergentlengthentry.place(anchor="e", relx=0.85, rely=0.32, x=0, y=0)
+            self.divergentlengthoptmenu.place(anchor="e", relx=0.95, rely=0.32, x=0, y=0)
+            self.thetanlabel.place(anchor="w", relx=0.55, rely=0.37, x=0, y=0)
+            self.thetanentry.place(anchor="e", relx=0.85, rely=0.37, x=0, y=0)
+            self.thetanoptmenu.place(anchor="e", relx=0.95, rely=0.37, x=0, y=0)
+            self.thetaexlabel.place(anchor="w", relx=0.55, rely=0.42, x=0, y=0)
+            self.thetaexentry.place(anchor="e", relx=0.85, rely=0.42, x=0, y=0)
+            self.thetaexoptmenu.place(anchor="e", relx=0.95, rely=0.42, x=0, y=0)
+
+        if shape == "Truncated ideal contour":
+            ...
+
+        if shape == "Conical":
+            self.cleRB.place(anchor="e", relx=0.82, rely=0.32, x=0, y=0)
+            self.clelabel.place(anchor="w", relx=0.55, rely=0.32, x=0, y=0)
+            self.cleentry.place(anchor="e", relx=0.85, rely=0.32, x=0, y=0)
+            self.cleoptmenu.place(anchor="e", relx=0.95, rely=0.32, x=0, y=0)
+            self.clfRB.place(anchor="e", relx=0.82, rely=0.37, x=0, y=0)
+            self.clflabel.place(anchor="w", relx=0.55, rely=0.37, x=0, y=0)
+            self.clfentry.place(anchor="e", relx=0.95, rely=0.37, x=0, y=0)
+            self.cthetaRB.place(anchor="e", relx=0.82, rely=0.42, x=0, y=0)
+            self.cthetalabel.place(anchor="w", relx=0.55, rely=0.42, x=0, y=0)
+            self.cthetaentry.place(anchor="e", relx=0.85, rely=0.42, x=0, y=0)
+            self.cthetaoptmenu.place(anchor="e", relx=0.95, rely=0.42, x=0, y=0)
+
+    def remove_elements(self):
+        self.divergentlengthlabel.place_forget()
+        self.divergentlengthentry.place_forget()
+        self.divergentlengthoptmenu.place_forget()
+        self.thetanlabel.place_forget()
+        self.thetanentry.place_forget()
+        self.thetanoptmenu.place_forget()
+        self.thetaexlabel.place_forget()
+        self.thetaexentry.place_forget()
+        self.thetaexoptmenu.place_forget()
+        self.cleRB.place_forget()
+        self.clelabel.place_forget()
+        self.cleentry.place_forget()
+        self.cleoptmenu.place_forget()
+        self.clfRB.place_forget()
+        self.clflabel.place_forget()
+        self.clfentry.place_forget()
+        self.cthetaRB.place_forget()
+        self.cthetalabel.place_forget()
+        self.cthetaentry.place_forget()
+        self.cthetaoptmenu.place_forget()
 
     def loadgeometry(self, eps, epsc):
         self.eps = eps
