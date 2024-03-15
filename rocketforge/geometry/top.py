@@ -1,7 +1,7 @@
 from numpy import *
 
 
-def get_divergent(At, RnOvRt, Le, thetan, thetae, eps):
+def get(At, RnOvRt, Le, thetan, thetae, eps):
     '''
     This function returns the x and y coordinates of the divergent for a thrust-optimized parabolic (TOP) nozzle
     '''
@@ -35,22 +35,3 @@ def get_divergent(At, RnOvRt, Le, thetan, thetae, eps):
     y = concatenate((y1, y2))
 
     return x, y
-
-
-def lc15(At, RnOvRt, eps):
-    '''
-    This function returns the length of a conical nozzle with a 15 degrees divergence angle
-    '''
-    # Throat radius
-    Rt = sqrt(At/pi)
-
-    # Divergent circular arc radius
-    Rn = RnOvRt * Rt
-
-    # Exit radius
-    Re = Rt * sqrt(eps)
-
-    # Conical nozzle length
-    Lc15 = (Re - Rt - Rn * (1-cos(radians(15))))/tan(radians(15)) + Rn*sin(radians(15))
-
-    return Lc15

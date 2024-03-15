@@ -1,4 +1,5 @@
 from numpy import *
+from scipy.optimize import brentq
 
 
 def get(At, RnOvRt, eps, Le, theta):
@@ -44,7 +45,8 @@ def get_theta(At, RnOvRt, eps, Le):
     Re = Rt * sqrt(eps)
 
     # Divergence angle
-    theta = 0
+    eq = lambda theta: (Re - Rt - Rn * (1-cos(theta)))/tan(theta) + Rn*sin(theta) - Le
+    theta = brentq(eq, 0.0001, radians(89.9999))
 
     return theta
 

@@ -40,6 +40,7 @@ class GeometryFrame(ctk.CTkFrame):
         )
         self.throatareaoptmenu.place(anchor="e", relx=0.45, rely=0.22, x=0, y=0)
 
+        # Convergent section
         self.r1ovrtlabel = CTkLabel(self)
         self.r1ovrtlabel.configure(text="R1/Rt:")
         self.r1ovrtlabel.place(anchor="w", relx=0.05, rely=0.27, x=0, y=0)
@@ -98,6 +99,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.epscentry.place(anchor="e", relx=0.45, rely=0.47, x=0, y=0)
         updateentry(self.epscentry, "Undefined", True)
 
+        # Divergent Section
         self.shapelabel = CTkLabel(self)
         self.shapelabel.configure(text="Nozzle shape:")
         self.shapelabel.place(anchor="w", relx=0.55, rely=0.22, x=0, y=0)
@@ -118,6 +120,16 @@ class GeometryFrame(ctk.CTkFrame):
         self.rnovrtentry.place(anchor="e", relx=0.95, rely=0.27, x=0, y=0)
         updateentry(self.rnovrtentry, "0.382")
 
+        self.epslabel = CTkLabel(self)
+        self.epslabel.configure(text="Expansion Area Ratio:")
+        self.epslabel.place(anchor="w", relx=0.55, rely=0.47, x=0, y=0)
+
+        self.epsentry = CTkEntry(self)
+        self.epsentry.configure(width=200, state="disabled")
+        self.epsentry.place(anchor="e", relx=0.95, rely=0.47, x=0, y=0)
+        updateentry(self.epsentry, "Undefined", True)
+
+        # Thrust-optimized parabolic (TOP)
         self.divergentlengthlabel = CTkLabel(self)
         self.divergentlengthlabel.configure(text="Divergent length:")
         self.divergentlengthlabel.place(anchor="w", relx=0.55, rely=0.32, x=0, y=0)
@@ -164,15 +176,52 @@ class GeometryFrame(ctk.CTkFrame):
         )
         self.thetaexoptmenu.place(anchor="e", relx=0.95, rely=0.42, x=0, y=0)
 
-        self.epslabel = CTkLabel(self)
-        self.epslabel.configure(text="Expansion Area Ratio:")
-        self.epslabel.place(anchor="w", relx=0.55, rely=0.47, x=0, y=0)
+        # Conical Nozzle
+        self.cselected = ctk.IntVar(value=0)
 
-        self.epsentry = CTkEntry(self)
-        self.epsentry.configure(width=200, state="disabled")
-        self.epsentry.place(anchor="e", relx=0.95, rely=0.47, x=0, y=0)
-        updateentry(self.epsentry, "Undefined", True)
+        self.cleRB = ctk.CTkRadioButton(
+            self, text="", variable=self.cselected, value=0
+        )
 
+        self.clelabel = CTkLabel(self)
+        self.clelabel.configure(text="Divergent length:")
+
+        self.cleentry = CTkEntry(self)
+        self.cleentry.configure(placeholder_text="0", width=100)
+
+        self.cleoptmenu = CTkOptionMenu(self)
+        self.cleuom = tk.StringVar(value="m2")
+        self.cleoptmenu.configure(
+            values=["m", "cm", "mm", "in", "ft"], variable=self.cleuom, width=100
+        )
+
+        self.clfRB = ctk.CTkRadioButton(
+            self, text="", variable=self.cselected, value=1
+        )
+
+        self.clflabel = CTkLabel(self)
+        self.clflabel.configure(text="Relative length Le/Lc15:")
+
+        self.clfentry = CTkEntry(self)
+        self.clfentry.configure(placeholder_text="0")
+
+        self.cthetaRB = ctk.CTkRadioButton(
+            self, text="", variable=self.cselected, value=2
+        )
+
+        self.cthetalabel= CTkLabel(self)
+        self.cthetalabel.configure(text="Divergent angle:")
+
+        self.cthetaentry = CTkEntry(self)
+        self.cthetaentry.configure(placeholder_text="0", width=100)
+
+        self.cthetaoptmenu = CTkOptionMenu(self)
+        self.cthetauom = tk.StringVar(value="deg")
+        self.cthetaoptmenu.configure(
+            values=["deg", "rad"], variable=self.cthetauom, width=100
+        )
+
+        # Plot
         self.plotbutton = CTkButton(self)
         self.plotbutton.configure(text="Update plot", command=self.plot)
         self.plotbutton.place(anchor="center", relx=0.5, rely=0.53)
@@ -215,7 +264,7 @@ class GeometryFrame(ctk.CTkFrame):
             # Thrust-optimized parabolic (TOP)
             if self.shape.get() == "Thrust-optimized parabolic":
                 if self.divergentlengthuom.get() == "Le/Lc15":
-                    Le = float(self.divergentlengthentry.get()) * top.lc15(At, RnOvRt, eps)
+                    Le = float(self.divergentlengthentry.get()) * conical.lc15(At, RnOvRt, eps)
                 else:
                     Le = float(self.divergentlengthentry.get()) * length_uom(self.divergentlengthuom.get())
 
@@ -226,7 +275,7 @@ class GeometryFrame(ctk.CTkFrame):
                     showwarning(title="Warning", message="Final parabola angle must be greater than initial parabola angle")
                     raise Exception
             
-                xD, yD = top.get_divergent(At, RnOvRt, Le, thetan, thetae, eps)
+                xD, yD = top.get(At, RnOvRt, Le, thetan, thetae, eps)
             
             # Truncated ideal contour (TIC)
             if self.shape.get() == "Truncated ideal contour":
@@ -235,24 +284,26 @@ class GeometryFrame(ctk.CTkFrame):
             # Conical nozzle
             if self.shape.get() == "Conical":
 
-                selected = 0 # get selected entry
+                selected = self.cselected.get()
                 
-                if selected == 0: # if Le is set
-                    Le = 0 # get Le
+                if selected == 0:
+                    Le = float(self.cleentry.get()) * length_uom(self.cleuom.get())
                     Lf = Le / conical.lc15(At, RnOvRt, eps)
                     thetae = conical.get_theta(At, RnOvRt, eps, Le)
 
-                if selected == 1: # if Lf is set
-                    Lf = 0 # get Lf
+                if selected == 1:
+                    Lf = float(self.clfentry.get())
                     Le = Lf * conical.lc15(At, RnOvRt, eps)
                     thetae = conical.get_theta(At, RnOvRt, eps, Le)
 
-                if selected == 2: # if theta is set
-                    thetae = 0 # get theta
+                if selected == 2:
+                    thetae = float(self.cthetaentry.get()) * angle_uom(self.cthetauom.get())
                     Le = conical.le(At, RnOvRt, eps, thetae)
                     Lf = Le / conical.lc15(At, RnOvRt, eps)
                 
-                # update other entries
+                updateentry(self.cleentry, Le / length_uom(self.cleuom.get()))
+                updateentry(self.clfentry, Lf)
+                updateentry(self.cthetaentry, thetae / angle_uom(self.cthetauom.get()))
 
                 xD, yD = conical.get(At, RnOvRt, eps, Le, thetae)
 
