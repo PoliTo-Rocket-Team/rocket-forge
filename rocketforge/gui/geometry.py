@@ -3,6 +3,8 @@ from tkinter.messagebox import showwarning
 import customtkinter as ctk
 from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu, CTkButton
 import rocketforge.geometry.top as top
+import rocketforge.geometry.tic as tic
+import rocketforge.geometry.conical as conical
 import rocketforge.geometry.convergent as convergent
 from rocketforge.utils.conversions import angle_uom, area_uom, length_uom
 from rocketforge.utils.helpers import updateentry
@@ -103,8 +105,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.shapeoptmenu = CTkOptionMenu(self)
         self.shape = tk.StringVar(value="Thrust-optimized parabolic")
         self.shapeoptmenu.configure(
-            values=["Thrust-optimized parabolic"], variable=self.shape, width=200
-            # values=["Thrust-optimized parabolic", "Truncated ideal contour","Conical"], variable=self.shape, width=200
+            values=["Thrust-optimized parabolic", "Truncated ideal contour", "Conical"], variable=self.shape, width=200
         )
         self.shapeoptmenu.place(anchor="e", relx=0.95, rely=0.22, x=0, y=0)
 
@@ -200,43 +201,77 @@ class GeometryFrame(ctk.CTkFrame):
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
 
     def plot(self):
+        # Compute divergent section
         try:
             if self.eps == None:
                 showwarning(title="Warning", message="Please define the area ratio and run the simulation first.")
                 raise Exception
-            
             eps = self.eps
             updateentry(self.epsentry, eps, True)
+
             At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
             RnOvRt = float(self.rnovrtentry.get())
 
-            if self.divergentlengthuom.get() == "Le/Lc15":
-                Le = float(self.divergentlengthentry.get()) * top.lc15(At, RnOvRt, eps)
-            else:
-                Le = float(self.divergentlengthentry.get()) * length_uom(self.divergentlengthuom.get())
+            # Thrust-optimized parabolic (TOP)
+            if self.shape.get() == "Thrust-optimized parabolic":
+                if self.divergentlengthuom.get() == "Le/Lc15":
+                    Le = float(self.divergentlengthentry.get()) * top.lc15(At, RnOvRt, eps)
+                else:
+                    Le = float(self.divergentlengthentry.get()) * length_uom(self.divergentlengthuom.get())
 
-            thetan = float(self.thetanentry.get()) * angle_uom(self.thetanuom.get())
-            thetae = float(self.thetaexentry.get()) * angle_uom(self.thetaexuom.get())
+                thetan = float(self.thetanentry.get()) * angle_uom(self.thetanuom.get())
+                thetae = float(self.thetaexentry.get()) * angle_uom(self.thetaexuom.get())
 
-            if thetan <= thetae:
-                showwarning(title="Warning", message="Final parabola angle must be greater than initial parabola angle")
-                raise Exception
+                if thetan <= thetae:
+                    showwarning(title="Warning", message="Final parabola angle must be greater than initial parabola angle")
+                    raise Exception
             
-            xD, yD = top.get_divergent(At, RnOvRt, Le, thetan, thetae, eps)
+                xD, yD = top.get_divergent(At, RnOvRt, Le, thetan, thetae, eps)
+            
+            # Truncated ideal contour (TIC)
+            if self.shape.get() == "Truncated ideal contour":
+                ...
+
+            # Conical nozzle
+            if self.shape.get() == "Conical":
+
+                selected = 0 # get selected entry
+                
+                if selected == 0: # if Le is set
+                    Le = 0 # get Le
+                    Lf = Le / conical.lc15(At, RnOvRt, eps)
+                    thetae = conical.get_theta(At, RnOvRt, eps, Le)
+
+                if selected == 1: # if Lf is set
+                    Lf = 0 # get Lf
+                    Le = Lf * conical.lc15(At, RnOvRt, eps)
+                    thetae = conical.get_theta(At, RnOvRt, eps, Le)
+
+                if selected == 2: # if theta is set
+                    thetae = 0 # get theta
+                    Le = conical.le(At, RnOvRt, eps, thetae)
+                    Lf = Le / conical.lc15(At, RnOvRt, eps)
+                
+                # update other entries
+
+                xD, yD = conical.get(At, RnOvRt, eps, Le, thetae)
+
         except Exception:
             xD = []
             yD = []
 
+        # Compute convergent section
         try:
             if self.epsc == None:
                 raise Exception
             epsc = float(self.epsc)
             updateentry(self.epscentry, epsc, True)
             
+            At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
             R1OvRt = float(self.r1ovrtentry.get())
-            R2OvR2max = float(self.r2ovr2maxentry.get())
-            b = float(self.bentry.get()) * angle_uom(self.buom.get())
             Lc = float(self.chamberlengthentry.get()) * length_uom(self.chamberlengthuom.get())
+            b = float(self.bentry.get()) * angle_uom(self.buom.get())
+            R2OvR2max = float(self.r2ovr2maxentry.get())
 
             xC, yC = convergent.get(At, R1OvRt, Lc, b, R2OvR2max, epsc)
         except Exception:
@@ -244,9 +279,11 @@ class GeometryFrame(ctk.CTkFrame):
             yC = []
 
         try:
+            # Concatenate coordinates
             x = concatenate((xC, xD))
             y = concatenate((yC, yD))
 
+            # Plot geometry
             self.ax.clear()
             self.ax.plot(x, y, "black")
             try:
@@ -258,6 +295,7 @@ class GeometryFrame(ctk.CTkFrame):
             self.ax.set_xlabel("Axis [m]")
             self.canvas.draw()
 
+            # Return values for performance estimation
             return At, Le, thetae
         except Exception:
             pass
