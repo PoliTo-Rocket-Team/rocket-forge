@@ -10,7 +10,7 @@ from rocketforge.utils.conversions import angle_uom, area_uom, length_uom
 from rocketforge.utils.helpers import updateentry
 from matplotlib.figure import Figure 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from numpy import concatenate
+from numpy import *
 
 
 class GeometryFrame(ctk.CTkFrame):
@@ -349,7 +349,23 @@ class GeometryFrame(ctk.CTkFrame):
             self.ax.clear()
             self.ax.plot(x, y, "black")
             try:
-                self.ax.axis([-1.05*Lc, 1.05*Le, 0, 1.05*(Le + Lc) * 226.2/789.6])
+                AR = 789.6/226.2        # Aspect ratio
+                Rt = sqrt(At/pi)        # Throat radius
+                Re = Rt * sqrt(eps)     # Exit radius
+                Rc = Rt * sqrt(epsc)    # Chamber radius
+                marg = 0.05             # Axis margin
+
+                if ((Le+Lc) / max(Rc, Re) > AR):
+                    xmin = -(marg/2 * (Le + Lc) + Lc)
+                    xmax = marg/2 * (Le + Lc) + Le
+                    ymax = (1+marg) * (Le + Lc) / AR
+                else:
+                    xmin = -((1+marg) * max(Rc, Re) * AR - Le + Lc)/ 2
+                    xmax = ((1+marg) * max(Rc, Re) * AR - Lc + Le)/ 2
+                    ymax = (1+marg) * max(Rc, Re)
+                
+                self.ax.axis([xmin, xmax, 0, ymax])
+
             except Exception:
                 pass
             self.ax.grid()

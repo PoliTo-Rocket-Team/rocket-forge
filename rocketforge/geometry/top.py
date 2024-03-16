@@ -20,15 +20,13 @@ def get(At, RnOvRt, Le, thetan, thetae, eps):
     y1 = - sqrt(Rn**2 - x1**2) + Rt + Rn
 
     # Canted parabola contour
-    xA = (yE-xE*tan(thetae)-yN+xN*tan(thetan))/(tan(thetan)-tan(thetae))
-    DN = lambda theta: (xA-xN)*(tan(thetan)-tan(theta))
-    DE = lambda theta: (xE-xA)*(tan(thetae)-tan(theta))
-    alpha = lambda theta: DN(theta)/(DN(theta)-DE(theta))
-    xp = lambda theta: xN+alpha(theta)*(2-alpha(theta))*(xA-xN)+alpha(theta)**2 *(xE-xA)
-    yp = lambda theta: yN+tan(theta)*(xp(theta)-xN)+alpha(theta)*DN(theta)
     theta = linspace(thetan, thetae, 1000)
-    x2 = xp(theta)
-    y2 = yp(theta)
+    xA = (yE-xE*tan(thetae)-yN+xN*tan(thetan))/(tan(thetan)-tan(thetae))
+    DN = (xA-xN)*(tan(thetan)-tan(theta))
+    DE = (xE-xA)*(tan(thetae)-tan(theta))
+    alpha = DN/(DN-DE)
+    x2 = xN+alpha*(2-alpha)*(xA-xN)+alpha**2 *(xE-xA)
+    y2 = yN+tan(theta)*(x2-xN)+alpha*DN
 
     # Concatenate coordinates vectors
     x = concatenate((x1, x2))
