@@ -57,11 +57,12 @@ class GeometryFrame(ctk.CTkFrame):
         self.chamberlengthentry = CTkEntry(self)
         self.chamberlengthentry.configure(placeholder_text="0", width=100)
         self.chamberlengthentry.place(anchor="e", relx=0.35, rely=0.32, x=0, y=0)
+        updateentry(self.chamberlengthentry, "1.0")
 
         self.chamberlengthoptmenu = CTkOptionMenu(self)
-        self.chamberlengthuom = tk.StringVar(value="m")
+        self.chamberlengthuom = tk.StringVar(value="L* [m]")
         self.chamberlengthoptmenu.configure(
-            values=["m", "cm", "mm", "in", "ft"], variable=self.chamberlengthuom, width=100
+            values=["L* [m]", "m", "cm", "mm", "in", "ft"], variable=self.chamberlengthuom, width=100
         )
         self.chamberlengthoptmenu.place(anchor="e", relx=0.45, rely=0.32, x=0, y=0)
 
@@ -324,9 +325,15 @@ class GeometryFrame(ctk.CTkFrame):
             
             At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
             R1OvRt = float(self.r1ovrtentry.get())
-            Lc = float(self.chamberlengthentry.get()) * length_uom(self.chamberlengthuom.get())
             b = float(self.bentry.get()) * angle_uom(self.buom.get())
             R2OvR2max = float(self.r2ovr2maxentry.get())
+
+            if self.chamberlengthuom.get() == "L* [m]":
+                Lstar = float(self.chamberlengthentry.get())
+                Lc = convergent.get_Lc(At, R1OvRt, Lstar, b, R2OvR2max, epsc)
+            else:
+                Lc = float(self.chamberlengthentry.get()) * length_uom(self.chamberlengthuom.get())
+                Lstar = convergent.get_Lstar(At, R1OvRt, Lc, b, R2OvR2max, epsc)
 
             xC, yC = convergent.get(At, R1OvRt, Lc, b, R2OvR2max, epsc)
         except Exception:
