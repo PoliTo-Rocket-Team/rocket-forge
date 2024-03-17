@@ -1,15 +1,18 @@
 import tkinter as tk
 from tkinter.messagebox import showwarning
+from tkinter.filedialog import asksaveasfilename
 import customtkinter as ctk
-from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu, CTkButton
+from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu, CTkButton, CTkImage
 import rocketforge.geometry.top as top
 import rocketforge.geometry.tic as tic
 import rocketforge.geometry.conical as conical
 import rocketforge.geometry.convergent as convergent
 from rocketforge.utils.conversions import angle_uom, area_uom, length_uom
 from rocketforge.utils.helpers import updateentry
+from rocketforge.utils.resources import resource_path
 from matplotlib.figure import Figure 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from PIL import Image
 from numpy import *
 
 
@@ -223,11 +226,28 @@ class GeometryFrame(ctk.CTkFrame):
             values=["deg", "rad"], variable=self.cthetauom, width=100
         )
 
-        # Plot
+        # Buttons
         self.plotbutton = CTkButton(self)
         self.plotbutton.configure(text="Update plot", command=self.plot)
-        self.plotbutton.place(anchor="center", relx=0.5, rely=0.53)
+        self.plotbutton.place(anchor="center", relx=0.2, rely=0.53)
 
+        self.clearplotbutton = CTkButton(self)
+        self.clearplotbutton.configure(text="Clear plot", command=self.clear_plot)
+        self.clearplotbutton.place(anchor="center", relx=0.35, rely=0.53)
+
+        self.saveplotbutton = CTkButton(self)
+        self.saveplotbutton.configure(text="Export plot...", command=self.export_plot)
+        self.saveplotbutton.place(anchor="center", relx=0.5, rely=0.53)
+
+        self.detailsbutton = CTkButton(self)
+        self.detailsbutton.configure(text="Details", command=self.details)
+        self.detailsbutton.place(anchor="center", relx=0.65, rely=0.53)
+
+        self.savedetailsbutton = CTkButton(self)
+        self.savedetailsbutton.configure(text="Help", command=self.help)
+        self.savedetailsbutton.place(anchor="center", relx=0.8, rely=0.53)
+
+        # Plot
         self.plotframe = CTkFrame(self)
         self.plotframe.configure(border_width=5, height=300, width=950)
         self.plotframe.place(anchor="center", relx=0.5, rely=0.77, x=0, y=0)
@@ -248,6 +268,10 @@ class GeometryFrame(ctk.CTkFrame):
 
         self.eps = None
         self.epsc = None
+        self.x = []
+        self.y = []
+        self.details_window = None
+        self.help_window = None
 
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
 
@@ -342,12 +366,12 @@ class GeometryFrame(ctk.CTkFrame):
 
         try:
             # Concatenate coordinates
-            x = concatenate((xC, xD))
-            y = concatenate((yC, yD))
+            self.x = concatenate((xC, xD))
+            self.y = concatenate((yC, yD))
 
             # Plot geometry
             self.ax.clear()
-            self.ax.plot(x, y, "black")
+            self.ax.plot(self.x, self.y, "black")
             try:
                 AR = 789.6/226.2        # Aspect ratio
                 Rt = sqrt(At/pi)        # Throat radius
@@ -377,12 +401,78 @@ class GeometryFrame(ctk.CTkFrame):
             return At, Le, thetae
         except Exception:
             pass
+    
+    def clear_plot(self):
+        self.ax.clear()
+        self.ax.grid()
+        self.ax.set_ylabel("Radius [m]")
+        self.ax.set_xlabel("Axis [m]")
+        self.canvas.draw()
+        self.x = []
+        self.y = []
+
+    def export_plot(self):
+        try:
+            if len(self.x) == 0:
+                showwarning(title="Warning", message="There is no plot to export")
+            else:
+                with open(asksaveasfilename(defaultextension=".txt"), "w") as f:
+                    for i in range(len(self.x)):
+                        f.write(f"{self.x[i]:.7f}\t{self.y[i]:.7f}\n")
+        except Exception:
+            pass
+
+    def details(self):
+        if self.details_window is None or not self.details_window.winfo_exists():
+            self.details_window = ctk.CTkToplevel()
+            self.details_window.title("Geometry details")
+            self.details_window.configure(width=450, height=700)
+            self.details_window.resizable(False, False)
+            self.details_window.after(
+                201,
+                lambda: self.details_window.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                ),
+            )
+
+            self.details_window.after(50, self.details_window.lift)
+            self.details_window.after(50, self.details_window.focus)
+
+        else:
+            self.details_window.lift()
+            self.details_window.focus()
+
+    def help(self):
+        if self.help_window is None or not self.help_window.winfo_exists():
+            self.help_window = ctk.CTkToplevel()
+            self.help_window.title("Geometry Help")
+            self.help_window.configure(width=610, height=310)
+            self.help_window.resizable(False, False)
+            self.help_window.after(
+                201,
+                lambda: self.help_window.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                ),
+            )
+
+            image = CTkImage(Image.open(resource_path("rocketforge/geometry/help.png")), size=(600, 300))
+            self.help_image = CTkLabel(self.help_window, text="", image=image)
+            self.help_image.place(anchor="center", relx = 0.5, rely = 0.5)
+
+            self.help_window.after(50, self.help_window.lift)
+            self.help_window.after(50, self.help_window.focus)
+
+        else:
+            self.help_window.lift()
+            self.help_window.focus()
 
     def change_shape(self, shape):
 
         self.remove_elements()
 
         if shape == "Thrust-optimized parabolic":
+            self.rnovrtlabel.place(anchor="w", relx=0.55, rely=0.27, x=0, y=0)
+            self.rnovrtentry.place(anchor="e", relx=0.95, rely=0.27, x=0, y=0)
             self.divergentlengthlabel.place(anchor="w", relx=0.55, rely=0.32, x=0, y=0)
             self.divergentlengthentry.place(anchor="e", relx=0.85, rely=0.32, x=0, y=0)
             self.divergentlengthoptmenu.place(anchor="e", relx=0.95, rely=0.32, x=0, y=0)
@@ -397,6 +487,8 @@ class GeometryFrame(ctk.CTkFrame):
             ...
 
         if shape == "Conical":
+            self.rnovrtlabel.place(anchor="w", relx=0.55, rely=0.27, x=0, y=0)
+            self.rnovrtentry.place(anchor="e", relx=0.95, rely=0.27, x=0, y=0)
             self.cleRB.place(anchor="e", relx=0.82, rely=0.32, x=0, y=0)
             self.clelabel.place(anchor="w", relx=0.55, rely=0.32, x=0, y=0)
             self.cleentry.place(anchor="e", relx=0.85, rely=0.32, x=0, y=0)
@@ -410,6 +502,8 @@ class GeometryFrame(ctk.CTkFrame):
             self.cthetaoptmenu.place(anchor="e", relx=0.95, rely=0.42, x=0, y=0)
 
     def remove_elements(self):
+        self.rnovrtlabel.place_forget()
+        self.rnovrtentry.place_forget()
         self.divergentlengthlabel.place_forget()
         self.divergentlengthentry.place_forget()
         self.divergentlengthoptmenu.place_forget()
