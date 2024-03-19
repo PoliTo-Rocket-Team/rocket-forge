@@ -447,7 +447,7 @@ class GeometryFrame(ctk.CTkFrame):
             if os.name == "nt":
                 self.detailstextbox = ctk.CTkTextbox(
                     self.details_window,
-                    height=195,
+                    height=420,
                     state="disabled",
                     wrap="none",
                     font=("Courier New", 12),
