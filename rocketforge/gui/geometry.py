@@ -8,12 +8,14 @@ import rocketforge.geometry.tic as tic
 import rocketforge.geometry.conical as conical
 import rocketforge.geometry.convergent as convergent
 from rocketforge.utils.conversions import angle_uom, area_uom, length_uom
-from rocketforge.utils.helpers import updateentry
+from rocketforge.utils.helpers import updateentry, updatetextbox
 from rocketforge.utils.resources import resource_path
 from matplotlib.figure import Figure 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from PIL import Image
 from numpy import *
+import os
+from tabulate import tabulate
 
 
 class GeometryFrame(ctk.CTkFrame):
@@ -271,6 +273,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.x = []
         self.y = []
         self.details_window = None
+        self.details_output = ""
         self.help_window = None
 
         self.configure(border_width=5, corner_radius=0, height=750, width=1000)
@@ -397,6 +400,11 @@ class GeometryFrame(ctk.CTkFrame):
             self.ax.set_xlabel("Axis [m]")
             self.canvas.draw()
 
+            try:
+                self.load_details(At, Le, Lc, Lstar, eps, epsc, RnOvRt, b, thetan, thetae, R1OvRt, R2OvR2max)
+            except Exception:
+                pass
+
             # Return values for performance estimation
             return At, Le, thetae
         except Exception:
@@ -410,15 +418,16 @@ class GeometryFrame(ctk.CTkFrame):
         self.canvas.draw()
         self.x = []
         self.y = []
+        self.details_output = ""
 
     def export_plot(self):
         try:
             if len(self.x) == 0:
                 showwarning(title="Warning", message="There is no plot to export")
             else:
-                with open(asksaveasfilename(defaultextension=".txt"), "w") as f:
+                with open(asksaveasfilename(defaultextension=".csv"), "w") as f:
                     for i in range(len(self.x)):
-                        f.write(f"{self.x[i]:.7f}\t{self.y[i]:.7f}\n")
+                        f.write(f"{self.x[i]:.7f}, {self.y[i]:.7f}\n")
         except Exception:
             pass
 
@@ -426,7 +435,7 @@ class GeometryFrame(ctk.CTkFrame):
         if self.details_window is None or not self.details_window.winfo_exists():
             self.details_window = ctk.CTkToplevel()
             self.details_window.title("Geometry details")
-            self.details_window.configure(width=450, height=700)
+            self.details_window.configure(width=450, height=480)
             self.details_window.resizable(False, False)
             self.details_window.after(
                 201,
@@ -435,12 +444,83 @@ class GeometryFrame(ctk.CTkFrame):
                 ),
             )
 
+            if os.name == "nt":
+                self.detailstextbox = ctk.CTkTextbox(
+                    self.details_window,
+                    height=195,
+                    state="disabled",
+                    wrap="none",
+                    font=("Courier New", 12),
+                )
+            else:
+                self.detailstextbox = ctk.CTkTextbox(
+                    self.details_window, height=420, state="disabled", wrap="none", font=("Mono", 12)
+                )
+            self.detailstextbox.place(relwidth=0.95, relx=0.5, rely=0.025, anchor="n")
+
+            self.savedetailsbutton = CTkButton(self.details_window)
+            self.savedetailsbutton.configure(text="Save...", command=self.save_details)
+            self.savedetailsbutton.place(anchor="center", relx=0.5, rely=0.95)
+
+            updatetextbox(self.detailstextbox, self.details_output, True)
+
             self.details_window.after(50, self.details_window.lift)
             self.details_window.after(50, self.details_window.focus)
 
         else:
+            updatetextbox(self.detailstextbox, self.details_output, True)
             self.details_window.lift()
             self.details_window.focus()
+
+    def load_details(self, At, Le, Lc, Lstar, eps, epsc, RnOvRt, b, thetan, thetae, R1OvRt, R2OvR2max):
+
+        Rt = sqrt(At/pi)            # Throat radius
+        Re = Rt * sqrt(eps)         # Exit radius
+        Rc = Rt * sqrt(epsc)        # Chamber radius
+        R1 = R1OvRt * Rt            # Convex circular arc radius
+        R2max = (Rc - Rt)/(1-cos(b)) - R1  # Maximum allowed R2
+        R2 = R2OvR2max * R2max      # Concave circular arc radius
+        m = - tan(b)
+        q = Rt + R1 * (1 - cos(b) - tan(b) * sin(b))
+        xB = (Rc - R2*(1-cos(b)) - q)/m - R2 * sin(b)
+        Lcyl = xB + Lc
+
+        self.details_output = f"{self.shape.get()} nozzle\n" + tabulate([
+            ["Throat area", "At", f"{10000*At:.2f}", "cm2"],
+            [],
+            ["Throat radius", "Rt", f"{1000*Rt:.2f}", "mm"],
+            ["Chamber radius", "Rc", f"{1000*Rc:.2f}", "mm"],
+            ["Exit radius", "Re", f"{1000*Re:.2f}", "mm"],
+            [],
+            ["Charachteristic chamber length", "L*", f"{1000*Lstar:.2f}", "mm"],
+            ["Cylindrical section length", "Lcyl", f"{1000*Lcyl:.2f}", "mm"],
+            ["Chamber length", "Lc", f"{1000*Lc:.2f}", "mm"],
+            ["Divergent length", "Le", f"{1000*Le:.2f}", "mm"],
+            ["Total length", "Le+Lc", f"{1000*(Le+Lc):.2f}", "mm"],
+            ["Relative length", "Le/Lc15", f"{100*Le / conical.lc15(At, RnOvRt, eps):.2f}", "%"],
+            [],
+            ["Contraction angle", "b", f"{degrees(b):.2f}", "deg"],
+            ["Initial divergent angle", "Tn", f"{degrees(thetan):.2f}", "deg"],
+            ["Final divergent angle", "Te", f"{degrees(thetae):.2f}", "deg"],
+            [],
+            ["Expansion area ratio", "Ae/At", f"{eps:.2f}", ""],
+            ["Contraction area ratio", "Ac/At", f"{epsc:.2f}", ""],
+            [],
+            ["Convergent convex arc radius", "R1", f"{1000*R1:.2f}", "mm"],
+            ["Convergent concave arc radius", "R2", f"{1000*R2:.2f}", "mm"],
+            ["Maximum concave arc radius", "R2max", f"{1000*R2max:.2f}", "mm"],
+            ["Divergent circular arc radius", "Rn", f"{1000*Rt * RnOvRt:.2f}", "mm"],
+        ], tablefmt="plain", floatfmt=".2f")
+
+    def save_details(self):
+        try:
+            if self.details_output:
+                with open(asksaveasfilename(defaultextension=".txt"), "w") as f:
+                    f.write(self.details_output)
+            else:
+                showwarning(title="Warning", message="There are no details to save")
+        except Exception:
+            pass
 
     def help(self):
         if self.help_window is None or not self.help_window.winfo_exists():
