@@ -336,6 +336,7 @@ class GeometryFrame(ctk.CTkFrame):
                 updateentry(self.cleentry, Le / length_uom(self.cleuom.get()))
                 updateentry(self.clfentry, Lf)
                 updateentry(self.cthetaentry, thetae / angle_uom(self.cthetauom.get()))
+                thetan = thetae
 
                 xD, yD = conical.get(At, RnOvRt, eps, Le, thetae)
 
@@ -426,8 +427,10 @@ class GeometryFrame(ctk.CTkFrame):
                 showwarning(title="Warning", message="There is no plot to export")
             else:
                 with open(asksaveasfilename(defaultextension=".csv"), "w") as f:
-                    for i in range(len(self.x)):
-                        f.write(f"{self.x[i]:.7f}, {self.y[i]:.7f}\n")
+                    f.write(f"{self.x[0]:.7f},{self.y[0]:.7f},0\n")
+                    for i in range(1, len(self.x)):
+                        if self.x[i] != self.x[i-1]:
+                            f.write(f"{self.x[i]:.7f},{self.y[i]:.7f},0\n")
         except Exception:
             pass
 

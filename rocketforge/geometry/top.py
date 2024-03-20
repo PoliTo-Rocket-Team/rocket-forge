@@ -16,11 +16,11 @@ def get(At, RnOvRt, Le, thetan, thetae, eps):
     yE = Re
 
     # Divergent circular arc coordinates
-    x1 = linspace(0, xN, 1000)
+    x1 = linspace(0, xN, 25)
     y1 = - sqrt(Rn**2 - x1**2) + Rt + Rn
 
     # Canted parabola contour
-    theta = linspace(thetan, thetae, 1000)
+    theta = linspace(thetan, thetae, 200)
     xA = (yE-xE*tan(thetae)-yN+xN*tan(thetan))/(tan(thetan)-tan(thetae))
     DN = (xA-xN)*(tan(thetan)-tan(theta))
     DE = (xE-xA)*(tan(thetae)-tan(theta))

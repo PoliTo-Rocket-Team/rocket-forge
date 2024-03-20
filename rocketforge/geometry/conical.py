@@ -17,7 +17,7 @@ def get(At, RnOvRt, eps, Le, theta):
     yE = Re
 
     # Divergent circular arc coordinates
-    x1 = linspace(0, xN, 1000)
+    x1 = linspace(0, xN, 20)
     y1 = - sqrt(Rn**2 - x1**2) + Rt + Rn
 
     # Conical section
