@@ -1,7 +1,0 @@
-numpy
-scipy
-pillow
-matplotlib
-future
-tabulate
-customtkinter
