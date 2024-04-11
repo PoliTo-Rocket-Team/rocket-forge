@@ -93,6 +93,87 @@ Executable file will be built inside the `dist` folder. To build an updated vers
 pyinstaller "Rocket Forge.spec"
 ```
 
+## Installation on MacOS
+Open Terminal.
+
+Type the following command to install Homebrew:
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+Type the following commands to add Homebrew to PATH, replace `username` with your computer username:
+```
+(echo; echo 'eval "$(/usr/local/bin/brew shellenv)"') >> /Users/username/.zprofile
+
+eval "$(/usr/local/bin/brew shellenv)"
+```
+Type the following commands to install git, GitHub command-line tool and the GCC compiler:
+```
+brew install git
+
+brew install gh
+
+brew install gcc
+```
+Download Miniconda3 installation script for MacOS https://docs.anaconda.com/free/miniconda/index.html (check for Intel or Apple M1 CPU).
+
+Move to the `Downloads` folder inside the Terminal using the following command:
+```
+cd Downloads
+```
+Run Miniconda3 installation script using the following command:
+```
+bash Miniconda3-lastest-MacOSX-x86_64.sh
+```
+Press `ENTER` and type `yes` when needed to complete the installation. You can skip the license text by pressing `q`.
+
+Close and reopen the terminal window to be able to use Miniconda.
+
+Update conda libraries using the following command:
+```
+conda update -n base -c defaults conda
+```
+Create and activate a new virtual environment with Python 3.11 using the following commands:
+```
+conda create -n rocket python=3.11
+
+conda activate rocket
+```
+Install python dependencies using the following commands:
+```
+pip3 install numpy
+
+pip3 install genericf2py
+
+pip3 install customtkinter
+
+pip3 install tabulate
+
+pip3 install rocketcea
+```
+Try a quick test of the install using the following command:
+```
+python -c "from rocketcea.cea_obj import CEA_Obj; C=CEA_Obj(oxName='LOX', fuelName='LH2'); print(C.get_Isp())"
+```
+Download Visual Studio Code https://code.visualstudio.com/
+
+Install the Python extension inside Visual Studio Code.
+
+Login in GitHub command-line tool using the following command:
+```
+gh auth login
+```
+Then select `GitHub.com` -> `HTTPS` -> `Y` -> `Paste an authentication token` and type your GitHub authentication token.
+
+Clone the repository using the following command
+```
+git clone https://github.com/Polito-Rocket-Team/Efesto-Rocket-Forge
+```
+Open the `Efesto-Rocket-Forge` folder inside Visual Studio Code.
+
+Use `Cmd+Shift+P` to open the Visual Studio Code command palette, then type and select `Python: Select interpreter` and choose `Python 3.11.8 ("rocket")`.
+
+You should now be able to run Rocket Forge using the run button in the `main.py` file.
+
 ## Installation on GNU/Linux
 
 Install gfortran <https://fortran-lang.org/en/learn/os_setup/install_gfortran/>
