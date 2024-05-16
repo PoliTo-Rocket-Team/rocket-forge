@@ -16,7 +16,7 @@ def perf(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0):
         fuelName=fuel,
         fac_CR=epsc,
         cstar_units="m/s",
-        pressure_units="Pa",
+        pressure_units="bar",
         temperature_units="K",
         sonic_velocity_units="m/s",
         enthalpy_units="kJ/kg",
@@ -25,24 +25,34 @@ def perf(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0):
     )
 
     Tg_equilibrium = C.get_Temperatures(Pc=pc, MR=mr, eps=eps, frozen=0, frozenAtThroat=0)
+    rho = C.get_Densities(Pc=pc, MR=mr, eps=eps, frozen=0, frozenAtThroat=0)
     Tg = Tg_equilibrium[0]
+    rho_g=rho[0]
 
-    return Tg
+    list = [Tg,rho_g]
+
+    return list
 
 ox = 'O2'
 fuel = 'CH4'
 pc = 40 # bar
 mr = 2.9
 eps = 2.7
-Tg = perf(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0) # K
+Tl_sat = 186.11
+Tg = perf(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0)[0]
+rho_g = perf(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0)[1]
 
 Tl = 220 # K
 
 properties = methane_properties(pc, Tl)
 
-density = properties[2]
+cp_l = properties[3]
+rho_l = properties[2]
+mu_l=properties[1]
+lambda_l=properties[0]
+pr_l=mu_l*cp_l/lambda_l
 
-print("La densità del metano è:", density, "kg/m3")
+print(rho_g,Tg)
 
 
 
