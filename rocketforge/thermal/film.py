@@ -26,10 +26,13 @@ def perf(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0):
 
     Tg_equilibrium = C.get_Temperatures(Pc=pc, MR=mr, eps=eps, frozen=0, frozenAtThroat=0)
     rho = C.get_Densities(Pc=pc, MR=mr, eps=eps, frozen=0, frozenAtThroat=0)
+    a=C.get_SonicVelocities(Pc=pc, MR=mr, eps=eps, frozen=0, frozenAtThroat=0)
+    M=C.get_MachNumber(Pc=pc, MR=mr, eps=eps, frozen=0, frozenAtThroat=0)
     Tg = Tg_equilibrium[0]
     rho_g=rho[0]
+    a_g=a[0]
 
-    list = [Tg,rho_g]
+    list = [Tg,rho_g,a_g]
 
     return list
 
@@ -41,6 +44,7 @@ eps = 2.7
 Tl_sat = 186.11
 Tg = perf(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0)[0]
 rho_g = perf(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0)[1]
+a_g=perf(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0)[2]
 
 Tl = 220 # K
 
@@ -52,7 +56,7 @@ mu_l=properties[1]
 lambda_l=properties[0]
 pr_l=mu_l*cp_l/lambda_l
 
-print(rho_g,Tg)
+print(rho_g,Tg,a_g)
 
 
 

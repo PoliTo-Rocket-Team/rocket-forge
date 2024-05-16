@@ -22,25 +22,25 @@ def methane_properties(pres, temper):
     temp = np.array(testdata['Temperature (K)'])
     tc = np.array(testdata['Therm. Cond. (W/m*K)'])
     rho = np.array(testdata['Density (kg/m3)'])
-    nu = np.array(testdata['Viscosity (Pa*s)'])
+    mu = np.array(testdata['Viscosity (Pa*s)'])
     cp = np.array(testdata['Cp (J/g*K)'])
     cv = np.array(testdata['Cv (J/g*K)'])
 
     # data interpolation
     ftc = interp1d(temp, tc, kind='cubic')
     frho = interp1d(temp, rho, kind='cubic')
-    fnu = interp1d(temp, nu, kind='cubic')
+    fmu = interp1d(temp, mu, kind='cubic')
     fcp = interp1d(temp, cp, kind='cubic')
     fcv = interp1d(temp, cv, kind='cubic')
 
     # calculation of properties from interpolated curves
     lambd = ftc(temper)
-    nu = fnu(temper)
+    mu = fmu(temper)
     rho = frho(temper)
     cp = fcp(temper)
     cv = fcv(temper)
     gamma = cp/cv
 
-    list = [lambd, nu, rho, cp, cv, gamma]
+    list = [lambd, mu, rho, cp, cv, gamma]
 
     return list
