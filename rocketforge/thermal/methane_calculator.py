@@ -18,7 +18,7 @@ def methane_properties(pres, temper):
 
     # data extraction from NIST_Methane.xlsx
     sheetname = str(var_rounded)
-    testdata = pd.read_excel('NIST_Methane.xlsx', sheet_name=sheetname)
+    testdata = pd.read_excel('rocketforge/thermal/NIST_Methane.xlsx', sheet_name=sheetname)
     temp = np.array(testdata['Temperature (K)'])
     tc = np.array(testdata['Therm. Cond. (W/m*K)'])
     rho = np.array(testdata['Density (kg/m3)'])
@@ -41,6 +41,6 @@ def methane_properties(pres, temper):
     cv = fcv(temper)
     gamma = cp/cv
 
-    return lambd,nu,rho,cp,cv,gamma
+    list = [lambd, nu, rho, cp, cv, gamma]
 
-
+    return list
