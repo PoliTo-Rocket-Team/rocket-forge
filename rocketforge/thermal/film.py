@@ -41,6 +41,8 @@ fuel = 'CH4'
 pc = 40 # bar
 mr = 2.9
 eps = 2.7
+m_dot = 1.90893 # kg/s
+A_c = np.pi*(0.09423/2)**2 #m2
 Tl_sat = 186.11
 Tg = perf(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0)[0]
 rho_g = perf(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0)[1]
@@ -55,8 +57,9 @@ rho_l = properties[2]
 mu_l=properties[1]
 lambda_l=properties[0]
 pr_l=mu_l*cp_l/lambda_l
+u_g = m_dot/(rho_g*A_c)
 
-print(rho_g,Tg,a_g)
+print(u_g)
 
 
 
