@@ -41,9 +41,9 @@ Install python requirements:
 pip install tabulate customtkinter
 ```
 
-Install rocketcea:  
+Install rocketcea and rocketprops:  
 ```
-pip install rocketcea
+pip install rocketcea rocketprops
 ```
 
 You can check if rocketcea has been successfully installed using the following command:
@@ -149,6 +149,8 @@ pip3 install customtkinter
 pip3 install tabulate
 
 pip3 install rocketcea
+
+pip3 install rocketprops
 ```
 Try a quick test of the install using the following command:
 ```
@@ -180,7 +182,7 @@ Install gfortran <https://fortran-lang.org/en/learn/os_setup/install_gfortran/>
 
 Install python requirements:
 ```
-pip install tabulate customtkinter rocketcea pyinstaller
+pip install tabulate customtkinter rocketcea rocketprops pyinstaller
 ```
 Assign a temporary variable to python libraries folder:
 ```
