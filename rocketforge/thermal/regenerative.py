@@ -21,6 +21,7 @@ def main():
     Lc = 0.15589 # chamber length
     Le = 0.05344 # divergent length
     At = 0.000872 # throat section area
+    Dt = 2 * sqrt(At/pi)
     Nc = 70 # number of channels (TODO)
     deco = linspace(0.0025, 0.0012, 60)
     ded = linspace(0.0012, 0.002, 20)
@@ -28,7 +29,7 @@ def main():
     Ac = de**2
     k = 285 # wall thermal conductivity
     dy = 0.0008 # wall thickness
-    A = (2*pi*R)*(Lc+Le)/n_s # convective heat transfer surface
+    A = de*Nc*(Lc+Le)/n_s # convective heat transfer surface
 
     # Thermodynamic properties
     p = linspace(45*10**5, 70*10**5, n_s) # coolant line pressure
@@ -42,6 +43,9 @@ def main():
     Mco = linspace(0, 1, 30)
     Md = array([1.31303, 1.44362, 1.54177, 1.62242, 1.69165, 1.75262, 1.80726, 1.85687, 1.90236, 1.94441, 1.98353, 2.02012, 2.05451, 2.08696, 2.1177, 2.1469, 2.17472, 2.20129, 2.22673, 2.25115])
     M = concatenate((Mcyl, Mco, Md)) # mach number
+    Tco = linspace(3369.19, 3183.06, 60)
+    Td = array([3056.48, 2995.56, 2946.76, 2904.76, 2867.33,2833.35,2802.07,2773.02,2745.83,2720.25,2696.06,2673.11,2651.26,2630.39,2610.43,2591.27,2572.87,2555.16,2538.09,2521.59])
+    T = concatenate((Tco, Td)) # temperature
     pc = 40 * 10**5 # chamber pressure
     Ts = 3369.19 # stagnation temperature
     cstar = 1817.04 # delivered characteristic velocity
@@ -61,7 +65,6 @@ def main():
 
     while True:
         # At each station, calculate the gas-side heat flux (convective and radiation) for given Twg
-        Dt = sqrt(At/pi)
         Taw = Ts * (1+Pr**0.33 * (gamma-1)/2 * M**2)/(1+(gamma-1)/2*M**2)
         sigma = (0.5*Twg/Ts * (1+(gamma-1)/2*M**2)+0.5)**(-0.68) * (1+(gamma-1)/2*M**2)**(-0.12)
         h = 0.026 / (Dt**0.2) * mu0**0.2 *cp0 / (Pr0**0.6) * (pc/cstar)**0.8 * (Dt/R)*0.1 *(At/pi/R**2)**0.9 * sigma
@@ -78,9 +81,9 @@ def main():
         cpc = cpc[::-1]
         for n in range(n_s):
             # rhoc[n] = P.SGLiqAtTdegR(Tc[n] * 1.8) * 1000
-            rhoc[n] = P.SG_compressed(Tc[n] * 1.8, p[n] * 6894.8) * 1000
+            rhoc[n] = P.SG_compressed(Tc[n] * 1.8, p[n] / 6894.8) * 1000
             # muc[n] = P.ViscAtTdegR(Tc[n] * 1.8) / 10
-            muc[n] = P.Visc_compressed(Tc[n] * 1.8, p[n] * 6894.8) / 10
+            muc[n] = P.Visc_compressed(Tc[n] * 1.8, p[n] / 6894.8) / 10
             lambdac[n] = P.CondAtTdegR(Tc[n] * 1.8) * 1.72958
 
         # Calculate the coolant-side heat transfer coefficient hc
@@ -106,10 +109,17 @@ def main():
             plot(Twg, label="Twg")
             plot(Twc, label="Twc")
             plot(Tc, label="Tc")
+            xlabel("Station")
+            grid()
+            legend()
+            figure()
+            plot(q/1000)
+            ylabel("Wall Heat Flux [$kW/m^2$]")
+            xlabel("Station")
+            grid()
+            show()
             break
 
-    grid()
-    legend()
     show()
 
 
