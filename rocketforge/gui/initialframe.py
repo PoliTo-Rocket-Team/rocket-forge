@@ -286,24 +286,16 @@ class InitialFrame(ctk.CTkFrame):
         self.epscentry.configure(placeholder_text="0", width=118)
         self.epscentry.place(anchor="e", relx=0.98, rely=0.53, x=0, y=0)
 
-        self.massfluxRB = ctk.CTkRadioButton(
-            self,
-            text="Mass flow rate (TODO)",
-            variable=self.inletcondition,
-            value=1,
-        )
-        self.massfluxRB.place(anchor="w", relx=0.51, rely=0.6, x=0, y=0)
-
         self.infepscRB = ctk.CTkRadioButton(
             self,
             text="Infinite area combustor",
             variable=self.inletcondition,
-            value=2,
+            value=1,
         )
-        self.infepscRB.place(anchor="w", relx=0.51, rely=0.67, x=0, y=0)
+        self.infepscRB.place(anchor="w", relx=0.51, rely=0.6, x=0, y=0)
 
         self.thrustlabel = CTkLabel(self)
-        self.thrustlabel.configure(text="Nominal thrust (TODO)")
+        self.thrustlabel.configure(text="Nominal thrust")
         self.thrustlabel.place(anchor="w", relx=0.02, rely=0.74, x=0, y=0)
 
         self.thrustentry = CTkEntry(self)
@@ -403,7 +395,7 @@ class InitialFrame(ctk.CTkFrame):
                 ["Alpha (oxidizer excess coefficient)", alpha, ""],
             ]
             output2 = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".3f")
-            tmp = theoretical(ox, fuel, pc, mr, eps)
+            tmp = theoretical(ox, fuel, pc, mr, eps, epsc)
             cstar = tmp[0]
             output1 = tmp[-3]
             output = output1 + 2 * "\n" + output2
