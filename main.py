@@ -126,9 +126,16 @@ class RocketForge(CTk):
         self.statuslabel.configure(text="Status: running...")
         self.statuslabel.update()
         try:
-            ox, fuel, pc, mr, eps, epsc = self.initialframe.expressrun()
+            ox, fuel, pc, mr, eps, epsc, At = self.initialframe.expressrun()
             self.statuslabel.configure(text="Status: computing geometry...")
             self.statuslabel.update()
+            if At != None:
+                if At > 0.01:
+                    updateentry(self.geometryframe.throatareaentry, At)
+                    self.geometryframe.throatareauom.set("m2")
+                else:
+                    updateentry(self.geometryframe.throatareaentry, At * 10000)
+                    self.geometryframe.throatareauom.set("cm2")
             geometry = self.geometryframe.loadgeometry(eps, epsc)
         except Exception:
             geometry = (0, 0, 0)
@@ -137,6 +144,22 @@ class RocketForge(CTk):
             self.statuslabel.configure(text="Status: computing performance...")
             self.statuslabel.update()
             self.performanceframe.loadengine(ox, fuel, mr, pc, eps, epsc, geometry)
+            if At != None:
+                old_At = 0
+                Att = At
+                while abs((At - old_At)/At) > 0.001:
+                    old_At = At
+                    z_f = float(self.performanceframe.deliveredframe.BLeffentry.get())
+                    z_d = float(self.performanceframe.deliveredframe.diveffentry.get())
+                    At = Att / z_f / z_d
+                    if At > 0.01:
+                        updateentry(self.geometryframe.throatareaentry, At)
+                        self.geometryframe.throatareauom.set("m2")
+                    else:
+                        updateentry(self.geometryframe.throatareaentry, At * 10000)
+                        self.geometryframe.throatareauom.set("cm2")
+                    geometry = self.geometryframe.loadgeometry(eps, epsc)
+                    self.performanceframe.loadengine(ox, fuel, mr, pc, eps, epsc, geometry)
         except Exception:
             pass
         self.statuslabel.configure(text="Status: idle")

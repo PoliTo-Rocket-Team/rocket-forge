@@ -4,7 +4,7 @@ import os
 from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu
 from tabulate import tabulate
 from rocketcea.cea_obj_w_units import CEA_Obj
-from rocketforge.utils.conversions import pressure_uom
+from rocketforge.utils.conversions import pressure_uom, thrust_uom
 from rocketforge.utils.helpers import updatetextbox
 from rocketforge.performance.mixtureratio import optimizemr, optimizermr_at_pe
 from rocketforge.performance.theoreticalperf import theoretical
@@ -403,11 +403,21 @@ class InitialFrame(ctk.CTkFrame):
                 ["Alpha (oxidizer excess coefficient)", alpha, ""],
             ]
             output2 = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".3f")
-            output1 = theoretical(ox, fuel, pc, mr, eps)[-3]
+            tmp = theoretical(ox, fuel, pc, mr, eps)
+            cstar = tmp[0]
+            output1 = tmp[-3]
             output = output1 + 2 * "\n" + output2
         except Exception as err:
             output = str(err)
 
         updatetextbox(self.textbox, output, True)
 
-        return ox, fuel, pc, mr, eps, epsc
+        try:
+            T = float(self.thrustentry.get()) * thrust_uom(self.thrustuom.get())
+            pamb = float(self.thrustentry2.get()) * pressure_uom(self.thrustuom2.get())
+            c = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pamb)[0] * 9.80655
+            At = T * cstar / c / pc
+        except Exception:
+            At = None
+
+        return ox, fuel, pc, mr, eps, epsc, At
