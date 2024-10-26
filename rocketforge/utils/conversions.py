@@ -6,6 +6,14 @@ def pressure_uom(uom: str) -> float:
     return uoms[uom]
 
 
+def thrust_uom(uom: str) -> float:
+    """
+    Converts force unit of measure to Newtons
+    """
+    uoms = {"N": 1, "kN": 1000, "MN": 1000000, "kgf": 9.80655, "lbf": 4.44822162}
+    return uoms[uom]
+
+
 def length_uom(uom: str) -> float:
     """
     Converts length unit of measure to meters
