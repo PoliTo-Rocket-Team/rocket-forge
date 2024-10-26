@@ -260,6 +260,10 @@ class RocketForge(CTk):
                 # "mass_flux": self.initialframe.massflowrateentry.get(),
                 # "mass_flux_uom": self.initialframe.massflowrateuom.get(),
                 "contraction_ratio": self.initialframe.epscentry.get(),
+                "thrust": self.initialframe.thrustentry.get(),
+                "thrust_uom": self.initialframe.thrustuom.get(),
+                "ambient_pressure": self.initialframe.thrustentry2.get(),
+                "ambient_pressure_uom": self.initialframe.thrustuom2.get(),
             }
             tf = self.performanceframe.thermodynamicframe
             df = self.performanceframe.deliveredframe
@@ -333,6 +337,10 @@ class RocketForge(CTk):
             # updateentry(idf.massflowrateentry, config.get("InitialData", "mass_flux"))
             # idf.massflowrateuom.set(config.get("InitialData", "mass_flux_uom"))
             updateentry(idf.epscentry, config.get("InitialData", "contraction_ratio"))
+            updateentry(idf.thrustentry, config.get("InitialData", "thrust"))
+            idf.thrustuom.set(config.get("InitialData", "thrust_uom"))
+            updateentry(idf.thrustentry2, config.get("InitialData", "ambient_pressure"))
+            idf.thrustuom2.set(config.get("InitialData", "ambient_pressure_uom"))
 
             tf = self.performanceframe.thermodynamicframe
             df = self.performanceframe.deliveredframe
