@@ -22,7 +22,7 @@ class RocketForge(CTk):
         ctk.set_default_color_theme(resource_path("theme.json"))
 
         super().__init__(*args, **kwargs)
-        self.configure(height=800, padx=5, pady=5, width=1200)
+        self.configure(height=480, padx=0, pady=0, width=720)
         self.resizable(False, False)
         self.title("Rocket Forge")
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -41,93 +41,77 @@ class RocketForge(CTk):
         self.performanceframe = PerformanceFrame(self)
         self.performanceframe.grid(column=1, row=0)
 
-        # Thermal analysis frame
-        self.thermalframe = ThermalFrame(self)
-        self.thermalframe.grid(column=1, row=0)
-
         # Geometry frame
         self.geometryframe = GeometryFrame(self)
         self.geometryframe.grid(column=1, row=0)
 
+        # Thermal analysis frame
+        self.thermalframe = ThermalFrame(self)
+        self.thermalframe.grid(column=1, row=0)
+
         # Sidebar
         self.sidebar = CTkFrame(self)
-        self.sidebar.configure(border_width=5, corner_radius=0, height=750, width=200)
+        self.sidebar.configure(border_width=1, corner_radius=0, height=480, width=120)
 
         self.aboutbutton = CTkButton(self.sidebar)
         self.aboutbutton.configure(
-            text="About...", width=180, command=self.about_window
+            text="About...", width=114, command=self.about_window
         )
-        self.aboutbutton.place(anchor="center", relx=0.5, rely=0.95, x=0, y=0)
+        self.aboutbutton.place(anchor="center", relx=0.5, rely=0.96, x=0, y=0)
 
         self.preferencesbutton = CTkButton(self.sidebar)
         self.preferencesbutton.configure(
-            text="Preferences...", width=180, command=self.preferences_window
+            text="Preferences...", width=114, command=self.preferences_window
         )
-        self.preferencesbutton.place(anchor="center", relx=0.5, rely=0.90, x=0, y=0)
+        self.preferencesbutton.place(anchor="center", relx=0.5, rely=0.89, x=0, y=0)
 
         self.loadbutton = CTkButton(self.sidebar)
-        self.loadbutton.configure(text="Load...", width=180, command=self.load_config)
-        self.loadbutton.place(anchor="center", relx=0.5, rely=0.85, x=0, y=0)
+        self.loadbutton.configure(text="Load...", width=114, command=self.load_config)
+        self.loadbutton.place(anchor="center", relx=0.5, rely=0.82, x=0, y=0)
 
         self.savebutton = CTkButton(self.sidebar)
-        self.savebutton.configure(text="Save...", width=180, command=self.save_config)
-        self.savebutton.place(anchor="center", relx=0.5, rely=0.8, x=0, y=0)
+        self.savebutton.configure(text="Save...", width=114, command=self.save_config)
+        self.savebutton.place(anchor="center", relx=0.5, rely=0.75, x=0, y=0)
 
         self.initialdatabutton = CTkButton(self.sidebar)
         self.initialdatabutton.configure(
-            text="Initial Data", width=180, command=lambda: self.initialframe.tkraise()
+            text="Engine Definition", width=114, command=lambda: self.initialframe.tkraise()
         )
-        self.initialdatabutton.place(anchor="center", relx=0.5, rely=0.2, x=0, y=0)
+        self.initialdatabutton.place(anchor="center", relx=0.5, rely=0.04, x=0, y=0)
 
         self.performancebutton = CTkButton(self.sidebar)
         self.performancebutton.configure(
             text="Performance",
-            width=180,
+            width=114,
             command=lambda: self.performanceframe.tkraise(),
         )
-        self.performancebutton.place(anchor="center", relx=0.5, rely=0.25, x=0, y=0)
-
-        self.thermalbutton = CTkButton(self.sidebar)
-        self.thermalbutton.configure(
-            text="Thermal analysis",
-            width=180,
-            command=lambda: self.thermalframe.tkraise(),
-        )
-        self.thermalbutton.place(anchor="center", relx=0.5, rely=0.3, x=0, y=0)
+        self.performancebutton.place(anchor="center", relx=0.5, rely=0.11, x=0, y=0)
 
         self.geometrybutton = CTkButton(self.sidebar)
         self.geometrybutton.configure(
-            text="Geometry", width=180, command=lambda: self.geometryframe.tkraise()
+            text="Geometry", width=114, command=lambda: self.geometryframe.tkraise()
         )
-        self.geometrybutton.place(anchor="center", relx=0.5, rely=0.35, x=0, y=0)
-
-        self.logoframe = CTkFrame(self.sidebar)
-        self.logoframe.configure(border_width=5, height=100, width=180)
-        logoimage = CTkImage(Image.open(resource_path("icon.png")), size=(90, 90))
-        self.logoimage = CTkLabel(self.logoframe, text="", image=logoimage)
-        self.logoimage.place(anchor="center", relx=0.3, rely=0.5)
-        self.logolabel = CTkLabel(self.logoframe)
-        self.logolabel.configure(
-            font=CTkFont("Sans", 18, "bold", "roman", False, False),
-            justify="center",
-            text="Rocket\nForge",
-        )
-        self.logolabel.place(
-            anchor="center", relx=0.7, rely=0.5, x=0, y=0
-        )
-        self.logoframe.place(anchor="n", relx=0.5, rely=0.02, x=0, y=0)
+        self.geometrybutton.place(anchor="center", relx=0.5, rely=0.18, x=0, y=0)
 
         self.sidebar.grid(column=0, row=0)
 
+        self.thermalbutton = CTkButton(self.sidebar)
+        self.thermalbutton.configure(
+            text="Thermal Analysis",
+            width=114,
+            command=lambda: self.thermalframe.tkraise(),
+        )
+        self.thermalbutton.place(anchor="center", relx=0.5, rely=0.25, x=0, y=0)
+
         # Status bar
         self.statusbar = CTkFrame(self)
-        self.statusbar.configure(border_width=5, corner_radius=0, height=50, width=1200)
+        self.statusbar.configure(border_width=1, corner_radius=0, height=32, width=720)
         self.runbutton = CTkButton(self.statusbar)
         self.runbutton.configure(text="Run", command=self.run)
-        self.runbutton.place(anchor="e", relx=0.98, rely=0.5, x=0, y=0)
+        self.runbutton.place(anchor="e", relx=0.99, rely=0.5, x=0, y=0)
         self.statuslabel = CTkLabel(self.statusbar)
         self.statuslabel.configure(justify="right", text="Status: idle")
-        self.statuslabel.place(anchor="e", relx=0.85, rely=0.5, x=0, y=0)
+        self.statuslabel.place(anchor="e", relx=0.77, rely=0.5, x=0, y=0)
         self.statusbar.grid(column=0, columnspan=2, row=1)
 
         # Raise initial frame
@@ -142,10 +126,9 @@ class RocketForge(CTk):
         self.statuslabel.configure(text="Status: running...")
         self.statuslabel.update()
         try:
-            ox, fuel, pc, mr, eps = self.initialframe.expressrun()
+            ox, fuel, pc, mr, eps, epsc = self.initialframe.expressrun()
             self.statuslabel.configure(text="Status: computing geometry...")
             self.statuslabel.update()
-            epsc = self.performanceframe.thermodynamicframe.contractionentry.get()
             geometry = self.geometryframe.loadgeometry(eps, epsc)
         except Exception:
             geometry = (0, 0, 0)
@@ -153,7 +136,7 @@ class RocketForge(CTk):
         try:
             self.statuslabel.configure(text="Status: computing performance...")
             self.statuslabel.update()
-            self.performanceframe.loadengine(ox, fuel, mr, pc, eps, geometry)
+            self.performanceframe.loadengine(ox, fuel, mr, pc, eps, epsc, geometry)
         except Exception:
             pass
         self.statuslabel.configure(text="Status: idle")
@@ -193,7 +176,7 @@ class RocketForge(CTk):
         if self.preferences is None or not self.preferences.winfo_exists():
             self.preferences = ctk.CTkToplevel()
             self.preferences.title("Preferences")
-            self.preferences.configure(width=400, height=300)
+            self.preferences.configure(width=300, height=80)
             self.preferences.resizable(False, False)
             self.preferences.after(
                 201,
@@ -205,14 +188,14 @@ class RocketForge(CTk):
             self.appearance_mode_label = CTkLabel(
                 self.preferences, text="Appearance Mode:", anchor="w"
             )
-            self.appearance_mode_label.place(anchor="w", relx=0.1, rely=0.1)
+            self.appearance_mode_label.place(anchor="w", relx=0.05, rely=0.5)
             self.appearance_mode_optionemenu = ctk.CTkOptionMenu(
                 self.preferences,
                 values=["System", "Light", "Dark"],
                 variable=self.appearance_mode,
                 command=self.change_appearance_mode_event,
             )
-            self.appearance_mode_optionemenu.place(anchor="w", relx=0.5, rely=0.1)
+            self.appearance_mode_optionemenu.place(anchor="e", relx=0.95, rely=0.5)
 
             self.preferences.after(50, self.preferences.lift)
             self.preferences.after(50, self.preferences.focus)
@@ -238,7 +221,6 @@ class RocketForge(CTk):
             config = ConfigParser()
             config["InitialData"] = {
                 "name": self.initialframe.enginenameentry.get(),
-                "description": self.initialframe.description.get("1.0",'end-1c'),
                 "chamber_pressure": self.initialframe.pcentry.get(),
                 "chamber_pressure_uom": self.initialframe.pcuom.get(),
                 "oxidizer": self.initialframe.oxvar.get(),
@@ -251,20 +233,20 @@ class RocketForge(CTk):
                 "exit_pressure_uom": self.initialframe.peuom.get(),
                 "exit_condition": self.initialframe.exitcondition.get(),
                 "mixture_ratio_optimization": self.initialframe.optimizationmode.get(),
+                "inlet_conditions": self.initialframe.inletcondition.get(),
+                # "mass_flux": self.initialframe.massflowrateentry.get(),
+                # "mass_flux_uom": self.initialframe.massflowrateuom.get(),
+                "contraction_ratio": self.initialframe.epscentry.get(),
             }
             tf = self.performanceframe.thermodynamicframe
             df = self.performanceframe.deliveredframe
             config["Performance"] = {
-                "inlet_conditions": tf.inletconditions.get(),
-                "mass_flux": tf.massfluxentry.get(),
-                "mass_flux_uom": tf.massfluxuom.get(),
-                "contraction_ratio": tf.contractionentry.get(),
                 "flow_model": tf.frozenflow.get(),
                 "number_of_stations": tf.stationsentry.get(),
-                "consider_multiphase": df.multiphase.get(),
-                "condensed_heat_capacity": df.condheatcapacityentry.get(),
-                "condensed_heat_capacity_uom": df.condheatcapacityuom.get(),
-                "mass_frac_condensed": df.condmassfracentry.get(),
+                # "consider_multiphase": df.multiphase.get(),
+                # "condensed_heat_capacity": df.condheatcapacityentry.get(),
+                # "condensed_heat_capacity_uom": df.condheatcapacityuom.get(),
+                # "mass_frac_condensed": df.condmassfracentry.get(),
             }
             gf = self.geometryframe
             config["Geometry"] = {
@@ -312,7 +294,6 @@ class RocketForge(CTk):
             idf = self.initialframe
 
             updateentry(idf.enginenameentry, config.get("InitialData", "name"))
-            updatetextbox(idf.description, config.get("InitialData", "description"))
             updateentry(idf.pcentry, config.get("InitialData", "chamber_pressure"))
             idf.pcuom.set(config.get("InitialData", "chamber_pressure_uom"))
             idf.oxvar.set(config.get("InitialData", "oxidizer"))
@@ -325,20 +306,20 @@ class RocketForge(CTk):
             idf.peuom.set(config.get("InitialData", "exit_pressure_uom"))
             idf.exitcondition.set(config.get("InitialData", "exit_condition"))
             idf.optimizationmode.set(config.get("InitialData", "mixture_ratio_optimization"))
+            idf.inletcondition.set(config.get("InitialData", "inlet_conditions"))
+            # updateentry(idf.massflowrateentry, config.get("InitialData", "mass_flux"))
+            # idf.massflowrateuom.set(config.get("InitialData", "mass_flux_uom"))
+            updateentry(idf.epscentry, config.get("InitialData", "contraction_ratio"))
 
             tf = self.performanceframe.thermodynamicframe
             df = self.performanceframe.deliveredframe
 
-            tf.inletconditions.set(config.get("Performance", "inlet_conditions"))
-            updateentry(tf.massfluxentry, config.get("Performance", "mass_flux"))
-            tf.massfluxuom.set(config.get("Performance", "mass_flux_uom"))
-            updateentry(tf.contractionentry, config.get("Performance", "contraction_ratio"))
             tf.frozenflow.set(config.get("Performance", "flow_model"))
             updateentry(tf.stationsentry, config.get("Performance", "number_of_stations"))
-            df.multiphase.set(config.get("Performance", "consider_multiphase"))
-            updateentry(df.condheatcapacityentry, config.get("Performance", "condensed_heat_capacity"))
-            df.condheatcapacityuom.set(config.get("Performance", "condensed_heat_capacity_uom"))
-            updateentry(df.condmassfracentry, config.get("Performance", "mass_frac_condensed"))
+            # df.multiphase.set(config.get("Performance", "consider_multiphase"))
+            # updateentry(df.condheatcapacityentry, config.get("Performance", "condensed_heat_capacity"))
+            # df.condheatcapacityuom.set(config.get("Performance", "condensed_heat_capacity_uom"))
+            # updateentry(df.condmassfracentry, config.get("Performance", "mass_frac_condensed"))
 
             gf = self.geometryframe
 
