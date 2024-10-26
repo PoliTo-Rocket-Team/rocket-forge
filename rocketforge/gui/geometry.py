@@ -158,6 +158,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.thetanentry = CTkEntry(self)
         self.thetanentry.configure(placeholder_text="0", width=59)
         self.thetanentry.place(anchor="e", relx=529/600, rely=0.32, x=0, y=0)
+        updateentry(self.thetanentry, "25")
 
         self.thetanoptmenu = CTkOptionMenu(self)
         self.thetanuom = tk.StringVar(value="deg")
@@ -173,6 +174,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.thetaexentry = CTkEntry(self)
         self.thetaexentry.configure(placeholder_text="0", width=59)
         self.thetaexentry.place(anchor="e", relx=529/600, rely=0.39, x=0, y=0)
+        updateentry(self.thetaexentry, "8")
 
         self.thetaexoptmenu = CTkOptionMenu(self)
         self.thetaexuom = tk.StringVar(value="deg")
