@@ -3,8 +3,9 @@ import customtkinter as ctk
 import sys
 from rocketforge.gui.initialframe   import InitialFrame
 from rocketforge.gui.performance    import PerformanceFrame
-from rocketforge.gui.thermal        import ThermalFrame
 from rocketforge.gui.geometry       import GeometryFrame
+from rocketforge.gui.nested         import NestedFrame
+from rocketforge.gui.thermal        import ThermalFrame
 from rocketforge.utils.resources    import resource_path
 from rocketforge.utils.helpers      import updateentry, updatetextbox
 from customtkinter                  import CTk, CTkButton, CTkFont, CTkFrame, CTkLabel, CTkImage
@@ -45,6 +46,10 @@ class RocketForge(CTk):
         self.geometryframe = GeometryFrame(self)
         self.geometryframe.grid(column=1, row=0)
 
+        # Nested analysis frame
+        self.nestedframe = NestedFrame(self)
+        self.nestedframe.grid(column=1, row=0)
+
         # Thermal analysis frame
         self.thermalframe = ThermalFrame(self)
         self.thermalframe.grid(column=1, row=0)
@@ -55,53 +60,61 @@ class RocketForge(CTk):
 
         self.aboutbutton = CTkButton(self.sidebar)
         self.aboutbutton.configure(
-            text="About...", width=114, command=self.about_window
+            text="About...", width=110, command=self.about_window
         )
         self.aboutbutton.place(anchor="center", relx=0.5, rely=0.96, x=0, y=0)
 
         self.preferencesbutton = CTkButton(self.sidebar)
         self.preferencesbutton.configure(
-            text="Preferences...", width=114, command=self.preferences_window
+            text="Preferences...", width=110, command=self.preferences_window
         )
         self.preferencesbutton.place(anchor="center", relx=0.5, rely=0.89, x=0, y=0)
 
         self.loadbutton = CTkButton(self.sidebar)
-        self.loadbutton.configure(text="Load...", width=114, command=self.load_config)
+        self.loadbutton.configure(text="Load...", width=110, command=self.load_config)
         self.loadbutton.place(anchor="center", relx=0.5, rely=0.82, x=0, y=0)
 
         self.savebutton = CTkButton(self.sidebar)
-        self.savebutton.configure(text="Save...", width=114, command=self.save_config)
+        self.savebutton.configure(text="Save...", width=110, command=self.save_config)
         self.savebutton.place(anchor="center", relx=0.5, rely=0.75, x=0, y=0)
 
         self.initialdatabutton = CTkButton(self.sidebar)
         self.initialdatabutton.configure(
-            text="Engine Definition", width=114, command=lambda: self.initialframe.tkraise()
+            text="Engine Definition", width=110, command=lambda: self.initialframe.tkraise()
         )
         self.initialdatabutton.place(anchor="center", relx=0.5, rely=0.04, x=0, y=0)
 
         self.performancebutton = CTkButton(self.sidebar)
         self.performancebutton.configure(
             text="Performance",
-            width=114,
+            width=110,
             command=lambda: self.performanceframe.tkraise(),
         )
         self.performancebutton.place(anchor="center", relx=0.5, rely=0.11, x=0, y=0)
 
         self.geometrybutton = CTkButton(self.sidebar)
         self.geometrybutton.configure(
-            text="Geometry", width=114, command=lambda: self.geometryframe.tkraise()
+            text="Geometry", width=110, command=lambda: self.geometryframe.tkraise()
         )
         self.geometrybutton.place(anchor="center", relx=0.5, rely=0.18, x=0, y=0)
 
-        self.sidebar.grid(column=0, row=0)
+        self.nestedbutton = CTkButton(self.sidebar)
+        self.nestedbutton.configure(
+            text="Nested Analysis",
+            width=110,
+            command=lambda: self.nestedframe.tkraise(),
+        )
+        self.nestedbutton.place(anchor="center", relx=0.5, rely=0.25, x=0, y=0)
 
         self.thermalbutton = CTkButton(self.sidebar)
         self.thermalbutton.configure(
             text="Thermal Analysis",
-            width=114,
+            width=110,
             command=lambda: self.thermalframe.tkraise(),
         )
-        self.thermalbutton.place(anchor="center", relx=0.5, rely=0.25, x=0, y=0)
+        self.thermalbutton.place(anchor="center", relx=0.5, rely=0.32, x=0, y=0)
+
+        self.sidebar.grid(column=0, row=0)
 
         # Status bar
         self.statusbar = CTkFrame(self)
