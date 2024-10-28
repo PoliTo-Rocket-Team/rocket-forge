@@ -1,6 +1,5 @@
 import tkinter as tk
 import customtkinter as ctk
-import sys
 from rocketforge.gui.initialframe   import InitialFrame
 from rocketforge.gui.performance    import PerformanceFrame
 from rocketforge.gui.geometry       import GeometryFrame
@@ -23,6 +22,7 @@ class RocketForge(CTk):
         ctk.set_default_color_theme(resource_path("theme.json"))
 
         super().__init__(*args, **kwargs)
+        self.withdraw()
         self.configure(height=480, padx=0, pady=0, width=720)
         self.resizable(False, False)
         self.title("Rocket Forge")
@@ -134,6 +134,9 @@ class RocketForge(CTk):
         self.about = None
         self.preferences = None
         self.appearance_mode = tk.StringVar(value="System")
+
+        self.update()
+        self.deiconify()
 
     def run(self):
         self.statuslabel.configure(text="Status: running...")
@@ -247,7 +250,7 @@ class RocketForge(CTk):
         """close the program"""
         quit_ = messagebox.askokcancel(title="Exit?", message="Do you want to exit?")
         if quit_:
-            sys.exit(0)
+            self.destroy()
 
     def save_config(self):
         self.statuslabel.configure(text="Status: saving configuration file...")
