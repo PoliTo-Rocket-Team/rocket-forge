@@ -5,6 +5,7 @@ from rocketforge.gui.performance    import PerformanceFrame
 from rocketforge.gui.geometry       import GeometryFrame
 from rocketforge.gui.nested         import NestedFrame
 from rocketforge.gui.thermal        import ThermalFrame
+from rocketforge.gui.tanks          import TanksFrame
 from rocketforge.gui.mission        import MissionFrame
 from rocketforge.utils.resources    import resource_path
 from rocketforge.utils.helpers      import updateentry, updatetextbox
@@ -54,6 +55,10 @@ class RocketForge(CTk):
         # Thermal analysis frame
         self.thermalframe = ThermalFrame(self)
         self.thermalframe.grid(column=1, row=0)
+
+        # Tanks design frame
+        self.tanksframe = TanksFrame(self)
+        self.tanksframe.grid(column=1, row=0)
 
         # Mission analysis frame
         self.missionframe = MissionFrame(self)
@@ -119,13 +124,21 @@ class RocketForge(CTk):
         )
         self.thermalbutton.place(anchor="center", relx=0.5, rely=0.32, x=0, y=0)
 
+        self.tanksbutton = CTkButton(self.sidebar)
+        self.tanksbutton.configure(
+            text="Tanks Design",
+            width=110,
+            command=lambda: self.tanksframe.tkraise(),
+        )
+        self.tanksbutton.place(anchor="center", relx=0.5, rely=0.39, x=0, y=0)
+
         self.missionbutton = CTkButton(self.sidebar)
         self.missionbutton.configure(
             text="Mission Analysis",
             width=110,
             command=lambda: self.missionframe.tkraise(),
         )
-        self.missionbutton.place(anchor="center", relx=0.5, rely=0.39, x=0, y=0)
+        self.missionbutton.place(anchor="center", relx=0.5, rely=0.46, x=0, y=0)
 
         self.sidebar.grid(column=0, row=0)
 
