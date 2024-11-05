@@ -1,6 +1,6 @@
 import rocketforge.mission.config as config
 from rocketpy import Fluid, LiquidMotor, CylindricalTank, MassFlowRateBasedTank
-from rocketpy import Environment, Rocket
+from rocketpy import Environment, Rocket, Flight
 from datetime import datetime
 from numpy import pi
 
@@ -100,3 +100,30 @@ def set_rocket():
         position=config.fins_position,
         sweep_length=config.sweep_length,
     )
+
+
+def simulate():
+    # Simulate flight
+    config.flight = Flight(
+        rocket=config.rocket,
+        environment=config.env,
+        rail_length=config.rail_length,
+        inclination=config.inclination,
+        heading=config.heading,
+    )
+
+
+def results():
+    # Results
+    config.rocket.plots.static_margin()
+    config.rocket.draw()
+    config.flight.plots.trajectory_3d()
+    config.flight.prints.apogee_conditions()
+
+
+def draw_rocket():
+    config.rocket.draw()
+
+
+def plot_trajectory():
+    config.flight.plots.trajectory_3d()
