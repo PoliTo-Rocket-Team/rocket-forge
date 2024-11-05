@@ -22,6 +22,14 @@ def mass_uom(uom: str) -> float:
     return uoms[uom]
 
 
+def mdot_uom(uom: str) -> float:
+    """
+    Converts mass flow rate unit of measure to kg/s
+    """
+    uoms = {"kg/s": 1, "g/s": 0.001, "lb/s": 0.4535924}
+    return uoms[uom]
+
+
 def length_uom(uom: str) -> float:
     """
     Converts length unit of measure to meters
