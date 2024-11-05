@@ -30,6 +30,14 @@ def mdot_uom(uom: str) -> float:
     return uoms[uom]
 
 
+def density_uom(uom: str) -> float:
+    """
+    Converts density unit of measure to kg/m3
+    """
+    uoms = {"kg/m3": 1, "g/ml": 1000, "g/cm3": 1000, "lb/in3": 27677.83, "lb/ft3": 16.02, "lb/gal": 119.83}
+    return uoms[uom]
+
+
 def length_uom(uom: str) -> float:
     """
     Converts length unit of measure to meters
