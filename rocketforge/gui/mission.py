@@ -50,8 +50,29 @@ class MissionFrame(ctk.CTkFrame):
         self.rocketbutton.place(anchor="e", relx=0.98, rely=0.18, x=0, y=0)
         self.rocketwindow = None
 
+        CTkButton(
+            self, text="Run Simulation", command=self.run, width=118
+        ).place(anchor="center", relx=0.5, rely=0.25)
+
+        CTkButton(
+            self, text="Plot 3D Trajectory", command=self.plot_trajectory, width=118
+        ).place(anchor="w", relx=0.02, rely=0.32)
+
+        CTkButton(
+            self, text="Draw Rocket", command=self.draw_rocket, width=118
+        ).place(anchor="e", relx=0.48, rely=0.32)
+
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
+    def plot_trajectory(self):
+        msa.plot_trajectory()
+
+    def draw_rocket(self):
+        msa.draw_rocket()
+
+    def run(self):
+        msa.simulate()
+    
     def environment_window(self):
         if self.envwindow is None or not self.envwindow.winfo_exists():
             self.envwindow = ctk.CTkToplevel()
