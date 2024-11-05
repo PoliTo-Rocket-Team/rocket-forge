@@ -14,6 +14,14 @@ def thrust_uom(uom: str) -> float:
     return uoms[uom]
 
 
+def mass_uom(uom: str) -> float:
+    """
+    Converts mass unit of measure to kilograms
+    """
+    uoms = {"kg": 1, "g": 0.001, "lb": 0.4535924}
+    return uoms[uom]
+
+
 def length_uom(uom: str) -> float:
     """
     Converts length unit of measure to meters
