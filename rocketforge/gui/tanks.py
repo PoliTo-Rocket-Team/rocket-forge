@@ -1,6 +1,10 @@
 import tkinter as tk
 import customtkinter as ctk
-from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkButton
+import rocketforge.mission.config as config
+from customtkinter import CTkEntry, CTkFrame, CTkLabel, CTkButton
+from rocketforge.utils.conversions import mass_uom, mdot_uom, density_uom, length_uom
+from rocketforge.utils.helpers import updateentry
+from numpy import pi
 
 
 class TanksFrame(ctk.CTkFrame):
@@ -272,7 +276,41 @@ class TanksFrame(ctk.CTkFrame):
         )
         self.fuelmoptmenu.place(anchor="e", relx=0.98, rely=0.81)
 
-        self.button = CTkButton(self, text="Compute", width=118)
+        self.button = CTkButton(self, text="Compute", width=118, command=self.compute)
         self.button.place(anchor="center", relx=0.5, rely=0.9)
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
+
+    def compute(self):
+        try:
+            config.mdot = float(self.mdotentry.get()) * mdot_uom(self.mdotuom.get())
+            config.MR = float(self.mrentry.get())
+            config.prop_mass = float(self.mpentry.get()) * mass_uom(self.mpuom.get())
+            k0 = float(self.k0entry.get()) * mass_uom(self.k0uom.get())
+            config.tanks_mass = k0 + float(self.ktentry.get()) * config.prop_mass
+            config.ox_rho = float(self.oxrhoentry.get()) * density_uom(self.oxrhouom.get())
+            config.fuel_rho = float(self.fuelrhoentry.get()) * density_uom(self.fuelrhouom.get())
+            config.r_ox = float(self.oxrentry.get()) * length_uom(self.oxruom.get())
+            config.r_fuel = float(self.fuelrentry.get()) * length_uom(self.fuelruom.get())
+            config.exc_ox = float(self.oxexcentry.get())
+            config.exc_fuel = float(self.fuelexcentry.get())
+            config.ox_tank_pos = float(self.oxxentry.get()) * length_uom(self.oxxuom.get())
+            config.fuel_tank_pos = float(self.fuelxentry.get()) * length_uom(self.fuelxuom.get())
+
+            m_ox = config.prop_mass * config.MR / (1 + config.MR)
+            m_fuel = config.prop_mass / (1 + config.MR)
+            mdot_ox = config.mdot * config.MR / (1 + config.MR)
+            mdot_fuel = config.mdot / (1 + config.MR)
+            h_ox = config.exc_ox * m_ox / config.ox_rho / (pi * config.r_ox**2)
+            h_fuel = config.exc_fuel * m_fuel / config.fuel_rho / (pi * config.r_fuel**2)
+
+            updateentry(self.mtentry, config.tanks_mass, True)
+            updateentry(self.tbentry, config.prop_mass / config.mdot, True)
+            updateentry(self.oxhentry, h_ox, True)
+            updateentry(self.fuelhentry, h_fuel, True)
+            updateentry(self.oxmdotentry, mdot_ox, True)
+            updateentry(self.fuelmdotentry, mdot_fuel, True)
+            updateentry(self.oxmentry, m_ox, True)
+            updateentry(self.fuelmentry, m_fuel, True)
+        except Exception:
+            pass
