@@ -101,6 +101,27 @@ def set_rocket():
         sweep_length=config.sweep_length,
     )
 
+    # Add Parachutes
+    if config.main_trigger != None:
+        config.rocket.add_parachute(
+            name="main",
+            cd_s=config.main_cd_s,
+            trigger=config.main_trigger,
+            sampling_rate=config.main_sampling_rate,
+            lag=config.main_lag,
+            noise=config.main_noise,
+        )
+
+    if config.drogue_trigger != None:
+        config.rocket.add_parachute(
+            name="drogue",
+            cd_s=config.drogue_cd_s,
+            trigger=config.drogue_trigger,
+            sampling_rate=config.drogue_sampling_rate,
+            lag=config.drogue_lag,
+            noise=config.drogue_noise,
+        )
+
 
 def simulate():
     # Simulate flight
