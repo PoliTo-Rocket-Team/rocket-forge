@@ -39,7 +39,7 @@ class TanksFrame(ctk.CTkFrame):
         self.mrlabel = CTkLabel(self, text="Mixture ratio")
         self.mrlabel.place(anchor="w", relx=0.52, rely=0.11)
 
-        self.tblabel = CTkLabel(self, text="Flux time (in seconds)")
+        self.tblabel = CTkLabel(self, text="Flux time")
         self.tblabel.place(anchor="w", relx=0.52, rely=0.18)
 
         self.k0label = CTkLabel(self, text="k0")
@@ -110,21 +110,28 @@ class TanksFrame(ctk.CTkFrame):
         )
         self.mpoptmenu.place(anchor="e", relx=0.48, rely=0.18)
 
-        self.mtentry = CTkEntry(self, placeholder_text="0", width=59)
+        self.mtentry = CTkEntry(self, placeholder_text="0", width=59, state="disabled")
         self.mtentry.place(anchor="e", relx=229/600, rely=0.25)
 
         self.mtoptmenu = ctk.CTkOptionMenu(self)
         self.mtuom = tk.StringVar(value="kg")
         self.mtoptmenu.configure(
-            values=["kg", "g", "lb"], variable=self.mtuom, width=60
+            values=[], variable=self.mtuom, width=60
         )
         self.mtoptmenu.place(anchor="e", relx=0.48, rely=0.25)
 
         self.mrentry = CTkEntry(self, placeholder_text="0", width=118)
         self.mrentry.place(anchor="e", relx=0.98, rely=0.11)
 
-        self.tbentry = CTkEntry(self, placeholder_text="0", width=118)
-        self.tbentry.place(anchor="e", relx=0.98, rely=0.18)
+        self.tbentry = CTkEntry(self, placeholder_text="0", width=59, state="disabled")
+        self.tbentry.place(anchor="e", relx=529/600, rely=0.18)
+
+        self.tboptmenu = ctk.CTkOptionMenu(self)
+        self.tbuom = tk.StringVar(value="s")
+        self.tboptmenu.configure(
+            values=[], variable=self.tbuom, width=60
+        )
+        self.tboptmenu.place(anchor="e", relx=0.98, rely=0.18)
 
         self.k0entry = CTkEntry(self, placeholder_text="0", width=59)
         self.k0entry.place(anchor="e", relx=410/600, rely=0.25)
@@ -159,13 +166,13 @@ class TanksFrame(ctk.CTkFrame):
         )
         self.oxroptmenu.place(anchor="e", relx=0.48, rely=0.46)
 
-        self.oxhentry = CTkEntry(self, placeholder_text="0", width=59)
+        self.oxhentry = CTkEntry(self, placeholder_text="0", width=59, state="disabled")
         self.oxhentry.place(anchor="e", relx=229/600, rely=0.53)
 
         self.oxhoptmenu = ctk.CTkOptionMenu(self)
         self.oxhuom = tk.StringVar(value="m")
         self.oxhoptmenu.configure(
-            values=["m", "cm", "mm", "in", "ft"], variable=self.oxhuom, width=60
+            values=[], variable=self.oxhuom, width=60
         )
         self.oxhoptmenu.place(anchor="e", relx=0.48, rely=0.53)
 
@@ -182,23 +189,23 @@ class TanksFrame(ctk.CTkFrame):
         )
         self.oxxoptmenu.place(anchor="e", relx=0.48, rely=0.67)
 
-        self.oxmdotentry = CTkEntry(self, placeholder_text="0", width=59)
+        self.oxmdotentry = CTkEntry(self, placeholder_text="0", width=59, state="disabled")
         self.oxmdotentry.place(anchor="e", relx=229/600, rely=0.74)
 
         self.oxmdotoptmenu = ctk.CTkOptionMenu(self)
         self.oxmdotuom = tk.StringVar(value="kg/s")
         self.oxmdotoptmenu.configure(
-            values=["kg/s", "g/s", "lb/s"], variable=self.oxmdotuom, width=60
+            values=[], variable=self.oxmdotuom, width=60
         )
         self.oxmdotoptmenu.place(anchor="e", relx=0.48, rely=0.74)
 
-        self.oxmentry = CTkEntry(self, placeholder_text="0", width=59)
+        self.oxmentry = CTkEntry(self, placeholder_text="0", width=59, state="disabled")
         self.oxmentry.place(anchor="e", relx=229/600, rely=0.81)
 
         self.oxmoptmenu = ctk.CTkOptionMenu(self)
         self.oxmuom = tk.StringVar(value="kg")
         self.oxmoptmenu.configure(
-            values=["kg", "g", "lb"], variable=self.oxmuom, width=60
+            values=[], variable=self.oxmuom, width=60
         )
         self.oxmoptmenu.place(anchor="e", relx=0.48, rely=0.81)
 
@@ -222,13 +229,13 @@ class TanksFrame(ctk.CTkFrame):
         )
         self.fuelroptmenu.place(anchor="e", relx=0.98, rely=0.46)
 
-        self.fuelhentry = CTkEntry(self, placeholder_text="0", width=59)
+        self.fuelhentry = CTkEntry(self, placeholder_text="0", width=59, state="disabled")
         self.fuelhentry.place(anchor="e", relx=529/600, rely=0.53)
 
         self.fuelhoptmenu = ctk.CTkOptionMenu(self)
         self.fuelhuom = tk.StringVar(value="m")
         self.fuelhoptmenu.configure(
-            values=["m", "cm", "mm", "in", "ft"], variable=self.fuelhuom, width=60
+            values=[], variable=self.fuelhuom, width=60
         )
         self.fuelhoptmenu.place(anchor="e", relx=0.98, rely=0.53)
 
@@ -245,23 +252,23 @@ class TanksFrame(ctk.CTkFrame):
         )
         self.fuelxoptmenu.place(anchor="e", relx=0.98, rely=0.67)
 
-        self.fuelmdotentry = CTkEntry(self, placeholder_text="0", width=59)
+        self.fuelmdotentry = CTkEntry(self, placeholder_text="0", width=59, state="disabled")
         self.fuelmdotentry.place(anchor="e", relx=529/600, rely=0.74)
 
         self.fuelmdotoptmenu = ctk.CTkOptionMenu(self)
         self.fuelmdotuom = tk.StringVar(value="kg/s")
         self.fuelmdotoptmenu.configure(
-            values=["kg/s", "g/s", "lb/s"], variable=self.fuelmdotuom, width=60
+            values=[], variable=self.fuelmdotuom, width=60
         )
         self.fuelmdotoptmenu.place(anchor="e", relx=0.98, rely=0.74)
 
-        self.fuelmentry = CTkEntry(self, placeholder_text="0", width=59)
+        self.fuelmentry = CTkEntry(self, placeholder_text="0", width=59, state="disabled")
         self.fuelmentry.place(anchor="e", relx=529/600, rely=0.81)
 
         self.fuelmoptmenu = ctk.CTkOptionMenu(self)
         self.fuelmuom = tk.StringVar(value="kg")
         self.fuelmoptmenu.configure(
-            values=["kg", "g", "lb"], variable=self.fuelmuom, width=60
+            values=[], variable=self.fuelmuom, width=60
         )
         self.fuelmoptmenu.place(anchor="e", relx=0.98, rely=0.81)
 
