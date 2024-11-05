@@ -34,8 +34,16 @@ class MissionFrame(ctk.CTkFrame):
         self.railbutton.place(anchor="e", relx=0.98, rely=0.11, x=0, y=0)
         self.railwindow = None
 
+        self.enginelabel = CTkLabel(self, text="Engine is not configured")
+        self.enginelabel.place(anchor="w", relx=0.02, rely=0.18, x=0, y=0)
+
+        self.enginebutton = CTkButton(self)
+        self.enginebutton.configure(text="Configure Engine...", command=self.engine_window, width=118)
+        self.enginebutton.place(anchor="e", relx=0.48, rely=0.18, x=0, y=0)
+        self.enginewindow = None
+
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
-    
+
     def environment_window(self):
         if self.envwindow is None or not self.envwindow.winfo_exists():
             self.envwindow = ctk.CTkToplevel()
@@ -120,6 +128,7 @@ class MissionFrame(ctk.CTkFrame):
             config.month = int(float(self.monthentry.get()))
             config.day = int(float(self.dayentry.get()))
             config.hour = int(float(self.hourentry.get()))
+            self.envwindow.destroy()
             msa.set_environment()
             self.envlabel.configure(text="Environment has been set")
             self.envlabel.update()
@@ -183,8 +192,91 @@ class MissionFrame(ctk.CTkFrame):
             config.rail_length = float(self.raillengthentry.get())
             config.inclination = float(self.inclinationentry.get())
             config.heading = float(self.headingentry.get())
+            self.railwindow.destroy()
             self.raillabel.configure(text="Rail has been configured")
             self.raillabel.update()
         except Exception:
             self.raillabel.configure(text="Rail is not configured")
             self.raillabel.update()
+
+    def engine_window(self):
+        if self.enginewindow is None or not self.enginewindow.winfo_exists():
+            self.enginewindow = ctk.CTkToplevel()
+            self.enginewindow.title("Configure Engine")
+            self.enginewindow.configure(width=350, height=350)
+            self.enginewindow.resizable(False, False)
+            self.enginewindow.after(
+                201,
+                lambda: self.enginewindow.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                ),
+            )
+
+            self.chambermasslabel = CTkLabel(self.enginewindow, text="Chamber mass (no tanks) [kg]")
+            self.chambermasslabel.place(anchor="w", relx=0.05, rely=0.14)
+            self.chambermassentry = CTkEntry(self.enginewindow, placeholder_text="0", width=118)
+            self.chambermassentry.place(anchor="e", relx=0.95, rely=0.14)
+
+            self.engineinertialabel = CTkLabel(self.enginewindow, text="Inertia [kg m2]")
+            self.engineinertialabel.place(anchor="w", relx=0.05, rely=0.32)
+            self.enginei11entry = CTkEntry(self.enginewindow, placeholder_text="Ixx", width=45)
+            self.enginei11entry.place(anchor="e", relx=0.65, rely=0.32)
+            self.enginei22entry = CTkEntry(self.enginewindow, placeholder_text="Iyy", width=45)
+            self.enginei22entry.place(anchor="e", relx=0.8, rely=0.32)
+            self.enginei33entry = CTkEntry(self.enginewindow, placeholder_text="Izz", width=45)
+            self.enginei33entry.place(anchor="e", relx=0.95, rely=0.32)
+
+            self.ecogdrylabel = CTkLabel(self.enginewindow, text="Engine CoG Dry [m]")
+            self.ecogdrylabel.place(anchor="w", relx=0.05, rely=0.5)
+            self.ecogdryentry = CTkEntry(self.enginewindow, placeholder_text="0", width=118)
+            self.ecogdryentry.place(anchor="e", relx=0.95, rely=0.5)
+
+            self.enginepositionlabel = CTkLabel(self.enginewindow, text="Engine position [m]")
+            self.enginepositionlabel.place(anchor="w", relx=0.05, rely=0.68)
+            self.enginepositionentry = CTkEntry(self.enginewindow, placeholder_text="0", width=118)
+            self.enginepositionentry.place(anchor="e", relx=0.95, rely=0.68)
+
+            self.setenginebutton = CTkButton(self.enginewindow, text="Set", command=self.set_engine, width=90)
+            self.setenginebutton.place(anchor="center", relx=0.75, rely=0.86)
+
+            self.loadenginebutton = CTkButton(self.enginewindow, text="Load", command=self.load_engine, width=90)
+            self.loadenginebutton.place(anchor="center", relx=0.25, rely=0.86)
+
+            self.enginewindow.after(50, self.enginewindow.lift)
+            self.enginewindow.after(50, self.enginewindow.focus)
+
+        else:
+            self.enginewindow.lift()
+            self.enginewindow.focus()
+
+    def load_engine(self):
+        try:
+            updateentry(self.chambermassentry, config.chamber_mass)
+            updateentry(self.enginei11entry, config.dry_inertia[0])
+            updateentry(self.enginei22entry, config.dry_inertia[1])
+            updateentry(self.enginei33entry, config.dry_inertia[2])
+            updateentry(self.ecogdryentry, config.engine_CoG_dry)
+            updateentry(self.enginepositionentry, config.engine_position)
+        except Exception:
+            pass
+
+    def set_engine(self):
+        self.enginelabel.configure(text="Setting up engine...")
+        self.enginelabel.update()
+        try:
+            config.chamber_mass = float(self.chambermassentry.get())
+            ei11 = float(self.enginei11entry.get())
+            ei22 = float(self.enginei22entry.get())
+            ei33 = float(self.enginei33entry.get())
+            config.dry_inertia = (ei11, ei22, ei33)
+            config.engine_CoG_dry = float(self.ecogdryentry.get())
+            config.engine_position = float(self.enginepositionentry.get())
+            msa.set_engine()
+            self.enginewindow.destroy()
+            self.enginelabel.configure(text="Engine has been configured")
+            self.enginelabel.update()
+        except Exception as err:
+            print(err)
+            config.engine = None
+            self.enginelabel.configure(text="Engine is not configured")
+            self.enginelabel.update()
