@@ -1,6 +1,6 @@
 import rocketforge.mission.config as config
 from rocketpy import Fluid, LiquidMotor, CylindricalTank, MassFlowRateBasedTank
-from rocketpy import Environment
+from rocketpy import Environment, Rocket
 from datetime import datetime
 from numpy import pi
 
@@ -70,3 +70,33 @@ def set_engine():
 
     config.engine.add_tank(tank=oxidizer_tank, position=config.ox_tank_pos)
     config.engine.add_tank(tank=fuel_tank, position=config.fuel_tank_pos)
+
+
+def set_rocket():
+    # Rocket Definition
+    config.rocket = Rocket(
+        mass=config.rocket_mass,
+        radius=config.rocket_radius,
+        inertia=config.rocket_inertia,
+        power_off_drag=config.drag,
+        power_on_drag=config.drag,
+        center_of_mass_without_motor=config.rocket_CoG_dry,
+        coordinate_system_orientation="nose_to_tail",
+    )
+    config.rocket.add_motor(config.engine, position=config.engine_position)
+
+    # Add Rocket Components
+    config.rocket.add_nose(
+        length=config.nose_length,
+        kind="parabolic",
+        position=0,
+    )
+
+    config.rocket.add_trapezoidal_fins(
+        n=config.nfins,
+        root_chord=config.root_chord,
+        tip_chord=config.tip_chord,
+        span=config.span,
+        position=config.fins_position,
+        sweep_length=config.sweep_length,
+    )
