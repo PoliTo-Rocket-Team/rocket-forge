@@ -1,5 +1,6 @@
 import tkinter as tk
 import customtkinter as ctk
+import rocketforge.performance.config as conf
 from rocketforge.gui.initialframe   import InitialFrame
 from rocketforge.gui.performance    import PerformanceFrame
 from rocketforge.gui.geometry       import GeometryFrame
@@ -168,41 +169,39 @@ class RocketForge(CTk):
         self.statuslabel.configure(text="Status: running...")
         self.statuslabel.update()
         try:
-            ox, fuel, pc, mr, eps, epsc, At, gammae, Me = self.initialframe.expressrun()
+            self.initialframe.expressrun()
             self.statuslabel.configure(text="Status: computing geometry...")
             self.statuslabel.update()
-            self.geometryframe.optimizeTn(gammae, Me)
-            if At != None:
-                if At > 0.01:
-                    updateentry(self.geometryframe.throatareaentry, At)
+            self.geometryframe.optimizeTn()
+            if conf.At != None:
+                if conf.At > 0.01:
+                    updateentry(self.geometryframe.throatareaentry, conf.At)
                     self.geometryframe.throatareauom.set("m2")
                 else:
-                    updateentry(self.geometryframe.throatareaentry, At * 10000)
+                    updateentry(self.geometryframe.throatareaentry, conf.At * 10000)
                     self.geometryframe.throatareauom.set("cm2")
-            geometry = self.geometryframe.loadgeometry(eps, epsc)
+            geometry = self.geometryframe.loadgeometry()
         except Exception:
             geometry = (0, 0, 0)
 
         try:
             self.statuslabel.configure(text="Status: computing performance...")
             self.statuslabel.update()
-            self.performanceframe.loadengine(ox, fuel, mr, pc, eps, epsc, geometry)
-            if At != None:
+            self.performanceframe.loadengine(geometry)
+            if conf.At != None:
                 old_At = 0
-                Att = At
-                while abs((At - old_At)/At) > 0.001:
-                    old_At = At
-                    z_f = float(self.performanceframe.deliveredframe.BLeffentry.get())
-                    z_d = float(self.performanceframe.deliveredframe.diveffentry.get())
-                    At = Att / z_f / z_d
-                    if At > 0.01:
-                        updateentry(self.geometryframe.throatareaentry, At)
+                Att = conf.At
+                while abs((conf.At - old_At)/conf.At) > 0.001:
+                    old_At = conf.At
+                    conf.At = Att / conf.z_n
+                    if conf.At > 0.01:
+                        updateentry(self.geometryframe.throatareaentry, conf.At)
                         self.geometryframe.throatareauom.set("m2")
                     else:
-                        updateentry(self.geometryframe.throatareaentry, At * 10000)
+                        updateentry(self.geometryframe.throatareaentry, conf.At * 10000)
                         self.geometryframe.throatareauom.set("cm2")
-                    geometry = self.geometryframe.loadgeometry(eps, epsc)
-                    self.performanceframe.loadengine(ox, fuel, mr, pc, eps, epsc, geometry)
+                    geometry = self.geometryframe.loadgeometry()
+                    self.performanceframe.loadengine(geometry)
         except Exception:
             pass
         self.statuslabel.configure(text="Status: idle")

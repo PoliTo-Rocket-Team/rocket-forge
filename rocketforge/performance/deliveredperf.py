@@ -1,7 +1,18 @@
+import rocketforge.performance.config as config
 from tabulate import tabulate
 
 
-def delivered(pc, eps, pe, MR, At, cstar, Is_vac, z_c, z_n):
+def delivered():
+    pc = config.pc
+    eps = config.eps
+    pe = config.pe
+    MR = config.mr
+    At = config.At
+    cstar = config.cstar
+    Is_vac = config.Isp_vac
+    z_c = config.z_r
+    z_n = config.z_n
+
     # Sea level pressure
     pSL = 101325
 

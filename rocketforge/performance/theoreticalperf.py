@@ -1,8 +1,16 @@
+import rocketforge.performance.config as config
 from tabulate import tabulate
 from rocketcea.cea_obj_w_units import CEA_Obj
 
 
-def theoretical(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0):
+def theoretical(i=2, fr=0, fat=0):
+    ox = config.ox
+    fuel = config.fuel
+    pc = config.pc
+    mr = config.mr
+    eps = config.eps
+    epsc = config.epsc
+
     # Sea level pressure
     pamb = 101325
 
@@ -126,12 +134,12 @@ def theoretical(ox, fuel, pc, mr, eps, epsc=None, i=2, fr=0, fat=0):
     results = [p, T, rho, cp, mu, l, Pr, gamma, M, a, H]
     output2 = tabulate(results, headers, numalign="right")
 
-    return (
-        cstar,
-        Isp_vac,
-        Isp_vac_eq,
-        Isp_vac_fr,
-        output1,
-        results,
-        output2,
-    )
+    config.cstar = cstar
+    config.Isp_vac = Isp_vac
+    config.Isp_vac_eq = Isp_vac_eq
+    config.Isp_vac_fr = Isp_vac_fr
+    config.td_props = results
+    config.gammae = results[7][-2]
+    config.Me = results[8][-2]
+
+    return output1, output2

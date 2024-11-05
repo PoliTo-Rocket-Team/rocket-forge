@@ -1,6 +1,7 @@
 import tkinter as tk
 import customtkinter as ctk
 import os
+import rocketforge.performance.config as config
 from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu
 from tabulate import tabulate
 from rocketcea.cea_obj_w_units import CEA_Obj
@@ -328,18 +329,18 @@ class InitialFrame(ctk.CTkFrame):
 
     def expressrun(self):
         try: 
-            ox = self.oxoptmenu.get()
-            fuel = self.fueloptmenu.get()
-            pc = float(self.pcentry.get()) * pressure_uom(self.pcuom.get())
+            config.ox = self.oxoptmenu.get()
+            config.fuel = self.fueloptmenu.get()
+            config.pc = float(self.pcentry.get()) * pressure_uom(self.pcuom.get())
             if self.inletcondition.get() == 0:
-                epsc = float(self.epscentry.get())
+                config.epsc = float(self.epscentry.get())
             else:
-                epsc = None
+                config.epsc = None
 
             C = CEA_Obj(
-                oxName=ox,
-                fuelName=fuel,
-                fac_CR=epsc,
+                oxName=config.ox,
+                fuelName=config.fuel,
+                fac_CR=config.epsc,
                 cstar_units="m/s",
                 pressure_units="Pa",
                 temperature_units="K",
@@ -349,57 +350,53 @@ class InitialFrame(ctk.CTkFrame):
                 specific_heat_units="J/kg-K",
             )
 
-            mr_s = C.getMRforER(ERphi=1)
+            config.mr_s = C.getMRforER(ERphi=1)
 
             if self.optimizationmode.get() == 0:
                 if self.mruom.get() == "O/F":
-                    mr = float(self.mrentry.get())
-                    alpha = mr / mr_s
+                    config.mr = float(self.mrentry.get())
+                    config.alpha = config.mr / config.mr_s
                 elif self.mruom.get() == "alpha":
-                    alpha = float(self.mrentry.get())
-                    mr = alpha * mr_s
+                    config.alpha = float(self.mrentry.get())
+                    config.mr = config.alpha * config.mr_s
 
                 if self.exitcondition.get() == 0:
-                    eps = float(self.epsentry.get())
-                    pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
+                    config.eps = float(self.epsentry.get())
+                    config.pe = config.pc / C.get_PcOvPe(Pc=config.pc, MR=config.mr, eps=config.eps)
                 elif self.exitcondition.get() == 1:
-                    eps = C.get_eps_at_PcOvPe(
-                        Pc=pc, MR=mr, PcOvPe=float(self.peratioentry.get())
+                    config.eps = C.get_eps_at_PcOvPe(
+                        Pc=config.pc, MR=config.mr, PcOvPe=float(self.peratioentry.get())
                     )
-                    pe = pc / float(self.peratioentry.get())
+                    config.pe = config.pc / float(self.peratioentry.get())
                 elif self.exitcondition.get() == 2:
-                    pe = float(self.peentry.get()) * pressure_uom(self.peuom.get())
-                    eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
+                    config.pe = float(self.peentry.get()) * pressure_uom(self.peuom.get())
+                    config.eps = C.get_eps_at_PcOvPe(Pc=config.pc, MR=config.mr, PcOvPe=config.pc / config.pe)
 
             elif self.exitcondition.get() == 0:
-                eps = float(self.epsentry.get())
-                mr = optimizemr(C, pc, eps, self.optimizationmode.get())
-                alpha = mr / mr_s
-                pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
+                config.eps = float(self.epsentry.get())
+                config.mr = optimizemr(C, config.pc, config.eps, self.optimizationmode.get())
+                config.alpha = config.mr / config.mr_s
+                config.pe = config.pc / C.get_PcOvPe(Pc=config.pc, MR=config.mr, eps=config.eps)
 
             else:
                 if self.exitcondition.get() == 1:
-                    pe = pc / float(self.peratioentry.get())
+                    config.pe = config.pc / float(self.peratioentry.get())
                 elif self.exitcondition.get() == 2:
-                    pe = float(self.peentry.get()) * pressure_uom(self.peuom.get())
-                mr = optimizermr_at_pe(C, pc, pe, self.optimizationmode.get())
-                eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
-                alpha = mr / mr_s
+                    config.pe = float(self.peentry.get()) * pressure_uom(self.peuom.get())
+                config.mr = optimizermr_at_pe(C, config.pc, config.pe, self.optimizationmode.get())
+                config.eps = C.get_eps_at_PcOvPe(Pc=config.pc, MR=config.mr, PcOvPe=config.pc / config.pe)
+                config.alpha = config.mr / config.mr_s
 
             results = [
-                ["Expansion Area Ratio", eps, ""],
-                ["Expansion pressure ratio", pc / pe, ""],
-                ["Exit Pressure", pe / 100000, "bar"],
-                ["Mixture Ratio", mr, ""],
-                ["Mixture Ratio (stoichiometric)", mr_s, ""],
-                ["Alpha (oxidizer excess coefficient)", alpha, ""],
+                ["Expansion Area Ratio", config.eps, ""],
+                ["Expansion pressure ratio", config.pc / config.pe, ""],
+                ["Exit Pressure", config.pe / 100000, "bar"],
+                ["Mixture Ratio", config.mr, ""],
+                ["Mixture Ratio (stoichiometric)", config.mr_s, ""],
+                ["Alpha (oxidizer excess coefficient)", config.alpha, ""],
             ]
             output2 = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".3f")
-            tmp = theoretical(ox, fuel, pc, mr, eps, epsc)
-            cstar = tmp[0]
-            gammae = tmp[5][7][-2]
-            Me = tmp[5][8][-2]
-            output1 = tmp[-3]
+            output1 = theoretical()[0]
             output = output1 + 2 * "\n" + output2
         except Exception as err:
             output = str(err)
@@ -407,11 +404,9 @@ class InitialFrame(ctk.CTkFrame):
         updatetextbox(self.textbox, output, True)
 
         try:
-            T = float(self.thrustentry.get()) * thrust_uom(self.thrustuom.get())
+            config.thrust = float(self.thrustentry.get()) * thrust_uom(self.thrustuom.get())
             pamb = float(self.thrustentry2.get()) * pressure_uom(self.thrustuom2.get())
-            c = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pamb)[0] * 9.80655
-            At = T * cstar / c / pc
+            config.c = C.estimate_Ambient_Isp(Pc=config.pc, MR=config.mr, eps=config.eps, Pamb=pamb)[0] * 9.80655
+            config.At = config.thrust * config.cstar / config.c / config.pc
         except Exception:
-            At = None
-
-        return ox, fuel, pc, mr, eps, epsc, At, gammae, Me
+            config.At = None

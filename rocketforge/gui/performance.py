@@ -1,6 +1,7 @@
 import tkinter as tk
 import customtkinter as ctk
 import os
+import rocketforge.performance.config as config
 from customtkinter          import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkButton
 from rocketforge.performance.theoreticalperf  import theoretical
 from rocketforge.performance.corrfactors      import correction_factors
@@ -64,8 +65,8 @@ class PerformanceFrame(ctk.CTkFrame):
                 fg_color=self.on, hover_color=self.on_hover,
             )
 
-    def loadengine(self, ox, fuel, mr, pc, eps, epsc, geometry):
-        At, Le, theta_e = geometry
+    def loadengine(self, geometry):
+        config.At, config.Le, config.theta_e = geometry
 
         if self.thermodynamicframe.frozenflow.get() == 0:
             frozen = 0
@@ -79,31 +80,18 @@ class PerformanceFrame(ctk.CTkFrame):
 
         iter = int(self.thermodynamicframe.stationsentry.get()) + 1
 
-        x = theoretical(ox, fuel, pc, mr, eps, epsc, iter, frozen, frozenatthroat)
+        x = theoretical(iter, frozen, frozenatthroat)
 
         updatetextbox(self.thermodynamicframe.textbox, x[-1], True)
 
-        cstar = x[0]
-        Isp_vac = x[1]
-        Isp_vac_eq = x[2]
-        Isp_vac_frozen = x[3]
-        td_properties = x[-2]
+        correction_factors()
 
-        pe = float(td_properties[0][-2]) * 100000
-        Tc = float(td_properties[1][1])
-        Te = float(td_properties[1][-2])
-        we = float(td_properties[8][-2]) * float(td_properties[9][-2])
+        updateentry(self.deliveredframe.reactioneffentry, config.z_r, True)
+        updateentry(self.deliveredframe.overalleffentry, config.z_overall, True)
+        updateentry(self.deliveredframe.BLeffentry, config.z_f, True)
+        updateentry(self.deliveredframe.diveffentry, config.z_d, True)
 
-        Z, Cs = 0, 0
-
-        z_r, z_n, z_overall, z_f, z_d, z_z = correction_factors(pc, eps, At, Le, theta_e, Isp_vac_eq, Isp_vac_frozen, Tc, Te, we, Z, Cs)
-
-        updateentry(self.deliveredframe.reactioneffentry, z_r, True)
-        updateentry(self.deliveredframe.overalleffentry, z_overall, True)
-        updateentry(self.deliveredframe.BLeffentry, z_f, True)
-        updateentry(self.deliveredframe.diveffentry, z_d, True)
-
-        output = delivered(pc, eps, pe, mr, At, cstar, Isp_vac, z_r, z_n)
+        output = delivered()
 
         updatetextbox(self.deliveredframe.textbox, output, True)
 

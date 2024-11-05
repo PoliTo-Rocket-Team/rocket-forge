@@ -3,6 +3,7 @@ from tkinter.messagebox import showwarning
 from tkinter.filedialog import asksaveasfilename
 import customtkinter as ctk
 from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu, CTkButton, CTkImage
+import rocketforge.performance.config as config
 import rocketforge.geometry.top as top
 import rocketforge.geometry.tic as tic
 import rocketforge.geometry.conical as conical
@@ -410,7 +411,9 @@ class GeometryFrame(ctk.CTkFrame):
         except Exception:
             pass
     
-    def optimizeTn(self, gamma, Me):
+    def optimizeTn(self):
+        gamma = config.gammae
+        Me = config.Me
         if self.thetanentry.get() == "":
             thetan = (sqrt((gamma+1)/(gamma-1))*arctan(sqrt((gamma-1)*(Me**2-1)/(gamma+1)))-arctan(sqrt(Me**2-1)))/2
             updateentry(self.thetanentry, thetan / angle_uom(self.thetanuom.get()))
@@ -612,9 +615,9 @@ class GeometryFrame(ctk.CTkFrame):
         self.cthetaentry.place_forget()
         self.cthetaoptmenu.place_forget()
 
-    def loadgeometry(self, eps, epsc):
-        self.eps = eps
-        self.epsc = epsc
+    def loadgeometry(self):
+        self.eps = config.eps
+        self.epsc = config.epsc
         At, Le, thetae = self.plot()
         geometry = [At, Le, thetae]
         return geometry

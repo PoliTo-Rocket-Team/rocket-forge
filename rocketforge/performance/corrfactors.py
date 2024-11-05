@@ -1,7 +1,16 @@
+import rocketforge.performance.config as config
 from math import sqrt, log, atan, cos, pi
 
 
-def correction_factors(pc, eps, At, Le, theta_ex, Is_v, Is_v_fr, Tc, Te, we, Z, Cs):
+def correction_factors():
+    pc = config.pc
+    eps = config.eps
+    At = config.At
+    Le = config.Le
+    theta_ex = config.theta_e
+    Is_v = config.Isp_vac
+    Is_v_fr = config.Isp_vac_fr
+
     # Geometry
     Ae = At * eps
     re = sqrt(Ae / pi)
@@ -11,11 +20,6 @@ def correction_factors(pc, eps, At, Le, theta_ex, Is_v, Is_v_fr, Tc, Te, we, Z, 
     er1 = 0.34 - 0.34 * Is_v_fr / Is_v
     er2 = max(0, 0.021 - 0.01 * log(pc / 2 / 10**6))
     z_r = (1 - er1) * (1 - er2)
-
-    # Multi-phase loss factor
-    z_zw = 1 - Z * Cs / we**2 * (Tc - Te * (1 + log(Tc / Te)))
-    z_zt = 1 - Z / 2
-    z_z = 0.2 * z_zw + 0.8 * z_zt
 
     # Divergence loss factor
     alpha = atan((re - rt) / Le)
@@ -35,9 +39,13 @@ def correction_factors(pc, eps, At, Le, theta_ex, Is_v, Is_v_fr, Tc, Te, we, Z, 
     z_f = (100.0 - loss) / 100.0
 
     # Nozzle correction factor
-    z_n = z_f * z_d * z_z
+    z_n = z_f * z_d
 
     # Overall correction factor
     z_overall = z_n * z_r
 
-    return z_r, z_n, z_overall, z_f, z_d, z_z
+    config.z_r = z_r
+    config.z_f = z_f
+    config.z_d = z_d
+    config.z_n = z_n
+    config.z_overall = z_overall
