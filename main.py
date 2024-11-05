@@ -204,6 +204,14 @@ class RocketForge(CTk):
                     self.performanceframe.loadengine(ox, fuel, mr, pc, eps, epsc, geometry)
         except Exception:
             pass
+
+        try: 
+            self.statuslabel.configure(text="Status: loading tanks...")
+            self.statuslabel.update()
+            self.tanksframe.compute()
+        except Exception:
+            pass
+
         self.statuslabel.configure(text="Status: idle")
         self.statuslabel.update()
 
