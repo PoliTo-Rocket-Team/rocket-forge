@@ -168,9 +168,10 @@ class RocketForge(CTk):
         self.statuslabel.configure(text="Status: running...")
         self.statuslabel.update()
         try:
-            ox, fuel, pc, mr, eps, epsc, At = self.initialframe.expressrun()
+            ox, fuel, pc, mr, eps, epsc, At, gammae, Me = self.initialframe.expressrun()
             self.statuslabel.configure(text="Status: computing geometry...")
             self.statuslabel.update()
+            self.geometryframe.optimizeTn(gammae, Me)
             if At != None:
                 if At > 0.01:
                     updateentry(self.geometryframe.throatareaentry, At)

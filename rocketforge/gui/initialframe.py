@@ -397,6 +397,8 @@ class InitialFrame(ctk.CTkFrame):
             output2 = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".3f")
             tmp = theoretical(ox, fuel, pc, mr, eps, epsc)
             cstar = tmp[0]
+            gammae = tmp[5][7][-2]
+            Me = tmp[5][8][-2]
             output1 = tmp[-3]
             output = output1 + 2 * "\n" + output2
         except Exception as err:
@@ -412,4 +414,4 @@ class InitialFrame(ctk.CTkFrame):
         except Exception:
             At = None
 
-        return ox, fuel, pc, mr, eps, epsc, At
+        return ox, fuel, pc, mr, eps, epsc, At, gammae, Me
