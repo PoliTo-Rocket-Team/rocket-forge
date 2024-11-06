@@ -14,6 +14,30 @@ def thrust_uom(uom: str) -> float:
     return uoms[uom]
 
 
+def mass_uom(uom: str) -> float:
+    """
+    Converts mass unit of measure to kilograms
+    """
+    uoms = {"kg": 1, "g": 0.001, "lb": 0.4535924}
+    return uoms[uom]
+
+
+def mdot_uom(uom: str) -> float:
+    """
+    Converts mass flow rate unit of measure to kg/s
+    """
+    uoms = {"kg/s": 1, "g/s": 0.001, "lb/s": 0.4535924}
+    return uoms[uom]
+
+
+def density_uom(uom: str) -> float:
+    """
+    Converts density unit of measure to kg/m3
+    """
+    uoms = {"kg/m3": 1, "g/ml": 1000, "g/cm3": 1000, "lb/in3": 27677.83, "lb/ft3": 16.02, "lb/gal": 119.83}
+    return uoms[uom]
+
+
 def length_uom(uom: str) -> float:
     """
     Converts length unit of measure to meters
