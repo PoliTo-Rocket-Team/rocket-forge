@@ -66,6 +66,8 @@ class MissionFrame(ctk.CTkFrame):
         self.parachutebutton.configure(text="Add Parachute...", command=self.parachute_window, width=118)
         self.parachutebutton.place(anchor="e", relx=0.98, rely=0.25, x=0, y=0)
         self.parachutewindow = None
+        self.triggerwindow = None
+        self.triggervar = ctk.IntVar(value=0)
         self.np = 0
 
         CTkButton(
@@ -345,6 +347,10 @@ class MissionFrame(ctk.CTkFrame):
             self.enginelabel.update()
 
     def rocket_window(self):
+        if config.engine is None:
+            messagebox.showwarning(title="Warning", message="Please configure the engine first.")
+            return
+        
         if self.rocketwindow is None or not self.rocketwindow.winfo_exists():
             self.rocketwindow = ctk.CTkToplevel()
             self.rocketwindow.title("Configure Rocket")
@@ -541,7 +547,7 @@ class MissionFrame(ctk.CTkFrame):
 
             self.namelabel = CTkLabel(self.parachutewindow, text="Parachute name")
             self.namelabel.place(anchor="w", relx=0.05, rely=1/14)
-            self.nameentry = CTkEntry(self.parachutewindow, placeholder_text="0", width=118)
+            self.nameentry = CTkEntry(self.parachutewindow, placeholder_text="name", width=118)
             self.nameentry.place(anchor="e", relx=0.95, rely=1/14)
 
             self.cdslabel = CTkLabel(self.parachutewindow, text="Drag coefficient * reference area")
@@ -551,8 +557,8 @@ class MissionFrame(ctk.CTkFrame):
 
             self.triggerlabel = CTkLabel(self.parachutewindow, text="Trigger")
             self.triggerlabel.place(anchor="w", relx=0.05, rely=5/14)
-            self.triggerbutton = CTkButton(self.parachutewindow, text="Set Trigger...", width=118)
-            self.triggerbutton.place(anchor="e", relx=0.95, rely=5/14)      
+            self.triggerbutton = CTkButton(self.parachutewindow, text="Set Trigger...", command=self.trigger_window, width=118)
+            self.triggerbutton.place(anchor="e", relx=0.95, rely=5/14)
 
             self.samplabel = CTkLabel(self.parachutewindow, text="Sampling rate")
             self.samplabel.place(anchor="w", relx=0.05, rely=7/14)
@@ -583,13 +589,96 @@ class MissionFrame(ctk.CTkFrame):
             self.parachutewindow.lift()
             self.parachutewindow.focus()
 
+    def trigger_window(self):
+        if self.triggerwindow is None or not self.triggerwindow.winfo_exists():
+            self.triggerwindow = ctk.CTkToplevel()
+            self.triggerwindow.title("Set Trigger")
+            self.triggerwindow.configure(width=350, height=300)
+            self.triggerwindow.resizable(False, False)
+            self.triggerwindow.after(
+                201,
+                lambda: self.triggerwindow.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                ),
+            )
+
+            ctk.CTkRadioButton(
+                self.triggerwindow,
+                text="Apogee",
+                variable=self.triggervar,
+                value=0,
+            ).place(anchor="w", relx=0.05, rely=1/12)
+
+            ctk.CTkRadioButton(
+                self.triggerwindow,
+                text="Descending at AGL height [m]",
+                variable=self.triggervar,
+                value=1,
+            ).place(anchor="w", relx=0.05, rely=3/12)
+            self.t1entry = CTkEntry(self.triggerwindow, placeholder_text="0", width=118)
+            self.t1entry.place(anchor="e", relx=0.95, rely=3/12)
+
+            ctk.CTkRadioButton(
+                self.triggerwindow,
+                text="Ascending at AGL height [m]",
+                variable=self.triggervar,
+                value=2,
+            ).place(anchor="w", relx=0.05, rely=5/12)
+            self.t2entry = CTkEntry(self.triggerwindow, placeholder_text="0", width=118)
+            self.t2entry.place(anchor="e", relx=0.95, rely=5/12)
+
+            ctk.CTkRadioButton(
+                self.triggerwindow,
+                text="Descending at freestream pressure [Pa]",
+                variable=self.triggervar,
+                value=3,
+            ).place(anchor="w", relx=0.05, rely=7/12)
+            self.t3entry = CTkEntry(self.triggerwindow, placeholder_text="0", width=118)
+            self.t3entry.place(anchor="e", relx=0.95, rely=7/12)
+
+            ctk.CTkRadioButton(
+                self.triggerwindow,
+                text="Ascending at freestream pressure [Pa]",
+                variable=self.triggervar,
+                value=4,
+            ).place(anchor="w", relx=0.05, rely=9/12)
+            self.t4entry = CTkEntry(self.triggerwindow, placeholder_text="0", width=118)
+            self.t4entry.place(anchor="e", relx=0.95, rely=9/12)
+
+            self.settriggerbutton = CTkButton(self.triggerwindow, text="Set", command=self.set_trigger, width=90)
+            self.settriggerbutton.place(anchor="center", relx=0.5, rely=11/12)
+
+            self.triggerwindow.after(50, self.triggerwindow.lift)
+            self.triggerwindow.after(50, self.triggerwindow.focus)
+
+    def set_trigger(self):
+        if self.triggervar.get() == 0:
+            config.trigger = "apogee"
+        if self.triggervar.get() == 1:
+            agl = float(self.t1entry.get())
+            config.trigger = lambda p, h, y: True if y[5] < 0 and h <= agl else False
+        if self.triggervar.get() == 2:
+            agl = float(self.t2entry.get())
+            config.trigger = lambda p, h, y: True if y[5] > 0 and h >= agl else False
+        if self.triggervar.get() == 3:
+            fsp = float(self.t3entry.get())
+            config.trigger = lambda p, h, y: True if y[5] < 0 and p > fsp else False
+        if self.triggervar.get() == 4:
+            fsp = float(self.t4entry.get())
+            config.trigger = lambda p, h, y: True if y[5] > 0 and p < fsp else False
+        self.triggerwindow.destroy()
+        self.triggervar.set(0)
+
     def add_parachute(self):
-        self.finslabel.configure(text="Adding parachute...")
-        self.finslabel.update()
+        if config.trigger == None:
+            messagebox.showwarning(title="Warning", message="Please set the trigger first.")
+            return
+        
+        self.parachutelabel.configure(text="Adding parachute...")
+        self.parachutelabel.update()
         try:
             config.parachute = self.nameentry.get()
             config.cd_s = float(self.cdsentry.get())
-            config.trigger = "apogee" # TODO
             config.sampling_rate = float(self.sampentry.get())
             config.lag = float(self.lagentry.get())
             noise1 = float(self.noiseentry1.get())
@@ -611,3 +700,4 @@ class MissionFrame(ctk.CTkFrame):
             self.np = 0
             self.parachutelabel.configure(text="Parachutes: 0")
             self.parachutelabel.update()
+        config.trigger = None
