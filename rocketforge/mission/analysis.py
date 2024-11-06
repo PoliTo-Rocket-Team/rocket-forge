@@ -68,8 +68,15 @@ def set_engine():
         coordinate_system_orientation="nozzle_to_combustion_chamber",
     )
 
+    # Add Tanks
     config.engine.add_tank(tank=oxidizer_tank, position=config.ox_tank_pos)
     config.engine.add_tank(tank=fuel_tank, position=config.fuel_tank_pos)
+
+    # Add Engine to Rocket
+    try:
+        config.rocket.add_motor(config.engine, position=config.engine_position)
+    except Exception:
+        pass
 
 
 def set_rocket():
