@@ -127,10 +127,10 @@ class MissionFrame(ctk.CTkFrame):
         msa.plot_all_engine()
 
     def run(self):
-        self.console.delete()
+        self.console.clear()
         self.console.enable()
         msa.simulate()
-        self.console.delete()
+        self.console.disable()
     
     def environment_window(self):
         if self.envwindow is None or not self.envwindow.winfo_exists():
@@ -748,11 +748,10 @@ class Console(ctk.CTkTextbox):
         ctk.CTkTextbox.__init__(self, *args, **kwargs)
         self.bind("<Destroy>", self.disable)
         self.old_stdout = sys.stdout
-        sys.stdout = self
     
-    def delete(self, *args, **kwargs):
+    def clear(self):
         self.configure(state="normal")
-        self.delete(*args, **kwargs)
+        self.delete("0.0", "20000.0")
         self.configure(state="disabled")
     
     def write(self, content):
@@ -763,5 +762,5 @@ class Console(ctk.CTkTextbox):
     def enable(self):
         sys.stdout = self
     
-    def disable(self):
+    def disable(self, event):
         sys.stdout = self.old_stdout
