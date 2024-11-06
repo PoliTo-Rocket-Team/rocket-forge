@@ -133,19 +133,60 @@ def simulate():
         inclination=config.inclination,
         heading=config.heading,
     )
-
-
-def results():
-    # Results
-    config.rocket.plots.static_margin()
-    config.rocket.draw()
-    config.flight.plots.trajectory_3d()
+    # Print Environment Data
+    config.env.prints.gravity_details()
+    config.env.prints.launch_site_details()
+    config.env.prints.atmospheric_model_details()
+    config.env.prints.atmospheric_conditions()
+    config.env.prints.print_earth_details()
+    # Print Engine Data
+    config.engine.prints.nozzle_details()
+    config.engine.prints.motor_details()
+    # Print Rocket Data
+    config.rocket.prints.inertia_details()
+    config.rocket.prints.rocket_geometrical_parameters()
+    config.rocket.prints.rocket_aerodynamics_quantities()
+    config.rocket.prints.parachute_data()
+    # Print Flight Data
+    config.flight.prints.initial_conditions()
+    config.flight.prints.surface_wind_conditions()
+    config.flight.prints.launch_rail_conditions()
+    config.flight.prints.out_of_rail_conditions()
+    config.flight.prints.burn_out_conditions()
     config.flight.prints.apogee_conditions()
+    config.flight.prints.events_registered()
+    config.flight.prints.impact_conditions()
+    config.flight.prints.stability_margin()
+    config.flight.prints.maximum_values()
+    config.flight.prints.numerical_integration_settings()
+
+
+def plot_trajectory():
+    config.flight.plots.trajectory_3d()
 
 
 def draw_rocket():
     config.rocket.draw()
 
 
-def plot_trajectory():
+def plot_all():
     config.flight.plots.trajectory_3d()
+    config.flight.plots.linear_kinematics_data()
+    config.flight.plots.flight_path_angle_data()
+    config.flight.plots.attitude_data()
+    config.flight.plots.angular_kinematics_data()
+    config.flight.plots.aerodynamic_forces()
+    config.flight.plots.rail_buttons_forces()
+    config.flight.plots.energy_data()
+    config.flight.plots.fluid_mechanics_data()
+    config.flight.plots.stability_and_control_data()
+    config.flight.plots.pressure_rocket_altitude()
+    config.flight.plots.pressure_signals()
+
+
+def plot_all_rocket():
+    config.rocket.plots.all()
+
+
+def plot_all_engine():
+    config.engine.plots.all()
