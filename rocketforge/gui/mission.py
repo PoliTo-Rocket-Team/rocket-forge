@@ -59,6 +59,15 @@ class MissionFrame(ctk.CTkFrame):
         self.finswindow = None
         self.fns = 0
 
+        self.parachutelabel = CTkLabel(self, text="Parachutes: 0")
+        self.parachutelabel.place(anchor="w", relx=0.52, rely=0.25, x=0, y=0)
+
+        self.parachutebutton = CTkButton(self)
+        self.parachutebutton.configure(text="Add Parachute...", command=self.parachute_window, width=118)
+        self.parachutebutton.place(anchor="e", relx=0.98, rely=0.25, x=0, y=0)
+        self.parachutewindow = None
+        self.np = 0
+
         CTkButton(
             self, text="Run Simulation", command=self.run, width=118
         ).place(anchor="center", relx=0.5, rely=0.32)
@@ -426,6 +435,9 @@ class MissionFrame(ctk.CTkFrame):
         self.nfs = 0
         self.finslabel.configure(text="Fin sets: 0")
         self.finslabel.update()
+        self.np = 0
+        self.finslabel.configure(text="Parachutes: 0")
+        self.finslabel.update()
 
     def fins_window(self):
         if self.finswindow is None or not self.finswindow.winfo_exists():
@@ -501,4 +513,80 @@ class MissionFrame(ctk.CTkFrame):
             self.rocketlabel.update()
             self.nfs = 0
             self.finslabel.configure(text="Fin sets: 0")
+            self.finslabel.update()
+
+    def parachute_window(self):
+        if self.parachutewindow is None or not self.parachutewindow.winfo_exists():
+            self.parachutewindow = ctk.CTkToplevel()
+            self.parachutewindow.title("Add Parachute")
+            self.parachutewindow.configure(width=350, height=300)
+            self.parachutewindow.resizable(False, False)
+            self.parachutewindow.after(
+                201,
+                lambda: self.parachutewindow.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                ),
+            )
+
+            self.namelabel = CTkLabel(self.parachutewindow, text="Parachute name")
+            self.namelabel.place(anchor="w", relx=0.05, rely=1/14)
+            self.nameentry = CTkEntry(self.parachutewindow, placeholder_text="0", width=118)
+            self.nameentry.place(anchor="e", relx=0.95, rely=1/14)
+
+            self.cdslabel = CTkLabel(self.parachutewindow, text="Drag coefficient * reference area")
+            self.cdslabel.place(anchor="w", relx=0.05, rely=3/14)
+            self.cdsentry = CTkEntry(self.parachutewindow, placeholder_text="0", width=118)
+            self.cdsentry.place(anchor="e", relx=0.95, rely=3/14)
+
+            self.triggerlabel = CTkLabel(self.parachutewindow, text="Trigger")
+            self.triggerlabel.place(anchor="w", relx=0.05, rely=5/14)
+            self.triggerbutton = CTkButton(self.parachutewindow, text="Set Trigger...", width=118)
+            self.triggerbutton.place(anchor="e", relx=0.95, rely=5/14)      
+
+            self.samplabel = CTkLabel(self.parachutewindow, text="Sampling rate")
+            self.samplabel.place(anchor="w", relx=0.05, rely=7/14)
+            self.sampentry = CTkEntry(self.parachutewindow, placeholder_text="0", width=118)
+            self.sampentry.place(anchor="e", relx=0.95, rely=7/14)
+
+            self.laglabel = CTkLabel(self.parachutewindow, text="Lag")
+            self.laglabel.place(anchor="w", relx=0.05, rely=9/14)
+            self.lagentry = CTkEntry(self.parachutewindow, placeholder_text="0", width=118)
+            self.lagentry.place(anchor="e", relx=0.95, rely=9/14)
+
+            self.noiselabel = CTkLabel(self.parachutewindow, text="Noise")
+            self.noiselabel.place(anchor="w", relx=0.05, rely=11/14)
+            self.nosieentry = CTkEntry(self.parachutewindow, placeholder_text="0", width=118)
+            self.nosieentry.place(anchor="e", relx=0.95, rely=11/14)
+
+            self.addparachutebutton = CTkButton(self.parachutewindow, text="Add", command=self.add_parachute, width=90)
+            self.addparachutebutton.place(anchor="center", relx=0.5, rely=13/14)
+
+            self.parachutewindow.after(50, self.parachutewindow.lift)
+            self.parachutewindow.after(50, self.parachutewindow.focus)
+
+        else:
+            self.parachutewindow.lift()
+            self.parachutewindow.focus()
+
+    def add_parachute(self):
+        self.finslabel.configure(text="Adding parachute...")
+        self.finslabel.update()
+        try:
+            config.parachute = self.nameentry.get()
+            config.cd_s = float(self.cdsentry.get())
+            config.trigger = "apogee" # TODO
+            config.sampling_rate = float(self.samplabel.get())
+            config.lag = float(self.lagentry.get())
+            config.noise = (0, 0, 0) # TODO
+            msa.add_parachute()
+            self.np += 1
+            self.parachutewindow.destroy()
+            self.finslabel.configure(text=f"Parachutes: {self.np}")
+            self.finslabel.update()
+        except Exception:
+            config.rocket = None
+            self.rocketlabel.configure(text="Rocket is not configured")
+            self.rocketlabel.update()
+            self.np = 0
+            self.finslabel.configure(text="Parachutes: 0")
             self.finslabel.update()
