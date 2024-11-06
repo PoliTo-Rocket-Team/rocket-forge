@@ -109,7 +109,7 @@ def add_fins():
 def add_parachute():
     # Add Parachute
     config.rocket.add_parachute(
-        name="main",
+        name=config.parachute,
         cd_s=config.cd_s,
         trigger=config.trigger,
         sampling_rate=config.sampling_rate,

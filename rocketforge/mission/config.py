@@ -41,6 +41,7 @@ fins_position = None # Fins position
 sweep_length = None # Fins sweep length
 
 # Parachute Parameters
+parachute = None
 cd_s = None
 trigger = None
 sampling_rate = None
