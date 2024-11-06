@@ -56,7 +56,6 @@ hour = None
 latitude = None
 longitude = None
 elevation = None
-env = None
 
 # Rail Parameters
 rail_length = None
@@ -64,7 +63,8 @@ inclination = None
 heading = None
 
 # Simulation Parameters
-from rocketpy import LiquidMotor, Rocket, Flight
+from rocketpy import Environment, LiquidMotor, Rocket, Flight
+env : Environment = None
 engine : LiquidMotor = None
 rocket : Rocket = None
 flight : Flight = None
