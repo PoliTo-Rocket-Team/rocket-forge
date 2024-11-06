@@ -109,7 +109,6 @@ def add_fins():
         span=config.span,
         position=config.fins_position,
         sweep_length=config.sweep_length,
-        airfoil=config.airfoil,
     )
 
 
