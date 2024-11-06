@@ -556,10 +556,14 @@ class MissionFrame(ctk.CTkFrame):
             self.lagentry = CTkEntry(self.parachutewindow, placeholder_text="0", width=118)
             self.lagentry.place(anchor="e", relx=0.95, rely=9/14)
 
-            self.noiselabel = CTkLabel(self.parachutewindow, text="Noise")
+            self.noiselabel = CTkLabel(self.parachutewindow, text="Noise [Pa]")
             self.noiselabel.place(anchor="w", relx=0.05, rely=11/14)
-            self.noiseentry = CTkEntry(self.parachutewindow, placeholder_text="0", width=118)
-            self.noiseentry.place(anchor="e", relx=0.95, rely=11/14)
+            self.noiseentry1 = CTkEntry(self.parachutewindow, placeholder_text="mean", width=45)
+            self.noiseentry1.place(anchor="e", relx=0.65, rely=11/14)
+            self.noiseentry2 = CTkEntry(self.parachutewindow, placeholder_text="rms", width=45)
+            self.noiseentry2.place(anchor="e", relx=0.8, rely=11/14)
+            self.noiseentry3 = CTkEntry(self.parachutewindow, placeholder_text="tau", width=45)
+            self.noiseentry3.place(anchor="e", relx=0.95, rely=11/14)
 
             self.addparachutebutton = CTkButton(self.parachutewindow, text="Add", command=self.add_parachute, width=90)
             self.addparachutebutton.place(anchor="center", relx=0.5, rely=13/14)
@@ -580,7 +584,10 @@ class MissionFrame(ctk.CTkFrame):
             config.trigger = "apogee" # TODO
             config.sampling_rate = float(self.sampentry.get())
             config.lag = float(self.lagentry.get())
-            config.noise = (0, 0, 0) # TODO
+            noise1 = float(self.noiseentry1.get())
+            noise2 = float(self.noiseentry2.get())
+            noise3 = float(self.noiseentry3.get())
+            config.noise = (noise1, noise2, noise3)
             msa.add_parachute()
             self.np += 1
             self.parachutewindow.destroy()
