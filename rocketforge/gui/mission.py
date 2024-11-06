@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import customtkinter as ctk
+import sys
 import rocketforge.mission.config as config
 import rocketforge.mission.analysis as msa
 from rocketforge.utils.helpers import updateentry
@@ -71,27 +72,65 @@ class MissionFrame(ctk.CTkFrame):
         self.np = 0
 
         CTkButton(
-            self, text="Run Simulation", command=self.run, width=118
+            self, text="Plot 3D Trajectory", command=self.plot_trajectory, width=105
+        ).place(anchor="center", relx=0.12, rely=0.32)
+
+        CTkButton(
+            self, text="Draw Rocket", command=self.draw_rocket, width=105
+        ).place(anchor="center", relx=0.31, rely=0.32)
+
+        CTkButton(
+            self, text="Flight Plots", command=self.plot_all, width=105
         ).place(anchor="center", relx=0.5, rely=0.32)
 
         CTkButton(
-            self, text="Plot 3D Trajectory", command=self.plot_trajectory, width=118
-        ).place(anchor="center", relx=0.25, rely=0.39)
+            self, text="Rocket Plots", command=self.plot_all_rocket, width=105
+        ).place(anchor="center", relx=0.69, rely=0.32)
 
         CTkButton(
-            self, text="Draw Rocket", command=self.draw_rocket, width=118
-        ).place(anchor="center", relx=0.75, rely=0.39)
+            self, text="Engine Plots", command=self.plot_all_engine, width=105
+        ).place(anchor="center", relx=0.88, rely=0.32)
+
+        self.console = Console(self, height=300, state="disabled", wrap="word")
+        self.console.place(anchor="s", relx=0.5, rely=0.99, relwidth=0.98)
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
     def plot_trajectory(self):
+        if config.flight is None:
+            messagebox.showwarning(title="Warning", message="Please run the simulation first.")
+            return
         msa.plot_trajectory()
 
     def draw_rocket(self):
+        if config.rocket is None:
+            messagebox.showwarning(title="Warning", message="Please configure the rocket first.")
+            return
         msa.draw_rocket()
 
+    def plot_all(self):
+        if config.flight is None:
+            messagebox.showwarning(title="Warning", message="Please run the simulation first.")
+            return
+        msa.plot_all()
+
+    def plot_all_rocket(self):
+        if config.rocket is None:
+            messagebox.showwarning(title="Warning", message="Please configure the rocket first.")
+            return
+        msa.plot_all_rocket()
+
+    def plot_all_engine(self):
+        if config.engine is None:
+            messagebox.showwarning(title="Warning", message="Please configure the engine first.")
+            return
+        msa.plot_all_engine()
+
     def run(self):
+        self.console.delete()
+        self.console.enable()
         msa.simulate()
+        self.console.delete()
     
     def environment_window(self):
         if self.envwindow is None or not self.envwindow.winfo_exists():
@@ -701,3 +740,28 @@ class MissionFrame(ctk.CTkFrame):
             self.parachutelabel.configure(text="Parachutes: 0")
             self.parachutelabel.update()
         config.trigger = None
+
+
+class Console(ctk.CTkTextbox):
+    def __init__(self, *args, **kwargs):
+        kwargs.update({"state": "disabled"})
+        ctk.CTkTextbox.__init__(self, *args, **kwargs)
+        self.bind("<Destroy>", self.disable)
+        self.old_stdout = sys.stdout
+        sys.stdout = self
+    
+    def delete(self, *args, **kwargs):
+        self.configure(state="normal")
+        self.delete(*args, **kwargs)
+        self.configure(state="disabled")
+    
+    def write(self, content):
+        self.configure(state="normal")
+        self.insert("end", content)
+        self.configure(state="disabled")
+
+    def enable(self):
+        sys.stdout = self
+    
+    def disable(self):
+        sys.stdout = self.old_stdout
