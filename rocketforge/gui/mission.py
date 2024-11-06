@@ -50,17 +50,26 @@ class MissionFrame(ctk.CTkFrame):
         self.rocketbutton.place(anchor="e", relx=0.98, rely=0.18, x=0, y=0)
         self.rocketwindow = None
 
+        self.finslabel = CTkLabel(self, text="Fin sets: 0")
+        self.finslabel.place(anchor="w", relx=0.02, rely=0.25, x=0, y=0)
+
+        self.finsbutton = CTkButton(self)
+        self.finsbutton.configure(text="Add Fins...", command=self.fins_window, width=118)
+        self.finsbutton.place(anchor="e", relx=0.48, rely=0.25, x=0, y=0)
+        self.finswindow = None
+        self.fns = 0
+
         CTkButton(
             self, text="Run Simulation", command=self.run, width=118
-        ).place(anchor="center", relx=0.5, rely=0.25)
+        ).place(anchor="center", relx=0.5, rely=0.32)
 
         CTkButton(
             self, text="Plot 3D Trajectory", command=self.plot_trajectory, width=118
-        ).place(anchor="w", relx=0.02, rely=0.32)
+        ).place(anchor="center", relx=0.25, rely=0.39)
 
         CTkButton(
             self, text="Draw Rocket", command=self.draw_rocket, width=118
-        ).place(anchor="e", relx=0.48, rely=0.32)
+        ).place(anchor="center", relx=0.75, rely=0.39)
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
@@ -330,7 +339,7 @@ class MissionFrame(ctk.CTkFrame):
         if self.rocketwindow is None or not self.rocketwindow.winfo_exists():
             self.rocketwindow = ctk.CTkToplevel()
             self.rocketwindow.title("Configure Rocket")
-            self.rocketwindow.configure(width=350, height=500)
+            self.rocketwindow.configure(width=350, height=300)
             self.rocketwindow.resizable(False, False)
             self.rocketwindow.after(
                 201,
@@ -340,69 +349,39 @@ class MissionFrame(ctk.CTkFrame):
             )
 
             self.rocketmasslabel = CTkLabel(self.rocketwindow, text="Rocket mass [kg]")
-            self.rocketmasslabel.place(anchor="sw", relx=0.05, rely=0.14)
+            self.rocketmasslabel.place(anchor="w", relx=0.05, rely=1/12)
             self.rocketmassentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.rocketmassentry.place(anchor="se", relx=0.95, rely=0.14)
+            self.rocketmassentry.place(anchor="e", relx=0.95, rely=1/12)
     
             self.rocketradiuslabel = CTkLabel(self.rocketwindow, text="Rocket radius [m]")
-            self.rocketradiuslabel.place(anchor="sw", relx=0.05, rely=0.21)
+            self.rocketradiuslabel.place(anchor="w", relx=0.05, rely=3/12)
             self.rocketradiusentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.rocketradiusentry.place(anchor="se", relx=0.95, rely=0.21)
+            self.rocketradiusentry.place(anchor="e", relx=0.95, rely=3/12)
 
             self.cogwmlabel = CTkLabel(self.rocketwindow, text="CoG without motor [m]")
-            self.cogwmlabel.place(anchor="sw", relx=0.05, rely=0.28)
+            self.cogwmlabel.place(anchor="w", relx=0.05, rely=5/12)
             self.cogwmentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.cogwmentry.place(anchor="se", relx=0.95, rely=0.28)
+            self.cogwmentry.place(anchor="e", relx=0.95, rely=5/12)
 
             self.rocketinertialabel = CTkLabel(self.rocketwindow, text="Inertia [kg m2]")
-            self.rocketinertialabel.place(anchor="sw", relx=0.05, rely=0.35)
+            self.rocketinertialabel.place(anchor="w", relx=0.05, rely=7/12)
             self.rocketi11entry = CTkEntry(self.rocketwindow, placeholder_text="Ixx", width=45)
-            self.rocketi11entry.place(anchor="se", relx=0.65, rely=0.35)
+            self.rocketi11entry.place(anchor="e", relx=0.65, rely=7/12)
             self.rocketi22entry = CTkEntry(self.rocketwindow, placeholder_text="Iyy", width=45)
-            self.rocketi22entry.place(anchor="se", relx=0.8, rely=0.35)
+            self.rocketi22entry.place(anchor="e", relx=0.8, rely=7/12)
             self.rocketi33entry = CTkEntry(self.rocketwindow, placeholder_text="Izz", width=45)
-            self.rocketi33entry.place(anchor="se", relx=0.95, rely=0.35)
+            self.rocketi33entry.place(anchor="e", relx=0.95, rely=7/12)
 
             self.noselengthlabel = CTkLabel(self.rocketwindow, text="Nose length [m]")
-            self.noselengthlabel.place(anchor="sw", relx=0.05, rely=0.42)
+            self.noselengthlabel.place(anchor="w", relx=0.05, rely=9/12)
             self.noselengthentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.noselengthentry.place(anchor="se", relx=0.95, rely=0.42)
-
-            self.finsnlabel = CTkLabel(self.rocketwindow, text="Fins number")
-            self.finsnlabel.place(anchor="sw", relx=0.05, rely=0.49)
-            self.finsnentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.finsnentry.place(anchor="se", relx=0.95, rely=0.49)
-
-            self.finsrclabel = CTkLabel(self.rocketwindow, text="Fins root chord [m]")
-            self.finsrclabel.place(anchor="sw", relx=0.05, rely=0.56)
-            self.finsrcentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.finsrcentry.place(anchor="se", relx=0.95, rely=0.56)
-
-            self.finstclabel = CTkLabel(self.rocketwindow, text="Fins tip chord [m]")
-            self.finstclabel.place(anchor="sw", relx=0.05, rely=0.63)
-            self.finstcentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.finstcentry.place(anchor="se", relx=0.95, rely=0.63)
-
-            self.finsslabel = CTkLabel(self.rocketwindow, text="Fins span [m]")
-            self.finsslabel.place(anchor="sw", relx=0.05, rely=0.7)
-            self.finssentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.finssentry.place(anchor="se", relx=0.95, rely=0.7)
-
-            self.finsswlabel = CTkLabel(self.rocketwindow, text="Fins sweep length [m]")
-            self.finsswlabel.place(anchor="sw", relx=0.05, rely=0.77)
-            self.finsswentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.finsswentry.place(anchor="se", relx=0.95, rely=0.77)
-
-            self.finsposlabel = CTkLabel(self.rocketwindow, text="Fins position [m]")
-            self.finsposlabel.place(anchor="sw", relx=0.05, rely=0.84)
-            self.finsposentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.finsposentry.place(anchor="se", relx=0.95, rely=0.84)
+            self.noselengthentry.place(anchor="e", relx=0.95, rely=9/12)
 
             self.setrocketbutton = CTkButton(self.rocketwindow, text="Set", command=self.set_rocket, width=90)
-            self.setrocketbutton.place(anchor="s", relx=0.75, rely=0.91)
+            self.setrocketbutton.place(anchor="center", relx=0.75, rely=11/12)
 
             self.loadrocketbutton = CTkButton(self.rocketwindow, text="Load", command=self.load_rocket, width=90)
-            self.loadrocketbutton.place(anchor="s", relx=0.25, rely=0.91)
+            self.loadrocketbutton.place(anchor="center", relx=0.25, rely=11/12)
 
             self.rocketwindow.after(50, self.rocketwindow.lift)
             self.rocketwindow.after(50, self.rocketwindow.focus)
@@ -420,12 +399,6 @@ class MissionFrame(ctk.CTkFrame):
             updateentry(self.rocketi22entry, config.rocket_inertia[1])
             updateentry(self.rocketi33entry, config.rocket_inertia[2])
             updateentry(self.noselengthentry, config.nose_length)
-            updateentry(self.finsnentry, config.nfins)
-            updateentry(self.finsrcentry, config.root_chord)
-            updateentry(self.finstcentry, config.tip_chord)
-            updateentry(self.finssentry, config.span)
-            updateentry(self.finsswentry, config.sweep_length)
-            updateentry(self.finsposentry, config.fins_position)
         except Exception:
             pass
 
@@ -441,12 +414,6 @@ class MissionFrame(ctk.CTkFrame):
             ri33 = float(self.rocketi33entry.get())
             config.rocket_inertia = (ri11, ri22, ri33)
             config.nose_length = float(self.noselengthentry.get())
-            config.nfins = int(float(self.finsnentry.get()))
-            config.root_chord = float(self.finsrcentry.get())
-            config.tip_chord = float(self.finstcentry.get())
-            config.span = float(self.finssentry.get()) 
-            config.sweep_length = float(self.finsswentry.get())
-            config.fins_position = float(self.finsposentry.get())
             config.drag = filedialog.askopenfilename(title="Load drag coefficient file")
             msa.set_rocket()
             self.rocketwindow.destroy()
@@ -456,3 +423,82 @@ class MissionFrame(ctk.CTkFrame):
             config.rocket = None
             self.rocketlabel.configure(text="Rocket is not configured")
             self.rocketlabel.update()
+        self.nfs = 0
+        self.finslabel.configure(text="Fin sets: 0")
+        self.finslabel.update()
+
+    def fins_window(self):
+        if self.finswindow is None or not self.finswindow.winfo_exists():
+            self.finswindow = ctk.CTkToplevel()
+            self.finswindow.title("Add Fins")
+            self.finswindow.configure(width=350, height=300)
+            self.finswindow.resizable(False, False)
+            self.finswindow.after(
+                201,
+                lambda: self.finswindow.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                ),
+            )
+
+            self.finsnlabel = CTkLabel(self.finswindow, text="Fins number")
+            self.finsnlabel.place(anchor="w", relx=0.05, rely=1/14)
+            self.finsnentry = CTkEntry(self.finswindow, placeholder_text="0", width=118)
+            self.finsnentry.place(anchor="e", relx=0.95, rely=1/14)
+
+            self.finsrclabel = CTkLabel(self.finswindow, text="Fins root chord [m]")
+            self.finsrclabel.place(anchor="w", relx=0.05, rely=3/14)
+            self.finsrcentry = CTkEntry(self.finswindow, placeholder_text="0", width=118)
+            self.finsrcentry.place(anchor="e", relx=0.95, rely=3/14)
+
+            self.finstclabel = CTkLabel(self.finswindow, text="Fins tip chord [m]")
+            self.finstclabel.place(anchor="w", relx=0.05, rely=5/14)
+            self.finstcentry = CTkEntry(self.finswindow, placeholder_text="0", width=118)
+            self.finstcentry.place(anchor="e", relx=0.95, rely=5/14)
+
+            self.finsslabel = CTkLabel(self.finswindow, text="Fins span [m]")
+            self.finsslabel.place(anchor="w", relx=0.05, rely=7/14)
+            self.finssentry = CTkEntry(self.finswindow, placeholder_text="0", width=118)
+            self.finssentry.place(anchor="e", relx=0.95, rely=7/14)
+
+            self.finsswlabel = CTkLabel(self.finswindow, text="Fins sweep length [m]")
+            self.finsswlabel.place(anchor="w", relx=0.05, rely=9/14)
+            self.finsswentry = CTkEntry(self.finswindow, placeholder_text="0", width=118)
+            self.finsswentry.place(anchor="e", relx=0.95, rely=9/14)
+
+            self.finsposlabel = CTkLabel(self.finswindow, text="Fins position [m]")
+            self.finsposlabel.place(anchor="w", relx=0.05, rely=11/14)
+            self.finsposentry = CTkEntry(self.finswindow, placeholder_text="0", width=118)
+            self.finsposentry.place(anchor="e", relx=0.95, rely=11/14)
+
+            self.setfinsbutton = CTkButton(self.finswindow, text="Add", command=self.add_fins, width=90)
+            self.setfinsbutton.place(anchor="center", relx=0.5, rely=13/14)
+
+            self.finswindow.after(50, self.finswindow.lift)
+            self.finswindow.after(50, self.finswindow.focus)
+
+        else:
+            self.finswindow.lift()
+            self.finswindow.focus()
+
+    def add_fins(self):
+        self.finslabel.configure(text="Adding fin set...")
+        self.finslabel.update()
+        try:
+            config.nfins = int(float(self.finsnentry.get()))
+            config.root_chord = float(self.finsrcentry.get())
+            config.tip_chord = float(self.finstcentry.get())
+            config.span = float(self.finssentry.get()) 
+            config.sweep_length = float(self.finsswentry.get())
+            config.fins_position = float(self.finsposentry.get())
+            msa.add_fins()
+            self.nfs += 1
+            self.finswindow.destroy()
+            self.finslabel.configure(text=f"Fin sets: {self.nfs}")
+            self.finslabel.update()
+        except Exception:
+            config.rocket = None
+            self.rocketlabel.configure(text="Rocket is not configured")
+            self.rocketlabel.update()
+            self.nfs = 0
+            self.finslabel.configure(text="Fin sets: 0")
+            self.finslabel.update()
