@@ -242,34 +242,39 @@ class MissionFrame(ctk.CTkFrame):
             )
 
             self.chambermasslabel = CTkLabel(self.enginewindow, text="Chamber mass (no tanks) [kg]")
-            self.chambermasslabel.place(anchor="w", relx=0.05, rely=0.14)
+            self.chambermasslabel.place(anchor="w", relx=0.05, rely=1/12)
             self.chambermassentry = CTkEntry(self.enginewindow, placeholder_text="0", width=118)
-            self.chambermassentry.place(anchor="e", relx=0.95, rely=0.14)
+            self.chambermassentry.place(anchor="e", relx=0.95, rely=1/12)
 
             self.engineinertialabel = CTkLabel(self.enginewindow, text="Inertia [kg m2]")
-            self.engineinertialabel.place(anchor="w", relx=0.05, rely=0.32)
+            self.engineinertialabel.place(anchor="w", relx=0.05, rely=1/4)
             self.enginei11entry = CTkEntry(self.enginewindow, placeholder_text="Ixx", width=45)
-            self.enginei11entry.place(anchor="e", relx=0.65, rely=0.32)
+            self.enginei11entry.place(anchor="e", relx=0.65, rely=1/4)
             self.enginei22entry = CTkEntry(self.enginewindow, placeholder_text="Iyy", width=45)
-            self.enginei22entry.place(anchor="e", relx=0.8, rely=0.32)
+            self.enginei22entry.place(anchor="e", relx=0.8, rely=1/4)
             self.enginei33entry = CTkEntry(self.enginewindow, placeholder_text="Izz", width=45)
-            self.enginei33entry.place(anchor="e", relx=0.95, rely=0.32)
+            self.enginei33entry.place(anchor="e", relx=0.95, rely=1/4)
 
             self.ecogdrylabel = CTkLabel(self.enginewindow, text="Engine CoG Dry [m]")
-            self.ecogdrylabel.place(anchor="w", relx=0.05, rely=0.5)
+            self.ecogdrylabel.place(anchor="w", relx=0.05, rely=5/12)
             self.ecogdryentry = CTkEntry(self.enginewindow, placeholder_text="0", width=118)
-            self.ecogdryentry.place(anchor="e", relx=0.95, rely=0.5)
+            self.ecogdryentry.place(anchor="e", relx=0.95, rely=5/12)
 
             self.enginepositionlabel = CTkLabel(self.enginewindow, text="Engine position [m]")
-            self.enginepositionlabel.place(anchor="w", relx=0.05, rely=0.68)
+            self.enginepositionlabel.place(anchor="w", relx=0.05, rely=7/12)
             self.enginepositionentry = CTkEntry(self.enginewindow, placeholder_text="0", width=118)
-            self.enginepositionentry.place(anchor="e", relx=0.95, rely=0.68)
+            self.enginepositionentry.place(anchor="e", relx=0.95, rely=7/12)
+
+            self.relabel = CTkLabel(self.enginewindow, text="Nozzle exit radius [m]")
+            self.relabel.place(anchor="w", relx=0.05, rely=3/4)
+            self.reentry = CTkEntry(self.enginewindow, placeholder_text="0", width=118)
+            self.reentry.place(anchor="e", relx=0.95, rely=3/4)
 
             self.setenginebutton = CTkButton(self.enginewindow, text="Set", command=self.set_engine, width=90)
-            self.setenginebutton.place(anchor="center", relx=0.75, rely=0.86)
+            self.setenginebutton.place(anchor="center", relx=0.75, rely=11/12)
 
             self.loadenginebutton = CTkButton(self.enginewindow, text="Load", command=self.load_engine, width=90)
-            self.loadenginebutton.place(anchor="center", relx=0.25, rely=0.86)
+            self.loadenginebutton.place(anchor="center", relx=0.25, rely=11/12)
 
             self.enginewindow.after(50, self.enginewindow.lift)
             self.enginewindow.after(50, self.enginewindow.focus)
@@ -285,6 +290,7 @@ class MissionFrame(ctk.CTkFrame):
             updateentry(self.enginei22entry, config.dry_inertia[1])
             updateentry(self.enginei33entry, config.dry_inertia[2])
             updateentry(self.ecogdryentry, config.engine_CoG_dry)
+            updateentry(self.reentry, config.Re)
             updateentry(self.enginepositionentry, config.engine_position)
         except Exception:
             pass
@@ -300,6 +306,7 @@ class MissionFrame(ctk.CTkFrame):
             config.dry_inertia = (ei11, ei22, ei33)
             config.engine_CoG_dry = float(self.ecogdryentry.get())
             config.engine_position = float(self.enginepositionentry.get())
+            config.Re = float(self.reentry.get())
             msa.set_engine()
             self.enginewindow.destroy()
             self.enginelabel.configure(text="Engine has been configured")
