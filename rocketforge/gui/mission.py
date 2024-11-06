@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 import customtkinter as ctk
 import rocketforge.mission.config as config
 import rocketforge.mission.analysis as msa
@@ -440,6 +440,10 @@ class MissionFrame(ctk.CTkFrame):
         self.parachutelabel.update()
 
     def fins_window(self):
+        if config.rocket is None:
+            messagebox.showwarning(title="Warning", message="Please configure the rocket first.")
+            return
+
         if self.finswindow is None or not self.finswindow.winfo_exists():
             self.finswindow = ctk.CTkToplevel()
             self.finswindow.title("Add Fins")
@@ -519,6 +523,10 @@ class MissionFrame(ctk.CTkFrame):
             self.parachutelabel.update()
 
     def parachute_window(self):
+        if config.rocket is None:
+            messagebox.showwarning(title="Warning", message="Please configure the rocket first.")
+            return
+
         if self.parachutewindow is None or not self.parachutewindow.winfo_exists():
             self.parachutewindow = ctk.CTkToplevel()
             self.parachutewindow.title("Add Parachute")
