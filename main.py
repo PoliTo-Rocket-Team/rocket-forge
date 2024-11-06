@@ -209,6 +209,9 @@ class RocketForge(CTk):
             self.statuslabel.configure(text="Status: loading tanks...")
             self.statuslabel.update()
             self.tanksframe.compute()
+            self.statuslabel.configure(text="Status: running flight simulation...")
+            self.statuslabel.update()
+            self.missionframe.run()
         except Exception:
             pass
 
