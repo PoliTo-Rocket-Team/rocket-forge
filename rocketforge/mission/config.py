@@ -31,6 +31,8 @@ rocket_inertia = None # Rocket inertia (without engine)
 drag = None # Rocket drag coefficient over Mach
 rocket_CoG_dry = None # Rocket center of gravity (without engine)
 nose_length = None # Nose length
+
+# Fins Parameters
 nfins = None # Number of fins
 root_chord = None # Root chord of fins
 tip_chord = None # Tip chord of fins
@@ -38,19 +40,12 @@ span = None # Span of fins
 fins_position = None # Fins position
 sweep_length = None # Fins sweep length
 
-# Main Parachute Parameters
-main_cd_s = None
-main_trigger = None
-main_sampling_rate = None
-main_lag = None
-main_noise = None
-
-# Drogue Parachute Parameters
-drogue_cd_s = None
-drogue_trigger = None
-drogue_sampling_rate = None
-drogue_lag = None
-drogue_noise = None
+# Parachute Parameters
+cd_s = None
+trigger = None
+sampling_rate = None
+lag = None
+noise = None
 
 # Environment Parameters
 year = None
