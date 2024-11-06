@@ -436,8 +436,8 @@ class MissionFrame(ctk.CTkFrame):
         self.finslabel.configure(text="Fin sets: 0")
         self.finslabel.update()
         self.np = 0
-        self.finslabel.configure(text="Parachutes: 0")
-        self.finslabel.update()
+        self.parachutelabel.configure(text="Parachutes: 0")
+        self.parachutelabel.update()
 
     def fins_window(self):
         if self.finswindow is None or not self.finswindow.winfo_exists():
@@ -514,6 +514,9 @@ class MissionFrame(ctk.CTkFrame):
             self.nfs = 0
             self.finslabel.configure(text="Fin sets: 0")
             self.finslabel.update()
+            self.np = 0
+            self.parachutelabel.configure(text="Parachutes: 0")
+            self.parachutelabel.update()
 
     def parachute_window(self):
         if self.parachutewindow is None or not self.parachutewindow.winfo_exists():
@@ -555,8 +558,8 @@ class MissionFrame(ctk.CTkFrame):
 
             self.noiselabel = CTkLabel(self.parachutewindow, text="Noise")
             self.noiselabel.place(anchor="w", relx=0.05, rely=11/14)
-            self.nosieentry = CTkEntry(self.parachutewindow, placeholder_text="0", width=118)
-            self.nosieentry.place(anchor="e", relx=0.95, rely=11/14)
+            self.noiseentry = CTkEntry(self.parachutewindow, placeholder_text="0", width=118)
+            self.noiseentry.place(anchor="e", relx=0.95, rely=11/14)
 
             self.addparachutebutton = CTkButton(self.parachutewindow, text="Add", command=self.add_parachute, width=90)
             self.addparachutebutton.place(anchor="center", relx=0.5, rely=13/14)
@@ -575,18 +578,21 @@ class MissionFrame(ctk.CTkFrame):
             config.parachute = self.nameentry.get()
             config.cd_s = float(self.cdsentry.get())
             config.trigger = "apogee" # TODO
-            config.sampling_rate = float(self.samplabel.get())
+            config.sampling_rate = float(self.sampentry.get())
             config.lag = float(self.lagentry.get())
             config.noise = (0, 0, 0) # TODO
             msa.add_parachute()
             self.np += 1
             self.parachutewindow.destroy()
-            self.finslabel.configure(text=f"Parachutes: {self.np}")
-            self.finslabel.update()
+            self.parachutelabel.configure(text=f"Parachutes: {self.np}")
+            self.parachutelabel.update()
         except Exception:
             config.rocket = None
             self.rocketlabel.configure(text="Rocket is not configured")
             self.rocketlabel.update()
-            self.np = 0
-            self.finslabel.configure(text="Parachutes: 0")
+            self.nfs = 0
+            self.finslabel.configure(text="Fin sets: 0")
             self.finslabel.update()
+            self.np = 0
+            self.parachutelabel.configure(text="Parachutes: 0")
+            self.parachutelabel.update()
