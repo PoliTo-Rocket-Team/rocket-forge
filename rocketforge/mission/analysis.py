@@ -85,13 +85,16 @@ def set_rocket():
     )
     config.rocket.add_motor(config.engine, position=config.engine_position)
 
-    # Add Rocket Components
+    # Add Rocket Nose Cone
     config.rocket.add_nose(
         length=config.nose_length,
         kind="parabolic",
         position=0,
     )
 
+
+def add_fins():
+    # Add trapezoidal fins
     config.rocket.add_trapezoidal_fins(
         n=config.nfins,
         root_chord=config.root_chord,
@@ -99,28 +102,20 @@ def set_rocket():
         span=config.span,
         position=config.fins_position,
         sweep_length=config.sweep_length,
+        airfoil=config.airfoil,
     )
 
-    # Add Parachutes
-    if config.main_trigger != None:
-        config.rocket.add_parachute(
-            name="main",
-            cd_s=config.main_cd_s,
-            trigger=config.main_trigger,
-            sampling_rate=config.main_sampling_rate,
-            lag=config.main_lag,
-            noise=config.main_noise,
-        )
 
-    if config.drogue_trigger != None:
-        config.rocket.add_parachute(
-            name="drogue",
-            cd_s=config.drogue_cd_s,
-            trigger=config.drogue_trigger,
-            sampling_rate=config.drogue_sampling_rate,
-            lag=config.drogue_lag,
-            noise=config.drogue_noise,
-        )
+def add_parachute():
+    # Add Parachute
+    config.rocket.add_parachute(
+        name="main",
+        cd_s=config.cd_s,
+        trigger=config.trigger,
+        sampling_rate=config.sampling_rate,
+        lag=config.lag,
+        noise=config.noise,
+    )
 
 
 def simulate():
