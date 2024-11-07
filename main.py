@@ -353,6 +353,31 @@ class RocketForge(CTk):
                 "ctheta": gf.cthetaentry.get(),
                 "ctheta_uom": gf.cthetauom.get(),
             }
+            ttf = self.tanksframe
+            config["Tanks"] = {
+                "mass_flow_rate": ttf.mdotentry.get(),
+                "mass_flow_rate_uom": ttf.mdotuom.get(),
+                "prop_mass": ttf.mpentry.get(),
+                "prop_mass_uom": ttf.mpuom.get(),
+                "mixture_ratio": ttf.mrentry.get(),
+                "k0": ttf.k0entry.get(),
+                "k0_uom": ttf.k0uom.get(),
+                "kt": ttf.ktentry.get(),
+                "rho_ox": ttf.oxrhoentry.get(),
+                "rho_ox_uom": ttf.oxrhouom.get(),
+                "r_ox": ttf.oxrentry.get(),
+                "r_ox_uom": ttf.oxruom.get(),
+                "exc_ox": ttf.oxexcentry.get(),
+                "pos_ox": ttf.oxxentry.get(),
+                "pos_ox_uom": ttf.oxxuom.get(),
+                "rho_fuel": ttf.fuelrhoentry.get(),
+                "rho_fuel_uom": ttf.fuelrhouom.get(),
+                "r_fuel": ttf.fuelrentry.get(),
+                "r_fuel_uom": ttf.fuelruom.get(),
+                "exc_fuel": ttf.fuelexcentry.get(),
+                "pos_fuel": ttf.fuelxentry.get(),
+                "pos_fuel_uom":ttf.fuelxuom.get(),
+            }
 
             with open(filedialog.asksaveasfilename(defaultextension=".rf"), "w") as f:
                 config.write(f)
@@ -431,6 +456,31 @@ class RocketForge(CTk):
             updateentry(gf.clfentry, config.get("Geometry", "clf"))
             updateentry(gf.cthetaentry, config.get("Geometry", "ctheta"))
             gf.cthetauom.set(config.get("Geometry", "ctheta_uom"))
+
+            ttf = self.tanksframe
+
+            updateentry(ttf.mdotentry, config.get("Tanks", "mass_flow_rate"))
+            ttf.mdotuom.set(config.get("Tanks", "mass_flow_rate_uom"))
+            updateentry(ttf.mpentry, config.get("Tanks", "prop_mass"))
+            ttf.mpuom.set(config.get("Tanks", "prop_mass_uom"))
+            updateentry(ttf.mrentry, config.get("Tanks", "mixture_ratio"))
+            updateentry(ttf.k0entry, config.get("Tanks", "k0"))
+            ttf.k0uom.set(config.get("Tanks", "k0_uom"))
+            updateentry(ttf.ktentry, config.get("Tanks", "kt"))
+            updateentry(ttf.oxrhoentry, config.get("Tanks", "rho_ox"))
+            ttf.oxrhouom.set(config.get("Tanks", "rho_ox_uom"))
+            updateentry(ttf.oxrentry, config.get("Tanks", "r_ox"))
+            ttf.oxruom.set(config.get("Tanks", "r_ox_uom"))
+            updateentry(ttf.oxexcentry, config.get("Tanks", "exc_ox"))
+            updateentry(ttf.oxxentry, config.get("Tanks", "pos_ox"))
+            ttf.oxxuom.set(config.get("Tanks", "pos_ox_uom"))
+            updateentry(ttf.fuelrhoentry, config.get("Tanks", "rho_fuel"))
+            ttf.fuelrhouom.set(config.get("Tanks", "rho_fuel_uom"))
+            updateentry(ttf.fuelrentry, config.get("Tanks", "r_fuel"))
+            ttf.fuelruom.set(config.get("Tanks", "r_fuel_uom"))
+            updateentry(ttf.fuelexcentry, config.get("Tanks", "exc_fuel"))
+            updateentry(ttf.fuelxentry, config.get("Tanks", "pos_fuel"))
+            ttf.fuelxuom.set(config.get("Tanks", "pos_fuel_uom"))
 
         except Exception:
             pass
