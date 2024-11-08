@@ -1,4 +1,4 @@
-# Efesto Rocket Forge
+# Rocket Forge
 
 ## Installation
 
@@ -172,9 +172,9 @@ Then select `GitHub.com` -> `HTTPS` -> `Y` -> `Paste an authentication token` an
 
 Clone the repository using the following command
 ```
-git clone https://github.com/Polito-Rocket-Team/Efesto-Rocket-Forge
+git clone https://github.com/Polito-Rocket-Team/rocket-forge
 ```
-Open the `Efesto-Rocket-Forge` folder inside Visual Studio Code.
+Open the `rocket-forge` folder inside Visual Studio Code.
 
 Use `Cmd+Shift+P` to open the Visual Studio Code command palette, then type and select `Python: Select interpreter` and choose `Python 3.11.8 ("rocket")`.
 
