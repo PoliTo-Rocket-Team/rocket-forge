@@ -31,6 +31,7 @@ rocket_inertia = None # Rocket inertia (without engine)
 drag = None # Rocket drag coefficient over Mach
 rocket_CoG_dry = None # Rocket center of gravity (without engine)
 nose_length = None # Nose length
+nose_kind = None # Nose shape
 
 # Fins Parameters
 nfins = None # Number of fins
