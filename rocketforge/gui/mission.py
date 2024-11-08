@@ -50,6 +50,7 @@ class MissionFrame(ctk.CTkFrame):
         self.rocketbutton.configure(text="Configure Rocket...", command=self.rocket_window, width=118)
         self.rocketbutton.place(anchor="e", relx=0.98, rely=0.18, x=0, y=0)
         self.rocketwindow = None
+        self.nosekindvar = tk.StringVar(value="conical")
 
         self.finslabel = CTkLabel(self, text="Fin sets: 0")
         self.finslabel.place(anchor="w", relx=0.02, rely=0.25, x=0, y=0)
@@ -403,39 +404,55 @@ class MissionFrame(ctk.CTkFrame):
             )
 
             self.rocketmasslabel = CTkLabel(self.rocketwindow, text="Rocket mass [kg]")
-            self.rocketmasslabel.place(anchor="w", relx=0.05, rely=1/12)
+            self.rocketmasslabel.place(anchor="w", relx=0.05, rely=1/14)
             self.rocketmassentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.rocketmassentry.place(anchor="e", relx=0.95, rely=1/12)
+            self.rocketmassentry.place(anchor="e", relx=0.95, rely=1/14)
     
             self.rocketradiuslabel = CTkLabel(self.rocketwindow, text="Rocket radius [m]")
-            self.rocketradiuslabel.place(anchor="w", relx=0.05, rely=3/12)
+            self.rocketradiuslabel.place(anchor="w", relx=0.05, rely=3/14)
             self.rocketradiusentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.rocketradiusentry.place(anchor="e", relx=0.95, rely=3/12)
+            self.rocketradiusentry.place(anchor="e", relx=0.95, rely=3/14)
 
             self.cogwmlabel = CTkLabel(self.rocketwindow, text="CoG without motor [m]")
-            self.cogwmlabel.place(anchor="w", relx=0.05, rely=5/12)
+            self.cogwmlabel.place(anchor="w", relx=0.05, rely=5/14)
             self.cogwmentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.cogwmentry.place(anchor="e", relx=0.95, rely=5/12)
+            self.cogwmentry.place(anchor="e", relx=0.95, rely=5/14)
 
             self.rocketinertialabel = CTkLabel(self.rocketwindow, text="Inertia [kg m2]")
-            self.rocketinertialabel.place(anchor="w", relx=0.05, rely=7/12)
+            self.rocketinertialabel.place(anchor="w", relx=0.05, rely=7/14)
             self.rocketi11entry = CTkEntry(self.rocketwindow, placeholder_text="Ixx", width=45)
-            self.rocketi11entry.place(anchor="e", relx=0.65, rely=7/12)
+            self.rocketi11entry.place(anchor="e", relx=0.65, rely=7/14)
             self.rocketi22entry = CTkEntry(self.rocketwindow, placeholder_text="Iyy", width=45)
-            self.rocketi22entry.place(anchor="e", relx=0.8, rely=7/12)
+            self.rocketi22entry.place(anchor="e", relx=0.8, rely=7/14)
             self.rocketi33entry = CTkEntry(self.rocketwindow, placeholder_text="Izz", width=45)
-            self.rocketi33entry.place(anchor="e", relx=0.95, rely=7/12)
+            self.rocketi33entry.place(anchor="e", relx=0.95, rely=7/14)
 
             self.noselengthlabel = CTkLabel(self.rocketwindow, text="Nose length [m]")
-            self.noselengthlabel.place(anchor="w", relx=0.05, rely=9/12)
+            self.noselengthlabel.place(anchor="w", relx=0.05, rely=9/14)
             self.noselengthentry = CTkEntry(self.rocketwindow, placeholder_text="0", width=118)
-            self.noselengthentry.place(anchor="e", relx=0.95, rely=9/12)
+            self.noselengthentry.place(anchor="e", relx=0.95, rely=9/14)
+
+            self.nosekindlabel = CTkLabel(self.rocketwindow, text="Nose shape")
+            self.nosekindlabel.place(anchor="w", relx=0.05, rely=11/14)
+            self.nosekindoptmenu = ctk.CTkOptionMenu(
+                self.rocketwindow, variable=self.nosekindvar, width=118,
+                values=[
+                    "conical",
+                    "lvhaack",
+                    "ogive",
+                    "elliptical",
+                    "vonkarman",
+                    "parabolic",
+                    "powerseries"
+                ]
+            )
+            self.nosekindoptmenu.place(anchor="e", relx=0.95, rely=11/14)
 
             self.setrocketbutton = CTkButton(self.rocketwindow, text="Set", command=self.set_rocket, width=90)
-            self.setrocketbutton.place(anchor="center", relx=0.75, rely=11/12)
+            self.setrocketbutton.place(anchor="center", relx=0.75, rely=13/14)
 
             self.loadrocketbutton = CTkButton(self.rocketwindow, text="Load", command=self.load_rocket, width=90)
-            self.loadrocketbutton.place(anchor="center", relx=0.25, rely=11/12)
+            self.loadrocketbutton.place(anchor="center", relx=0.25, rely=13/14)
 
             self.rocketwindow.after(50, self.rocketwindow.lift)
             self.rocketwindow.after(50, self.rocketwindow.focus)
@@ -468,6 +485,7 @@ class MissionFrame(ctk.CTkFrame):
             ri33 = float(self.rocketi33entry.get())
             config.rocket_inertia = (ri11, ri22, ri33)
             config.nose_length = float(self.noselengthentry.get())
+            config.nose_kind = self.nosekindvar.get()
             config.drag = filedialog.askopenfilename(title="Load drag coefficient file")
             msa.set_rocket()
             self.rocketwindow.destroy()

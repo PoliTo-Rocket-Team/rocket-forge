@@ -95,7 +95,7 @@ def set_rocket():
     # Add Rocket Nose Cone
     config.rocket.add_nose(
         length=config.nose_length,
-        kind="parabolic",
+        kind=config.nose_kind,
         position=0,
     )
 
