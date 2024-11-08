@@ -1,8 +1,10 @@
 # Efesto Rocket Forge
 
-## Installation on Windows
+## Installation
 
-### Prerequisites
+### Installation on Windows
+
+#### Prerequisites
 Install git (https://git-scm.com/downloads)
 
 Install 7-Zip (https://www.7-zip.org/)
@@ -11,7 +13,7 @@ Install Anaconda (https://www.anaconda.com/download/)
 
 Be sure to enable the "Add Anaconda3 to my PATH environment variable" option during the installation.
 
-### MinGW
+#### MinGW
 
 Download MinGW (https://winlibs.com/#download-release)
 
@@ -25,7 +27,7 @@ You now should have a `C:/MinGW/mingw64/bin` folder and a `C:/MinGW/mingw64/lib`
 
 Be sure to add `C:\MinGW\mingw64\bin` and `C:\MinGW\mingw64\lib` to `Path` in the environment variables.
 
-### Install dependencies
+#### Install dependencies
 
 Create a new conda environment with python version 3.11, using the following commands:
 ```
@@ -41,7 +43,7 @@ Install python requirements:
 pip install tabulate customtkinter
 ```
 
-Install rocketcea and rocketprops:  
+Install rocketcea, rocketprops and rocketpy:  
 ```
 pip install rocketcea rocketprops rocketpy
 ```
@@ -54,7 +56,7 @@ Its output must be about `374.303617`.
 
 Now you should be able to run python code. If you want to build it into an executable file, read the following steps.
 
-### Build the executable
+#### Build the executable
 
 Install PyInstaller from source:
 ```
@@ -93,7 +95,7 @@ Executable file will be built inside the `dist` folder. To build an updated vers
 pyinstaller "Rocket Forge.spec"
 ```
 
-## Installation on MacOS
+### Installation on MacOS
 Open Terminal.
 
 Type the following command to install Homebrew:
@@ -178,7 +180,7 @@ Use `Cmd+Shift+P` to open the Visual Studio Code command palette, then type and 
 
 You should now be able to run Rocket Forge using the run button in the `main.py` file.
 
-## Installation on GNU/Linux
+### Installation on GNU/Linux
 
 Install gfortran <https://fortran-lang.org/en/learn/os_setup/install_gfortran/>
 
