@@ -128,10 +128,13 @@ class MissionFrame(ctk.CTkFrame):
         msa.plot_all_engine()
 
     def run(self):
-        self.console.clear()
-        self.console.enable()
-        msa.simulate()
-        self.console.disable()
+        try:
+            self.console.clear()
+            self.console.enable()
+            msa.simulate()
+            self.console.disable()
+        except Exception:
+            self.console.disable()
     
     def environment_window(self):
         if self.envwindow is None or not self.envwindow.winfo_exists():
@@ -764,8 +767,10 @@ class Console(ctk.CTkTextbox):
     def __init__(self, *args, **kwargs):
         kwargs.update({"state": "disabled"})
         ctk.CTkTextbox.__init__(self, *args, **kwargs)
-        self.bind("<Destroy>", self.disable)
+        self.bind("<Destroy>", self.reset)
         self.old_stdout = sys.stdout
+        sys.stdout = self
+        self.enabled = False
     
     def clear(self):
         self.configure(state="normal")
@@ -773,12 +778,16 @@ class Console(ctk.CTkTextbox):
         self.configure(state="disabled")
     
     def write(self, content):
-        self.configure(state="normal")
-        self.insert("end", content)
-        self.configure(state="disabled")
+        if self.enabled:
+            self.configure(state="normal")
+            self.insert("end", content)
+            self.configure(state="disabled")
 
     def enable(self):
-        sys.stdout = self
+        self.enabled = True
+
+    def disable(self):
+        self.enabled = False
     
-    def disable(self, event):
+    def reset(self, event):
         sys.stdout = self.old_stdout
