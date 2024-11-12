@@ -383,14 +383,14 @@ class GeometryFrame(ctk.CTkFrame):
                 Rc = Rt * sqrt(epsc)    # Chamber radius
                 marg = 0.05             # Axis margin
 
-                if ((Le+Lc) / max(Rc, Re) > AR):
+                if ((Le+Lc) / max([Rc, Re]) > AR):
                     xmin = -(marg/2 * (Le + Lc) + Lc)
                     xmax = marg/2 * (Le + Lc) + Le
                     ymax = (1+marg) * (Le + Lc) / AR
                 else:
-                    xmin = -((1+marg) * max(Rc, Re) * AR - Le + Lc)/ 2
-                    xmax = ((1+marg) * max(Rc, Re) * AR - Lc + Le)/ 2
-                    ymax = (1+marg) * max(Rc, Re)
+                    xmin = -((1+marg) * max([Rc, Re]) * AR - Le + Lc)/ 2
+                    xmax = ((1+marg) * max([Rc, Re]) * AR - Lc + Le)/ 2
+                    ymax = (1+marg) * max([Rc, Re])
                 
                 self.ax.axis([xmin, xmax, 0, ymax])
 
