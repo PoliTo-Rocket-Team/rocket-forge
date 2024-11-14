@@ -26,41 +26,35 @@ class GeometryFrame(ctk.CTkFrame):
         self.topframe.configure(border_width=0, height=28, width=590)
         self.toplabel = CTkLabel(self.topframe)
         self.toplabel.configure(text="Chamber Geometry")
-        self.toplabel.place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
-        self.topframe.place(anchor="n", relx=0.5, rely=0.01, x=0, y=0)
+        self.toplabel.place(anchor="center", relx=0.5, rely=0.5)
+        self.topframe.place(anchor="n", relx=0.5, rely=0.01)
 
-        self.throatarealabel = CTkLabel(self)
-        self.throatarealabel.configure(text="Throat area")
-        self.throatarealabel.place(anchor="w", relx=0.02, rely=0.11, x=0, y=0)
+        CTkLabel(self, text="Throat area").place(anchor="w", relx=0.02, rely=0.11)
 
         self.throatareaentry = CTkEntry(self)
         self.throatareaentry.configure(placeholder_text="0", width=59)
-        self.throatareaentry.place(anchor="e", relx=229/600, rely=0.11, x=0, y=0)
+        self.throatareaentry.place(anchor="e", relx=229/600, rely=0.11)
 
         self.throatareaoptmenu = CTkOptionMenu(self)
         self.throatareauom = tk.StringVar(value="m2")
         self.throatareaoptmenu.configure(
             values=["m2", "cm2", "mm2", "sq in", "sq ft"], variable=self.throatareauom, width=59
         )
-        self.throatareaoptmenu.place(anchor="e", relx=0.48, rely=0.11, x=0, y=0)
+        self.throatareaoptmenu.place(anchor="e", relx=0.48, rely=0.11)
 
         # Convergent section
-        self.r1ovrtlabel = CTkLabel(self)
-        self.r1ovrtlabel.configure(text="R1/Rt")
-        self.r1ovrtlabel.place(anchor="w", relx=0.02, rely=0.18, x=0, y=0)
+        CTkLabel(self, text="R1/Rt").place(anchor="w", relx=0.02, rely=0.18)
 
         self.r1ovrtentry = CTkEntry(self)
         self.r1ovrtentry.configure(placeholder_text="0", width=118)
-        self.r1ovrtentry.place(anchor="e", relx=0.48, rely=0.18, x=0, y=0)
+        self.r1ovrtentry.place(anchor="e", relx=0.48, rely=0.18)
         updateentry(self.r1ovrtentry, "1.5")
 
-        self.chamberlengthlabel = CTkLabel(self)
-        self.chamberlengthlabel.configure(text="Chamber length")
-        self.chamberlengthlabel.place(anchor="w", relx=0.02, rely=0.25, x=0, y=0)
+        CTkLabel(self, text="Chamber length").place(anchor="w", relx=0.02, rely=0.25)
 
         self.chamberlengthentry = CTkEntry(self)
         self.chamberlengthentry.configure(placeholder_text="0", width=59)
-        self.chamberlengthentry.place(anchor="e", relx=229/600, rely=0.25, x=0, y=0)
+        self.chamberlengthentry.place(anchor="e", relx=229/600, rely=0.25)
         updateentry(self.chamberlengthentry, "1.0")
 
         self.chamberlengthoptmenu = CTkOptionMenu(self)
@@ -68,15 +62,13 @@ class GeometryFrame(ctk.CTkFrame):
         self.chamberlengthoptmenu.configure(
             values=["L* [m]", "m", "cm", "mm", "in", "ft"], variable=self.chamberlengthuom, width=59
         )
-        self.chamberlengthoptmenu.place(anchor="e", relx=0.48, rely=0.25, x=0, y=0)
+        self.chamberlengthoptmenu.place(anchor="e", relx=0.48, rely=0.25)
 
-        self.blabel = CTkLabel(self)
-        self.blabel.configure(text="Contraction angle")
-        self.blabel.place(anchor="w", relx=0.02, rely=0.32, x=0, y=0)
+        CTkLabel(self, text="Contraction angle").place(anchor="w", relx=0.02, rely=0.32)
 
         self.bentry = CTkEntry(self)
         self.bentry.configure(placeholder_text="0", width=59)
-        self.bentry.place(anchor="e", relx=229/600, rely=0.32, x=0, y=0)
+        self.bentry.place(anchor="e", relx=229/600, rely=0.32)
         updateentry(self.bentry, "30")
 
         self.boptmenu = CTkOptionMenu(self)
@@ -84,30 +76,24 @@ class GeometryFrame(ctk.CTkFrame):
         self.boptmenu.configure(
             values=["deg", "rad"], variable=self.buom, width=59
         )
-        self.boptmenu.place(anchor="e", relx=0.48, rely=0.32, x=0, y=0)
+        self.boptmenu.place(anchor="e", relx=0.48, rely=0.32)
 
-        self.r2ovr2maxlabel = CTkLabel(self)
-        self.r2ovr2maxlabel.configure(text="R2/R2max")
-        self.r2ovr2maxlabel.place(anchor="w", relx=0.02, rely=0.39, x=0, y=0)
+        CTkLabel(self, text="R2/R2max").place(anchor="w", relx=0.02, rely=0.39)
 
         self.r2ovr2maxentry = CTkEntry(self)
         self.r2ovr2maxentry.configure(placeholder_text="0", width=118)
-        self.r2ovr2maxentry.place(anchor="e", relx=0.48, rely=0.39, x=0, y=0)
+        self.r2ovr2maxentry.place(anchor="e", relx=0.48, rely=0.39)
         updateentry(self.r2ovr2maxentry, "0.5")
 
-        self.epsclabel = CTkLabel(self)
-        self.epsclabel.configure(text="Contraction Area Ratio")
-        self.epsclabel.place(anchor="w", relx=0.02, rely=0.46, x=0, y=0)
+        CTkLabel(self, text="Contraction Area Ratio").place(anchor="w", relx=0.02, rely=0.46)
 
         self.epscentry = CTkEntry(self)
         self.epscentry.configure(width=118, state="disabled")
-        self.epscentry.place(anchor="e", relx=0.48, rely=0.46, x=0, y=0)
+        self.epscentry.place(anchor="e", relx=0.48, rely=0.46)
         updateentry(self.epscentry, "Undefined", True)
 
         # Divergent Section
-        self.shapelabel = CTkLabel(self)
-        self.shapelabel.configure(text="Nozzle shape")
-        self.shapelabel.place(anchor="w", relx=0.52, rely=0.11, x=0, y=0)
+        CTkLabel(self, text="Nozzle shape").place(anchor="w", relx=0.52, rely=0.11)
 
         self.shapeoptmenu = CTkOptionMenu(self)
         self.shape = tk.StringVar(value="Thrust-optimized parabolic")
@@ -115,7 +101,7 @@ class GeometryFrame(ctk.CTkFrame):
             values=["Thrust-optimized parabolic", "Truncated ideal contour", "Conical"],
             variable=self.shape, command=self.change_shape, width=180
         )
-        self.shapeoptmenu.place(anchor="e", relx=0.98, rely=0.11, x=0, y=0)
+        self.shapeoptmenu.place(anchor="e", relx=0.98, rely=0.11)
 
         self.rnovrtlabel = CTkLabel(self)
         self.rnovrtlabel.configure(text="Rn/Rt")
@@ -123,26 +109,24 @@ class GeometryFrame(ctk.CTkFrame):
 
         self.rnovrtentry = CTkEntry(self)
         self.rnovrtentry.configure(placeholder_text="0", width=118)
-        self.rnovrtentry.place(anchor="e", relx=0.98, rely=0.18, x=0, y=0)
+        self.rnovrtentry.place(anchor="e", relx=0.98, rely=0.18)
         updateentry(self.rnovrtentry, "0.382")
 
-        self.epslabel = CTkLabel(self)
-        self.epslabel.configure(text="Expansion Area Ratio")
-        self.epslabel.place(anchor="w", relx=0.52, rely=0.46, x=0, y=0)
+        CTkLabel(self, text="Expansion Area Ratio").place(anchor="w", relx=0.52, rely=0.46)
 
         self.epsentry = CTkEntry(self)
         self.epsentry.configure(width=118, state="disabled")
-        self.epsentry.place(anchor="e", relx=0.98, rely=0.46, x=0, y=0)
+        self.epsentry.place(anchor="e", relx=0.98, rely=0.46)
         updateentry(self.epsentry, "Undefined", True)
 
         # Thrust-optimized parabolic (TOP)
         self.divergentlengthlabel = CTkLabel(self)
         self.divergentlengthlabel.configure(text="Divergent length")
-        self.divergentlengthlabel.place(anchor="w", relx=0.52, rely=0.25, x=0, y=0)
+        self.divergentlengthlabel.place(anchor="w", relx=0.52, rely=0.25)
 
         self.divergentlengthentry = CTkEntry(self)
         self.divergentlengthentry.configure(placeholder_text="0", width=59)
-        self.divergentlengthentry.place(anchor="e", relx=529/600, rely=0.25, x=0, y=0)
+        self.divergentlengthentry.place(anchor="e", relx=529/600, rely=0.25)
         updateentry(self.divergentlengthentry, "0.8")
 
         self.divergentlengthoptmenu = CTkOptionMenu(self)
@@ -150,30 +134,30 @@ class GeometryFrame(ctk.CTkFrame):
         self.divergentlengthoptmenu.configure(
             values=["Le/Lc15", "m", "cm", "mm", "in", "ft"], variable=self.divergentlengthuom, width=59
         )
-        self.divergentlengthoptmenu.place(anchor="e", relx=0.98, rely=0.25, x=0, y=0)
+        self.divergentlengthoptmenu.place(anchor="e", relx=0.98, rely=0.25)
 
         self.thetanlabel = CTkLabel(self)
         self.thetanlabel.configure(text="Initial parabola angle")
-        self.thetanlabel.place(anchor="w", relx=0.52, rely=0.32, x=0, y=0)
+        self.thetanlabel.place(anchor="w", relx=0.52, rely=0.32)
 
         self.thetanentry = CTkEntry(self)
         self.thetanentry.configure(placeholder_text="0", width=59)
-        self.thetanentry.place(anchor="e", relx=529/600, rely=0.32, x=0, y=0)
+        self.thetanentry.place(anchor="e", relx=529/600, rely=0.32)
 
         self.thetanoptmenu = CTkOptionMenu(self)
         self.thetanuom = tk.StringVar(value="deg")
         self.thetanoptmenu.configure(
             values=["deg", "rad"], variable=self.thetanuom, width=59
         )
-        self.thetanoptmenu.place(anchor="e", relx=0.98, rely=0.32, x=0, y=0)
+        self.thetanoptmenu.place(anchor="e", relx=0.98, rely=0.32)
 
         self.thetaexlabel = CTkLabel(self)
         self.thetaexlabel.configure(text="Final parabola angle")
-        self.thetaexlabel.place(anchor="w", relx=0.52, rely=0.39, x=0, y=0)
+        self.thetaexlabel.place(anchor="w", relx=0.52, rely=0.39)
 
         self.thetaexentry = CTkEntry(self)
         self.thetaexentry.configure(placeholder_text="0", width=59)
-        self.thetaexentry.place(anchor="e", relx=529/600, rely=0.39, x=0, y=0)
+        self.thetaexentry.place(anchor="e", relx=529/600, rely=0.39)
         updateentry(self.thetaexentry, "8")
 
         self.thetaexoptmenu = CTkOptionMenu(self)
@@ -181,7 +165,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.thetaexoptmenu.configure(
             values=["deg", "rad"], variable=self.thetaexuom, width=59
         )
-        self.thetaexoptmenu.place(anchor="e", relx=0.98, rely=0.39, x=0, y=0)
+        self.thetaexoptmenu.place(anchor="e", relx=0.98, rely=0.39)
 
         # Conical Nozzle
         self.cselected = ctk.IntVar(value=0)
@@ -229,30 +213,16 @@ class GeometryFrame(ctk.CTkFrame):
         )
 
         # Buttons
-        self.plotbutton = CTkButton(self)
-        self.plotbutton.configure(text="Update plot", command=self.plot, width=100)
-        self.plotbutton.place(anchor="center", relx=0.12, rely=0.53)
-
-        self.clearplotbutton = CTkButton(self)
-        self.clearplotbutton.configure(text="Clear plot", command=self.clear_plot, width=100)
-        self.clearplotbutton.place(anchor="center", relx=0.31, rely=0.53)
-
-        self.saveplotbutton = CTkButton(self)
-        self.saveplotbutton.configure(text="Export plot...", command=self.export_plot, width=100)
-        self.saveplotbutton.place(anchor="center", relx=0.5, rely=0.53)
-
-        self.detailsbutton = CTkButton(self)
-        self.detailsbutton.configure(text="Details", command=self.details, width=100)
-        self.detailsbutton.place(anchor="center", relx=0.69, rely=0.53)
-
-        self.savedetailsbutton = CTkButton(self)
-        self.savedetailsbutton.configure(text="Help", command=self.help, width=100)
-        self.savedetailsbutton.place(anchor="center", relx=0.88, rely=0.53)
+        CTkButton(self, text="Update plot", command=self.plot, width=100).place(anchor="center", relx=0.12, rely=0.53)
+        CTkButton(self, text="Clear plot", command=self.clear_plot, width=100).place(anchor="center", relx=0.31, rely=0.53)
+        CTkButton(self, text="Export plot...", command=self.export_plot, width=100).place(anchor="center", relx=0.5, rely=0.53)
+        CTkButton(self, text="Details", command=self.details, width=100).place(anchor="center", relx=0.69, rely=0.53)
+        CTkButton(self, text="Help", command=self.help, width=100).place(anchor="center", relx=0.88, rely=0.53)
 
         # Plot
         self.plotframe = CTkFrame(self)
         self.plotframe.configure(border_width=1, height=200, width=590)
-        self.plotframe.place(anchor="s", relx=0.5, rely=0.99, x=0, y=0)
+        self.plotframe.place(anchor="s", relx=0.5, rely=0.99)
 
         self.fig = Figure(figsize = (7.375, 2.5), dpi=80)
         self.fig.set_facecolor("#c1c1c1")
@@ -266,10 +236,8 @@ class GeometryFrame(ctk.CTkFrame):
         self.ax.grid()
         self.ax.set_facecolor("#ebebeb")
 
-        self.canvas.get_tk_widget().place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
+        self.canvas.get_tk_widget().place(anchor="center", relx=0.5, rely=0.5)
 
-        self.eps = None
-        self.epsc = None
         self.x = []
         self.y = []
         self.details_window = None
@@ -281,10 +249,10 @@ class GeometryFrame(ctk.CTkFrame):
     def plot(self):
         # Compute divergent section
         try:
-            if self.eps == None:
+            if config.eps == None:
                 showwarning(title="Warning", message="Please define the area ratio and run the simulation first.")
                 raise Exception
-            eps = self.eps
+            eps = config.eps
             updateentry(self.epsentry, eps, True)
 
             At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
@@ -346,9 +314,9 @@ class GeometryFrame(ctk.CTkFrame):
 
         # Compute convergent section
         try:
-            if self.epsc == None:
+            if config.epsc == None:
                 raise Exception
-            epsc = float(self.epsc)
+            epsc = config.epsc
             updateentry(self.epscentry, epsc, True)
             
             At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
@@ -561,35 +529,35 @@ class GeometryFrame(ctk.CTkFrame):
         self.remove_elements()
 
         if shape == "Thrust-optimized parabolic":
-            self.rnovrtlabel.place(anchor="w", relx=0.52, rely=0.18, x=0, y=0)
-            self.rnovrtentry.place(anchor="e", relx=0.98, rely=0.18, x=0, y=0)
-            self.divergentlengthlabel.place(anchor="w", relx=0.52, rely=0.25, x=0, y=0)
-            self.divergentlengthentry.place(anchor="e", relx=529/600, rely=0.25, x=0, y=0)
-            self.divergentlengthoptmenu.place(anchor="e", relx=0.98, rely=0.25, x=0, y=0)
-            self.thetanlabel.place(anchor="w", relx=0.52, rely=0.32, x=0, y=0)
-            self.thetanentry.place(anchor="e", relx=529/600, rely=0.32, x=0, y=0)
-            self.thetanoptmenu.place(anchor="e", relx=0.98, rely=0.32, x=0, y=0)
-            self.thetaexlabel.place(anchor="w", relx=0.52, rely=0.39, x=0, y=0)
-            self.thetaexentry.place(anchor="e", relx=529/600, rely=0.39, x=0, y=0)
-            self.thetaexoptmenu.place(anchor="e", relx=0.98, rely=0.39, x=0, y=0)
+            self.rnovrtlabel.place(anchor="w", relx=0.52, rely=0.18)
+            self.rnovrtentry.place(anchor="e", relx=0.98, rely=0.18)
+            self.divergentlengthlabel.place(anchor="w", relx=0.52, rely=0.25)
+            self.divergentlengthentry.place(anchor="e", relx=529/600, rely=0.25)
+            self.divergentlengthoptmenu.place(anchor="e", relx=0.98, rely=0.25)
+            self.thetanlabel.place(anchor="w", relx=0.52, rely=0.32)
+            self.thetanentry.place(anchor="e", relx=529/600, rely=0.32)
+            self.thetanoptmenu.place(anchor="e", relx=0.98, rely=0.32)
+            self.thetaexlabel.place(anchor="w", relx=0.52, rely=0.39)
+            self.thetaexentry.place(anchor="e", relx=529/600, rely=0.39)
+            self.thetaexoptmenu.place(anchor="e", relx=0.98, rely=0.39)
 
         if shape == "Truncated ideal contour":
             ...
 
         if shape == "Conical":
-            self.rnovrtlabel.place(anchor="w", relx=0.52, rely=0.18, x=0, y=0)
-            self.rnovrtentry.place(anchor="e", relx=0.98, rely=0.18, x=0, y=0)
-            self.cleRB.place(anchor="e", relx=0.91, rely=0.25, x=0, y=0)
-            self.clelabel.place(anchor="w", relx=0.52, rely=0.25, x=0, y=0)
-            self.cleentry.place(anchor="e", relx=529/600, rely=0.25, x=0, y=0)
-            self.cleoptmenu.place(anchor="e", relx=0.98, rely=0.25, x=0, y=0)
-            self.clfRB.place(anchor="e", relx=0.91, rely=0.32, x=0, y=0)
-            self.clflabel.place(anchor="w", relx=0.52, rely=0.32, x=0, y=0)
-            self.clfentry.place(anchor="e", relx=0.98, rely=0.32, x=0, y=0)
-            self.cthetaRB.place(anchor="e", relx=0.91, rely=0.39, x=0, y=0)
-            self.cthetalabel.place(anchor="w", relx=0.52, rely=0.39, x=0, y=0)
-            self.cthetaentry.place(anchor="e", relx=529/600, rely=0.39, x=0, y=0)
-            self.cthetaoptmenu.place(anchor="e", relx=0.98, rely=0.39, x=0, y=0)
+            self.rnovrtlabel.place(anchor="w", relx=0.52, rely=0.18)
+            self.rnovrtentry.place(anchor="e", relx=0.98, rely=0.18)
+            self.cleRB.place(anchor="e", relx=0.91, rely=0.25)
+            self.clelabel.place(anchor="w", relx=0.52, rely=0.25)
+            self.cleentry.place(anchor="e", relx=529/600, rely=0.25)
+            self.cleoptmenu.place(anchor="e", relx=0.98, rely=0.25)
+            self.clfRB.place(anchor="e", relx=0.91, rely=0.32)
+            self.clflabel.place(anchor="w", relx=0.52, rely=0.32)
+            self.clfentry.place(anchor="e", relx=0.98, rely=0.32)
+            self.cthetaRB.place(anchor="e", relx=0.91, rely=0.39)
+            self.cthetalabel.place(anchor="w", relx=0.52, rely=0.39)
+            self.cthetaentry.place(anchor="e", relx=529/600, rely=0.39)
+            self.cthetaoptmenu.place(anchor="e", relx=0.98, rely=0.39)
 
     def remove_elements(self):
         self.rnovrtlabel.place_forget()
@@ -616,8 +584,6 @@ class GeometryFrame(ctk.CTkFrame):
         self.cthetaoptmenu.place_forget()
 
     def loadgeometry(self):
-        self.eps = config.eps
-        self.epsc = config.epsc
         At, Le, thetae = self.plot()
         geometry = [At, Le, thetae]
         return geometry
