@@ -6,7 +6,7 @@ from customtkinter          import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkBut
 from rocketforge.performance.theoreticalperf  import theoretical
 from rocketforge.performance.corrfactors      import correction_factors
 from rocketforge.performance.deliveredperf    import delivered
-from rocketforge.utils.helpers                import updateentry, updatetextbox
+from rocketforge.utils.helpers                import update_entry, update_textbox
 
 
 class PerformanceFrame(ctk.CTkFrame):
@@ -47,7 +47,7 @@ class PerformanceFrame(ctk.CTkFrame):
         self.deliveredframe.tkraise()
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
-    def switchtab(self, t):
+    def switch_tab(self, t):
         if t == 0:
             self.deliveredframe.tkraise()
             self.deliveredbutton.configure(
@@ -65,7 +65,7 @@ class PerformanceFrame(ctk.CTkFrame):
                 fg_color=self.on, hover_color=self.on_hover,
             )
 
-    def loadengine(self, geometry):
+    def load_engine(self, geometry):
         config.At, config.Le, config.theta_e = geometry
 
         if self.thermodynamicframe.frozenflow.get() == 0:
@@ -82,18 +82,18 @@ class PerformanceFrame(ctk.CTkFrame):
 
         x = theoretical(iter, frozen, frozenatthroat)
 
-        updatetextbox(self.thermodynamicframe.textbox, x[-1], True)
+        update_textbox(self.thermodynamicframe.textbox, x[-1], True)
 
         correction_factors()
 
-        updateentry(self.deliveredframe.reactioneffentry, config.z_r, True)
-        updateentry(self.deliveredframe.overalleffentry, config.z_overall, True)
-        updateentry(self.deliveredframe.BLeffentry, config.z_f, True)
-        updateentry(self.deliveredframe.diveffentry, config.z_d, True)
+        update_entry(self.deliveredframe.reactioneffentry, config.z_r, True)
+        update_entry(self.deliveredframe.overalleffentry, config.z_overall, True)
+        update_entry(self.deliveredframe.BLeffentry, config.z_f, True)
+        update_entry(self.deliveredframe.diveffentry, config.z_d, True)
 
         output = delivered()
 
-        updatetextbox(self.deliveredframe.textbox, output, True)
+        update_textbox(self.deliveredframe.textbox, output, True)
 
 
 class ThermodynamicFrame(CTkFrame):

@@ -9,7 +9,7 @@ from rocketforge.gui.thermal        import ThermalFrame
 from rocketforge.gui.tanks          import TanksFrame
 from rocketforge.gui.mission        import MissionFrame
 from rocketforge.utils.resources    import resource_path
-from rocketforge.utils.helpers      import updateentry, updatetextbox
+from rocketforge.utils.helpers      import update_entry, update_textbox
 from customtkinter                  import CTk, CTkButton, CTkFont, CTkFrame, CTkLabel, CTkImage
 from tkinter                        import filedialog, messagebox
 from configparser                   import ConfigParser
@@ -175,10 +175,10 @@ class RocketForge(CTk):
             self.geometryframe.optimizeTn()
             if conf.At != None:
                 if conf.At > 0.01:
-                    updateentry(self.geometryframe.throatareaentry, conf.At)
+                    update_entry(self.geometryframe.throatareaentry, conf.At)
                     self.geometryframe.throatareauom.set("m2")
                 else:
-                    updateentry(self.geometryframe.throatareaentry, conf.At * 10000)
+                    update_entry(self.geometryframe.throatareaentry, conf.At * 10000)
                     self.geometryframe.throatareauom.set("cm2")
             geometry = self.geometryframe.loadgeometry()
         except Exception:
@@ -195,10 +195,10 @@ class RocketForge(CTk):
                     old_At = conf.At
                     conf.At = Att / conf.z_n
                     if conf.At > 0.01:
-                        updateentry(self.geometryframe.throatareaentry, conf.At)
+                        update_entry(self.geometryframe.throatareaentry, conf.At)
                         self.geometryframe.throatareauom.set("m2")
                     else:
-                        updateentry(self.geometryframe.throatareaentry, conf.At * 10000)
+                        update_entry(self.geometryframe.throatareaentry, conf.At * 10000)
                         self.geometryframe.throatareauom.set("cm2")
                     geometry = self.geometryframe.loadgeometry()
                     self.performanceframe.loadengine(geometry)
@@ -398,88 +398,88 @@ class RocketForge(CTk):
 
             idf = self.initialframe
 
-            updateentry(idf.enginenameentry, config.get("InitialData", "name"))
-            updateentry(idf.pcentry, config.get("InitialData", "chamber_pressure"))
+            update_entry(idf.enginenameentry, config.get("InitialData", "name"))
+            update_entry(idf.pcentry, config.get("InitialData", "chamber_pressure"))
             idf.pcuom.set(config.get("InitialData", "chamber_pressure_uom"))
             idf.oxvar.set(config.get("InitialData", "oxidizer"))
             idf.fuelvar.set(config.get("InitialData", "fuel"))
-            updateentry(idf.mrentry, config.get("InitialData", "mixture_ratio"))
+            update_entry(idf.mrentry, config.get("InitialData", "mixture_ratio"))
             idf.mruom.set(config.get("InitialData", "mixture_ratio_uom"))
-            updateentry(idf.epsentry, config.get("InitialData", "expansion_area_ratio"))
-            updateentry(idf.peratioentry, config.get("InitialData", "expansion_pressure_ratio"))
-            updateentry(idf.peentry, config.get("InitialData", "exit_pressure"))
+            update_entry(idf.epsentry, config.get("InitialData", "expansion_area_ratio"))
+            update_entry(idf.peratioentry, config.get("InitialData", "expansion_pressure_ratio"))
+            update_entry(idf.peentry, config.get("InitialData", "exit_pressure"))
             idf.peuom.set(config.get("InitialData", "exit_pressure_uom"))
             idf.exitcondition.set(config.get("InitialData", "exit_condition"))
             idf.optimizationmode.set(config.get("InitialData", "mixture_ratio_optimization"))
             idf.inletcondition.set(config.get("InitialData", "inlet_conditions"))
-            # updateentry(idf.massflowrateentry, config.get("InitialData", "mass_flux"))
+            # update_entry(idf.massflowrateentry, config.get("InitialData", "mass_flux"))
             # idf.massflowrateuom.set(config.get("InitialData", "mass_flux_uom"))
-            updateentry(idf.epscentry, config.get("InitialData", "contraction_ratio"))
-            updateentry(idf.thrustentry, config.get("InitialData", "thrust"))
+            update_entry(idf.epscentry, config.get("InitialData", "contraction_ratio"))
+            update_entry(idf.thrustentry, config.get("InitialData", "thrust"))
             idf.thrustuom.set(config.get("InitialData", "thrust_uom"))
-            updateentry(idf.thrustentry2, config.get("InitialData", "ambient_pressure"))
+            update_entry(idf.thrustentry2, config.get("InitialData", "ambient_pressure"))
             idf.thrustuom2.set(config.get("InitialData", "ambient_pressure_uom"))
 
             tf = self.performanceframe.thermodynamicframe
             df = self.performanceframe.deliveredframe
 
             tf.frozenflow.set(config.get("Performance", "flow_model"))
-            updateentry(tf.stationsentry, config.get("Performance", "number_of_stations"))
+            update_entry(tf.stationsentry, config.get("Performance", "number_of_stations"))
             # df.multiphase.set(config.get("Performance", "consider_multiphase"))
-            # updateentry(df.condheatcapacityentry, config.get("Performance", "condensed_heat_capacity"))
+            # update_entry(df.condheatcapacityentry, config.get("Performance", "condensed_heat_capacity"))
             # df.condheatcapacityuom.set(config.get("Performance", "condensed_heat_capacity_uom"))
-            # updateentry(df.condmassfracentry, config.get("Performance", "mass_frac_condensed"))
+            # update_entry(df.condmassfracentry, config.get("Performance", "mass_frac_condensed"))
 
             gf = self.geometryframe
 
             gf.shape.set(config.get("Geometry", "shape"))
             gf.change_shape(config.get("Geometry", "shape"))
 
-            updateentry(gf.throatareaentry, config.get("Geometry", "throat_area"))
+            update_entry(gf.throatareaentry, config.get("Geometry", "throat_area"))
             gf.throatareauom.set(config.get("Geometry", "throat_area_uom"))
-            updateentry(gf.divergentlengthentry, config.get("Geometry", "divergent_length"))
+            update_entry(gf.divergentlengthentry, config.get("Geometry", "divergent_length"))
             gf.divergentlengthuom.set(config.get("Geometry", "divergent_length_uom"))
-            updateentry(gf.thetaexentry, config.get("Geometry", "theta_e"))
+            update_entry(gf.thetaexentry, config.get("Geometry", "theta_e"))
             gf.thetaexuom.set(config.get("Geometry", "theta_e_uom"))
-            updateentry(gf.thetanentry, config.get("Geometry", "theta_n"))
+            update_entry(gf.thetanentry, config.get("Geometry", "theta_n"))
             gf.thetanuom.set(config.get("Geometry", "theta_n_uom"))
-            updateentry(gf.rnovrtentry, config.get("Geometry", "rnovrt"))
-            updateentry(gf.r1ovrtentry, config.get("Geometry", "r1ovrt"))
-            updateentry(gf.r2ovr2maxentry, config.get("Geometry", "r2ovr2max"))
-            updateentry(gf.chamberlengthentry, config.get("Geometry", "chamber_length"))
+            update_entry(gf.rnovrtentry, config.get("Geometry", "rnovrt"))
+            update_entry(gf.r1ovrtentry, config.get("Geometry", "r1ovrt"))
+            update_entry(gf.r2ovr2maxentry, config.get("Geometry", "r2ovr2max"))
+            update_entry(gf.chamberlengthentry, config.get("Geometry", "chamber_length"))
             gf.chamberlengthuom.set(config.get("Geometry", "chamber_length_uom"))
-            updateentry(gf.bentry, config.get("Geometry", "contraction_angle"))
+            update_entry(gf.bentry, config.get("Geometry", "contraction_angle"))
             gf.buom.set(config.get("Geometry", "contraction_angle_uom"))
             gf.cselected.set(config.get("Geometry", "cselected"))
-            updateentry(gf.cleentry, config.get("Geometry", "cle"))
+            update_entry(gf.cleentry, config.get("Geometry", "cle"))
             gf.cleuom.set(config.get("Geometry", "cle_uom"))
-            updateentry(gf.clfentry, config.get("Geometry", "clf"))
-            updateentry(gf.cthetaentry, config.get("Geometry", "ctheta"))
+            update_entry(gf.clfentry, config.get("Geometry", "clf"))
+            update_entry(gf.cthetaentry, config.get("Geometry", "ctheta"))
             gf.cthetauom.set(config.get("Geometry", "ctheta_uom"))
 
             ttf = self.tanksframe
 
-            updateentry(ttf.mdotentry, config.get("Tanks", "mass_flow_rate"))
+            update_entry(ttf.mdotentry, config.get("Tanks", "mass_flow_rate"))
             ttf.mdotuom.set(config.get("Tanks", "mass_flow_rate_uom"))
-            updateentry(ttf.mpentry, config.get("Tanks", "prop_mass"))
+            update_entry(ttf.mpentry, config.get("Tanks", "prop_mass"))
             ttf.mpuom.set(config.get("Tanks", "prop_mass_uom"))
-            updateentry(ttf.mrentry, config.get("Tanks", "mixture_ratio"))
-            updateentry(ttf.k0entry, config.get("Tanks", "k0"))
+            update_entry(ttf.mrentry, config.get("Tanks", "mixture_ratio"))
+            update_entry(ttf.k0entry, config.get("Tanks", "k0"))
             ttf.k0uom.set(config.get("Tanks", "k0_uom"))
-            updateentry(ttf.ktentry, config.get("Tanks", "kt"))
-            updateentry(ttf.oxrhoentry, config.get("Tanks", "rho_ox"))
+            update_entry(ttf.ktentry, config.get("Tanks", "kt"))
+            update_entry(ttf.oxrhoentry, config.get("Tanks", "rho_ox"))
             ttf.oxrhouom.set(config.get("Tanks", "rho_ox_uom"))
-            updateentry(ttf.oxrentry, config.get("Tanks", "r_ox"))
+            update_entry(ttf.oxrentry, config.get("Tanks", "r_ox"))
             ttf.oxruom.set(config.get("Tanks", "r_ox_uom"))
-            updateentry(ttf.oxexcentry, config.get("Tanks", "exc_ox"))
-            updateentry(ttf.oxxentry, config.get("Tanks", "pos_ox"))
+            update_entry(ttf.oxexcentry, config.get("Tanks", "exc_ox"))
+            update_entry(ttf.oxxentry, config.get("Tanks", "pos_ox"))
             ttf.oxxuom.set(config.get("Tanks", "pos_ox_uom"))
-            updateentry(ttf.fuelrhoentry, config.get("Tanks", "rho_fuel"))
+            update_entry(ttf.fuelrhoentry, config.get("Tanks", "rho_fuel"))
             ttf.fuelrhouom.set(config.get("Tanks", "rho_fuel_uom"))
-            updateentry(ttf.fuelrentry, config.get("Tanks", "r_fuel"))
+            update_entry(ttf.fuelrentry, config.get("Tanks", "r_fuel"))
             ttf.fuelruom.set(config.get("Tanks", "r_fuel_uom"))
-            updateentry(ttf.fuelexcentry, config.get("Tanks", "exc_fuel"))
-            updateentry(ttf.fuelxentry, config.get("Tanks", "pos_fuel"))
+            update_entry(ttf.fuelexcentry, config.get("Tanks", "exc_fuel"))
+            update_entry(ttf.fuelxentry, config.get("Tanks", "pos_fuel"))
             ttf.fuelxuom.set(config.get("Tanks", "pos_fuel_uom"))
 
         except Exception:

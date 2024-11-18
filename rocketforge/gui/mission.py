@@ -4,7 +4,7 @@ import customtkinter as ctk
 import sys
 import rocketforge.mission.config as config
 import rocketforge.mission.analysis as msa
-from rocketforge.utils.helpers import updateentry
+from rocketforge.utils.helpers import update_entry
 from rocketforge.utils.resources import resource_path
 from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkButton
 
@@ -199,13 +199,13 @@ class MissionFrame(ctk.CTkFrame):
 
     def load_environment(self):
         try:
-            updateentry(self.latitudeentry, config.latitude)
-            updateentry(self.longitudeentry, config.longitude)
-            updateentry(self.elevationentry, config.elevation)
-            updateentry(self.yearentry, config.year)
-            updateentry(self.monthentry, config.month)
-            updateentry(self.dayentry, config.day)
-            updateentry(self.hourentry, config.hour)
+            update_entry(self.latitudeentry, config.latitude)
+            update_entry(self.longitudeentry, config.longitude)
+            update_entry(self.elevationentry, config.elevation)
+            update_entry(self.yearentry, config.year)
+            update_entry(self.monthentry, config.month)
+            update_entry(self.dayentry, config.day)
+            update_entry(self.hourentry, config.hour)
         except Exception:
             pass
 
@@ -271,9 +271,9 @@ class MissionFrame(ctk.CTkFrame):
 
     def load_rail(self):
         try:
-            updateentry(self.raillengthentry, config.rail_length)
-            updateentry(self.inclinationentry, config.inclination)
-            updateentry(self.headingentry, config.heading)
+            update_entry(self.raillengthentry, config.rail_length)
+            update_entry(self.inclinationentry, config.inclination)
+            update_entry(self.headingentry, config.heading)
         except Exception:
             pass
 
@@ -353,14 +353,14 @@ class MissionFrame(ctk.CTkFrame):
 
     def load_engine(self):
         try:
-            updateentry(self.thrustentry, config.thrust)
-            updateentry(self.chambermassentry, config.chamber_mass)
-            updateentry(self.enginei11entry, config.dry_inertia[0])
-            updateentry(self.enginei22entry, config.dry_inertia[1])
-            updateentry(self.enginei33entry, config.dry_inertia[2])
-            updateentry(self.ecogdryentry, config.engine_CoG_dry)
-            updateentry(self.reentry, config.Re)
-            updateentry(self.enginepositionentry, config.engine_position)
+            update_entry(self.thrustentry, config.thrust)
+            update_entry(self.chambermassentry, config.chamber_mass)
+            update_entry(self.enginei11entry, config.dry_inertia[0])
+            update_entry(self.enginei22entry, config.dry_inertia[1])
+            update_entry(self.enginei33entry, config.dry_inertia[2])
+            update_entry(self.ecogdryentry, config.engine_CoG_dry)
+            update_entry(self.reentry, config.Re)
+            update_entry(self.enginepositionentry, config.engine_position)
         except Exception:
             pass
 
@@ -466,13 +466,13 @@ class MissionFrame(ctk.CTkFrame):
 
     def load_rocket(self):
         try:
-            updateentry(self.rocketmassentry, config.rocket_mass)
-            updateentry(self.rocketradiusentry, config.rocket_radius)
-            updateentry(self.cogwmentry, config.rocket_CoG_dry)
-            updateentry(self.rocketi11entry, config.rocket_inertia[0])
-            updateentry(self.rocketi22entry, config.rocket_inertia[1])
-            updateentry(self.rocketi33entry, config.rocket_inertia[2])
-            updateentry(self.noselengthentry, config.nose_length)
+            update_entry(self.rocketmassentry, config.rocket_mass)
+            update_entry(self.rocketradiusentry, config.rocket_radius)
+            update_entry(self.cogwmentry, config.rocket_CoG_dry)
+            update_entry(self.rocketi11entry, config.rocket_inertia[0])
+            update_entry(self.rocketi22entry, config.rocket_inertia[1])
+            update_entry(self.rocketi33entry, config.rocket_inertia[2])
+            update_entry(self.noselengthentry, config.nose_length)
         except Exception:
             pass
 

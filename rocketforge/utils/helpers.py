@@ -1,7 +1,7 @@
 from customtkinter import CTkEntry, CTkTextbox
 
 
-def updateentry(entry: CTkEntry, value: any, disabled: bool=False) -> None:
+def update_entry(entry: CTkEntry, value: any, disabled: bool=False) -> None:
     '''
     This function is used to update CTkEntry contents
     '''
@@ -15,7 +15,7 @@ def updateentry(entry: CTkEntry, value: any, disabled: bool=False) -> None:
         entry.configure(state="disabled")
 
 
-def updatetextbox(textbox: CTkTextbox, value: any, disabled: bool=False) -> None:
+def update_textbox(textbox: CTkTextbox, value: any, disabled: bool=False) -> None:
     '''
     This function is used to update CTkTextbox contents
     '''
