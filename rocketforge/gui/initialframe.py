@@ -2,6 +2,7 @@ import tkinter as tk
 import customtkinter as ctk
 import os
 import rocketforge.performance.config as config
+import rocketforge.thermal.config as tconf
 from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu
 from tabulate import tabulate
 from rocketcea.cea_obj_w_units import CEA_Obj
@@ -407,6 +408,9 @@ class InitialFrame(ctk.CTkFrame):
             config.thrust = float(self.thrustentry.get()) * thrust_uom(self.thrustuom.get())
             pamb = float(self.thrustentry2.get()) * pressure_uom(self.thrustuom2.get())
             config.c = C.estimate_Ambient_Isp(Pc=config.pc, MR=config.mr, eps=config.eps, Pamb=pamb)[0] * 9.80655
-            config.At = config.thrust * config.cstar / config.c / config.pc
+            if tconf.film:
+                config.At = config.thrust * config.cstar / config.c / config.pc * (1 + (tconf.fuelfilm + config.mr*tconf.oxfilm)/100/(1+config.mr))
+            else:
+                config.At = config.thrust * config.cstar / config.c / config.pc
         except Exception:
             config.At = None
