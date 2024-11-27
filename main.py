@@ -1,6 +1,7 @@
 import tkinter as tk
 import customtkinter as ctk
 import rocketforge.performance.config as conf
+import rocketforge.thermal.config as tconf
 from rocketforge.gui.initialframe   import InitialFrame
 from rocketforge.gui.performance    import PerformanceFrame
 from rocketforge.gui.geometry       import GeometryFrame
@@ -168,6 +169,15 @@ class RocketForge(CTk):
     def run(self):
         self.statuslabel.configure(text="Status: running...")
         self.statuslabel.update()
+
+        if tconf.film:
+            try:
+                self.statuslabel.configure(text="Status: loading film cooling...")
+                self.statuslabel.update()
+                self.thermalframe.load_film_cooling()
+            except Exception:
+                tconf.film = False
+
         try:
             self.initialframe.expressrun()
             self.statuslabel.configure(text="Status: computing geometry...")
