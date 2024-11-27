@@ -1,0 +1,1 @@
+# Global thermal analysis variables
