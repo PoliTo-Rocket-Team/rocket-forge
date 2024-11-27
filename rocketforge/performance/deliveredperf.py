@@ -14,6 +14,12 @@ def delivered():
     z_c = config.z_r
     z_n = config.z_n
 
+    # Film cooling
+    if tconf.film:
+        k_film = (1 + (tconf.fuelfilm + config.mr*tconf.oxfilm)/100/(1 + config.mr))
+    else:
+        k_film = 1.0
+
     # Sea level pressure
     pSL = 101325
 
@@ -24,17 +30,13 @@ def delivered():
     cstar_d = z_c * cstar
 
     # Mass flow
+    m_d = pc * At / cstar_d
+    m_d_core = m_d / k_film
+    m_f_d = m_d_core / (MR + 1)
+    m_ox_d = m_f_d * MR
     if tconf.film:
-        m_d = pc * At / cstar_d
-        m_d_core = m_d / (1 + (tconf.fuelfilm + config.mr*tconf.oxfilm)/100/(1+config.mr))
-        m_f_d_core = m_d_core / (MR + 1)
-        m_ox_d_core = m_f_d_core * MR
-        m_f_d = m_f_d_core * (1 + tconf.fuelfilm/100)
-        m_ox_d = m_ox_d_core * (1 + tconf.oxfilm/100)
-    else:
-        m_d = pc * At / cstar_d
-        m_f_d = m_d / (MR + 1)
-        m_ox_d = m_f_d * MR
+        m_f_d = m_f_d * (1 + tconf.fuelfilm/100)
+        m_ox_d = m_ox_d * (1 + tconf.oxfilm/100)
 
     # Specific impulse
     Fe = Ae / m_d
@@ -48,14 +50,9 @@ def delivered():
     CF_SL_d = Is_SL_d * 9.80655 / cstar_d
 
     # Chamber thrust
-    if tconf.film:
-        T_vac_d = CF_vac_d * At * pc / (1 + (tconf.fuelfilm + config.mr*tconf.oxfilm)/100/(1+config.mr))
-        T_opt_d = CF_opt_d * At * pc / (1 + (tconf.fuelfilm + config.mr*tconf.oxfilm)/100/(1+config.mr))
-        T_SL_d = CF_SL_d * At * pc / (1 + (tconf.fuelfilm + config.mr*tconf.oxfilm)/100/(1+config.mr))
-    else:
-        T_vac_d = CF_vac_d * At * pc
-        T_opt_d = CF_opt_d * At * pc
-        T_SL_d = CF_SL_d * At * pc
+    T_vac_d = CF_vac_d * At * pc / k_film
+    T_opt_d = CF_opt_d * At * pc / k_film
+    T_SL_d = CF_SL_d * At * pc / k_film
 
     # Output formatting
     headers = ["Parameter", "SL", "Opt", "Vac", "Unit"]
