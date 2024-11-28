@@ -35,7 +35,7 @@ class NestedFrame(CTkFrame):
             self.inputgrid.grid_columnconfigure(i, weight=1)
 
         # First row headers
-        headers = ["Variable Parameter", "Start Value", "End Value", ["Step Size", "Step No."], "Unit"]
+        headers = ["Variable Parameter", "Start Value", "End Value", ["Step Size", "Step No."], "Unit/Mode"]
         for i, header in enumerate(headers):
             if i != 3:
                 label = CTkLabel(self.inputgrid, text=header)
@@ -47,10 +47,17 @@ class NestedFrame(CTkFrame):
         # Define the row data for the input grid
         self.rows = []
         row_data = [
-            ("Mixture Ratio",               ["O/F", self.unicodealpha]),
-            ("Chamber Pressure",            ["bar", "atm", "MPa", "Pa", f"kg/cm{self.unicodesquared}", "psi"]),
-            ("Nozzle Inlet Conditions",     ["Ac/At", f"kg/(m{self.unicodesquared+self.unicodecdot}s)", f"lbm/(ft{self.unicodesquared+self.unicodecdot}s)"]),
-            ("Nozzle Outlet Conditions",    ["Ae/At", "pc/pe"])
+            ("Mixture Ratio",               ["O/F", "alpha"]),
+            ("Chamber Pressure",            ["MPa", "bar", "Pa", "psia", "atm"]),
+            ("Nozzle Inlet Conditions",     ["Contraction Area Ratio (Ac/At)",
+                                             "Infinite Area Combustor"]),
+            ("Nozzle Outlet Conditions",    ["Exit Pressure (MPa)",
+                                             "Exit Pressure (bar)",
+                                             "Exit Pressure (Pa)",
+                                             "Exit Pressure (psia)",
+                                             "Exit Pressure (atm)",
+                                             "Expansion Area Ratio (Ae/At)",
+                                             "Pressure Ratio (pc/pe)"])
         ]  # Format: ("Parameter", ["Units"])
         plotoptions = [
             "Specific Impulse (Is)",
