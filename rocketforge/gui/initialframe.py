@@ -49,7 +49,7 @@ class InitialFrame(ctk.CTkFrame):
         self.oxidizerlabel.place(anchor="w", relx=0.02, rely=0.25, x=0, y=0)
 
         self.oxoptmenu = CTkOptionMenu(self)
-        self.oxvar = tk.StringVar(value="LOX")
+        self.oxvar = tk.StringVar(value="N2O")
         self.oxoptmenu.configure(
             values=[
                 "90_H2O2",
@@ -93,7 +93,7 @@ class InitialFrame(ctk.CTkFrame):
         self.fuellabel.place(anchor="w", relx=0.02, rely=0.32, x=0, y=0)
 
         self.fueloptmenu = CTkOptionMenu(self)
-        self.fuelvar = tk.StringVar(value="CH4")
+        self.fuelvar = tk.StringVar(value="Ethanol")
         self.fueloptmenu.configure(
             values=[
                 "A50",
