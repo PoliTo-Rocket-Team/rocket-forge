@@ -37,3 +37,31 @@ class PerformanceSimInput:
         self.nominal_thrust = Quantity(name="Nominal Thrust", value=float(nominal_thrust), uom=nominal_thrust_uom)
         self.design_external_pressure = Quantity(name="Design External Pressure", value=float(design_external_pressure), uom=design_external_pressure_uom)
 
+    def __repr__(self):
+        optimizations = {
+            0: "Mixture ratio from input",
+            1: "Maximize Isp (vac)",
+            2: "Maximize Isp (opt)",
+            3: "Maximize Isp (SL)"
+        }
+        inlet_conditions = {
+            0: "Contraction area ratio",
+            1: "Infinite area combustor"
+        }
+        exit_conditions = {
+            0: "Expansion area ratio",
+            1: "Pressure ratio",
+            2: "Exit pressure"
+        }
+        inletcond = self.inlet_condition.value if self.inlet_condition_type == 0 else "" #TODO: maybe not needed if None 
+        table = [["Oxidizer:",         self.oxidizer,                                "Fuel:",                    self.fuel],
+                 ["Chamber Pressure",   self.chamber_pressure.value,                  "",                         self.chamber_pressure.uom],
+                 ["Mixture Ratio",      self.mixture_ratio.value,                     "",                         self.mixture_ratio.uom],
+                 ["Optimization Mode",  optimizations[self.optimization_mode],        "",                         ""],
+                 ["Inlet Condition",    inlet_conditions[self.inlet_condition_type],  inletcond,                  ""],
+                 ["Exit Condition",     exit_conditions[self.exit_condition_type],    self.exit_condition.value,  self.exit_condition.uom],
+                 ["Nominal Thrust",     self.nominal_thrust.value,                    "",                         self.nominal_thrust.uom],
+                 ["at",                 self.design_external_pressure.value,          "",                         self.design_external_pressure.uom],
+        ]
+        return tabulate(table, numalign="right", tablefmt="plain")
+    
