@@ -1,3 +1,11 @@
+from dataclasses import dataclass
+
+@dataclass
+class Quantity():
+    name: str = None
+    value: float = None
+    uom: str = None
+
 class PerformanceSimData:
     def __init__(self,
                  oxidizer=None,
