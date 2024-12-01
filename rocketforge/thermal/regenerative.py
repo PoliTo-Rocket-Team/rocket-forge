@@ -14,23 +14,34 @@ def main():
     L_tot = config.L_c + config.L_e
     x = linspace(0.0, L_tot, config.n_stations)
     R = interp(x, X, Y)
-    A = pi * R**2
-    A_w = 2 * pi * R * L_tot / config.n_stations
+    A = pi * R**2.0
+    A_w = 2.0 * pi * R * L_tot / config.n_stations
 
-    M = generate_profile(x, 0.1, 1.0, config.M_e)
-    Pr = generate_profile(x, config.Pr_0, config.Pr_t, config.Pr_e)
-    gamma = generate_profile(x, config.gamma, config.gamma, config.gamma_e)
+    M = generate_profile(x, 0.0, 1.0, config.M_e, R)
+    Pr = generate_profile(x, config.Pr_0, config.Pr_t, config.Pr_e, R)
+    gamma = generate_profile(x, config.gamma, config.gamma, config.gamma_e, R)
 
-    a = generate_profile(x, config.a1, config.a2, config.a3)
-    b = generate_profile(x, config.b1, config.b2, config.b3)
-    delta = generate_profile(x, config.d1, config.d2, config.d3)
-    d_e = 2 * a * b / (a + b)
+    b = generate_profile(x, config.b1, config.b2, config.b3, R)
+    C = 2.0 * pi * (R + config.t_w + b / 2.0)
+    if config.NC:
+        NC = config.NC
+        if config.a1:
+            a = generate_profile(x, config.a1, config.a2, config.a3, R)
+            delta = C / NC - a
+        else:
+            delta = generate_profile(x, config.d1, config.d2, config.d3, R)
+            a = C / NC - delta
+    else:
+        a = generate_profile(x, config.a1, config.a2, config.a3, R)
+        delta = generate_profile(x, config.d1, config.d2, config.d3, R)
+        NC = C / (a + delta)
+    d_e = 2.0 * a * b / (a + b)
     p = linspace(config.p_ci, config.pcoOvpc * config.p_c, config.n_stations)
 
     T_aw = (
         config.T_c
-        * (1 + Pr**0.33 * (gamma - 1) / 2 * M**2)
-        / (1 + (gamma - 1) / 2 * M**2)
+        * (1.0 + Pr**0.33 * (gamma - 1.0) / 2.0 * M**2.0)
+        / (1.0 + (gamma - 1.0) / 2.0 * M**2.0)
     )
 
     T_wg = full(config.n_stations, config.T_ci)
@@ -54,20 +65,21 @@ def main():
         
         for i in range(config.n_stations):
             cp_c[i] = P.CpAtTdegR(T_c[i] * 1.8) * 4186.8
-            mu_c[i] = P.Visc_compressed(T_c[i] * 1.8, p[i] / 6894.75728) / 10
+            mu_c[i] = P.Visc_compressed(T_c[i] * 1.8, p[i] / 6894.75728) / 10.0
             lambda_c[i] = P.CondAtTdegR(T_c[i] * 1.8) * 1.72958
 
-        Re_c = 4 * config.m_dot_c / d_e / pi / mu_c
+        Re_c = config.m_dot_c / a / b / NC * d_e / mu_c
         Pr_c = mu_c * cp_c / lambda_c
         Nu = 0.023 * Re_c**0.8 * Pr_c**0.4
         h_c = Nu * lambda_c / d_e
+        h_c0 = h_c
 
         for i in range(config.max_iter):
+            xi = sqrt(2.0 * h_c / delta / config.lambda_w) * b
+            eta_f = a / (a + delta) + 2.0 * b / (a + delta) * tanh(xi) / xi
             hc_old = h_c
-            xi = sqrt(2 * h_c / delta / config.lambda_w) * b
-            eta_f = a / (a + delta) + 2 * b / (a + delta) * tanh(xi) / xi
-            h_c = h_c * eta_f
-            if all(abs((hc_old - h_c)/hc_old) < 0.05):
+            h_c = h_c0 * eta_f
+            if all(abs((hc_old - h_c)/hc_old) < 0.01):
                 break
 
         T_wc = T_c + q / h_c
@@ -77,7 +89,7 @@ def main():
             T_wg = T_wg_new
             break
 
-        T_wg = T_wg_new
+        T_wg = (1.0 - config.stability) * T_wg + config.stability * T_wg_new
 
     fig, ax = plt.subplots()
     ax.plot(x, T_wg, label="Twg")
@@ -86,7 +98,7 @@ def main():
     ax.set_xlabel("x [m]")
     ax.set_ylabel("Temperature [K]")
     ax.grid()
-    ax.legend()
+    ax.legend(loc="upper right")
     ax2 = ax.twinx()
     ax2.plot(X, Y, color="black", label="Thrust chamber contour")
     ax2.set_ylabel("Radius [m]")
@@ -99,7 +111,7 @@ def main():
     ax3.set_xlabel("x [m]")
     ax3.set_ylabel("Heat flux [kW/m^2]")
     ax3.grid()
-    ax3.legend()
+    ax3.legend(loc="upper right")
     ax4 = ax3.twinx()
     ax4.plot(X, Y, color="black", label="Thrust chamber contour")
     ax4.set_ylabel("Radius [m]")
@@ -113,15 +125,15 @@ def main():
 def bartz(M, A, gamma, T_wg):
     R_t = sqrt(config.A_t / pi)
     sigma = (
-        (0.5 * (T_wg / config.T_c) * (1 + (gamma - 1) / 2 * M**2) + 0.5)**(-0.68) 
-        * (1 + (gamma - 1) / 2 * M**2)**(-0.12)
+        (0.5 * (T_wg / config.T_c) * (1.0 + (gamma - 1.0) / 2.0 * M**2.0) + 0.5)**(-0.68) 
+        * (1.0 + (gamma - 1.0) / 2.0 * M**2.0)**(-0.12)
     )
     h_gas = (
-        0.026 / (2 * R_t) ** 0.2
+        0.026 / (2.0 * R_t) ** 0.2
         * config.mu_0**0.2
         * config.cp_0 / config.Pr_0**0.6
         * (config.p_c / config.c_star) ** 0.8
-        * (2 / config.RnOvRt) ** 0.1
+        * (2.0 / config.RnOvRt) ** 0.1
         * (config.A_t / A) ** 0.9
         * sigma
         / config.tuning_factor
@@ -160,18 +172,19 @@ def get_geometry():
     return X, Y
 
 
-def generate_profile(x, y_c, y_t, y_e):
+def generate_profile(x, y_c, y_t, y_e, R):
+    R_t = sqrt(config.A_t / pi)
+    R_e = R_t * sqrt(config.eps)
+    R_c = R_t * sqrt(config.eps_c)
     return piecewise(
         x,
         [
-            x <= config.L_cyl,
-            (x > config.L_cyl) & (x <= config.L_c),
+            x <= config.L_c,
             x > config.L_c,
         ],
         [
-            lambda _: y_c,
-            lambda _: linspace(y_c, y_t, sum((x > config.L_cyl) & (x <= config.L_c))),
-            lambda _: linspace(y_t, y_e, sum(x > config.L_c)),
+            lambda _: y_c * (R[x <= config.L_c] - R_t) / (R_c - R_t) + y_t * (R_c - R[x <= config.L_c]) / (R_c - R_t),
+            lambda _: y_t * (R_e - R[x > config.L_c]) / (R_e - R_t) + y_e * (R[x > config.L_c] - R_t) / (R_e - R_t),
         ],
     )
 
