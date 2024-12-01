@@ -1,5 +1,8 @@
 from tabulate import tabulate
 from dataclasses import dataclass
+from rocketcea.cea_obj_w_units import CEA_Obj
+from rocketforge.utils.conversions import pressure_uom, thrust_uom
+from rocketforge.performance.mixtureratio import optimizemr, optimizermr_at_pe
 
 @dataclass
 class Quantity():
@@ -151,3 +154,156 @@ class PerformanceSimInput:
         ]
         return tabulate(table, numalign="right", tablefmt="plain")
     
+    def simulation_run(self, i=2, fr=0, fat=0) -> PerformanceSimOutput:
+        try:
+            pamb = 101325 # Assuming standard atmospheric pressure in Pa
+            pc = self.chamber_pressure.value * pressure_uom(self.chamber_pressure.uom)
+            mr = self.mixture_ratio.value
+            epsc = self.inlet_condition.value
+            optimization_mode = self.optimization_mode
+            exit_condition_type = self.exit_condition_type
+
+            C = CEA_Obj(
+                oxName = self.oxidizer,
+                fuelName = self.fuel,
+                fac_CR = epsc,
+                cstar_units = "m/s",
+                pressure_units = "Pa",
+                temperature_units = "K",
+                sonic_velocity_units="m/s",
+                enthalpy_units="kJ/kg",
+                density_units="kg/m^3",
+                specific_heat_units="J/kg-K")
+
+            mr_s = C.getMRforER(ERphi=1)
+            
+            if optimization_mode == 0: # MR from input
+                mr, alpha, eps, pe = self.get_params_from_mr_input(pc, mr_s, C)
+            elif exit_condition_type == 0: # Expansion area ratio
+                mr, alpha, eps, pe = self.get_params_from_area_ratio(pc, mr_s, C)
+            else: # Pressure conditions
+                mr, alpha, eps, pe = self.get_params_from_pe_input(pc, mr_s, C)
+
+            # Characteristic velocity
+            cstar = C.get_Cstar(Pc=pc, MR=mr)
+            # Exit pressure
+            pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps, frozen=fr, frozenAtThroat=fat)
+            # Vacuum specific impulse
+            Isp_vac = C.get_Isp(Pc=pc, MR=mr, eps=eps, frozen=fr, frozenAtThroat=fat)
+            # Vacuum specific impulse (equilibrium)
+            Isp_vac_eq = C.get_Isp(Pc=pc, MR=mr, eps=eps)
+            # Vacuum specific impulse (frozen)
+            Isp_vac_fr = C.get_Isp(Pc=pc, MR=mr, eps=eps, frozen=1)
+            # Sea level specific impulse
+            Isp_sl = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pamb, frozen=fr, frozenAtThroat=fat)[0]
+            # Optimum expansion specific impulse
+            Isp_opt = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=pe, frozen=fr, frozenAtThroat=fat)[0]
+            # Effective exhaust velocities
+            c_vac = Isp_vac * 9.80655
+            c_sl = Isp_sl * 9.80655
+            c_opt = Isp_opt * 9.80655
+            # Thrust coefficients
+            CF_opt, CF_sl, mode = C.get_PambCf(Pamb=pamb, Pc=pc, MR=mr, eps=eps)
+            CF_vac = c_vac / cstar
+            # Temperature
+            Tc, Tt, Te = C.get_Temperatures(Pc=pc, MR=mr, eps=eps, frozen=fr, frozenAtThroat=fat)
+            # Density
+            rhoc, rhot, rhoe = C.get_Densities(Pc=pc, MR=mr, eps=eps, frozen=fr, frozenAtThroat=fat)
+            # Chamber transport properties
+            cpc, muc, lc, Prc = C.get_Chamber_Transport(Pc=pc, MR=mr, eps=eps, frozen=fr)
+            # Sonic velocity
+            ac, at, ae = C.get_SonicVelocities(Pc=pc, MR=mr, eps=eps, frozen=fr, frozenAtThroat=fat)
+            # Enthalpy
+            Hc, Ht, He = C.get_Enthalpies(Pc=pc, MR=mr, eps=eps, frozen=fr, frozenAtThroat=fat)
+
+            # Thermodynamic properties initialization
+            p = [pc / 100000]
+            T = [Tc]
+            rho = [rhoc]
+            cp = [cpc]
+            mu = [muc]
+            l = [lc]
+            Pr = [Prc]
+            gamma = [0]
+            M = [0]
+            a = [ac]
+            H = [Hc]
+            # Thermodynamic properties calculations
+            for x in range(i):
+                x = 1 + x * (eps - 1) / (i - 1)
+                p.append(pc / 100000 / C.get_PcOvPe(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat))
+                T.append(C.get_Temperatures(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[2])
+                rho.append(C.get_Densities(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[2])
+                cp.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[0])
+                mu.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[1])
+                l.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[2])
+                Pr.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[3])
+                gamma.append(C.get_exit_MolWt_gamma(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[1])
+                M.append(C.get_MachNumber(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat))
+                a.append(C.get_SonicVelocities(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[2])
+                H.append(C.get_Enthalpies(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[2])
+
+            return PerformanceSimOutput(cstar=cstar,
+                                        Isp_sl=Isp_sl,
+                                        Isp_opt=Isp_opt,
+                                        Isp_vac=Isp_vac,
+                                        Isp_vac_eq=Isp_vac_eq,
+                                        Isp_vac_fr=Isp_vac_fr,
+                                        c_sl=c_sl,
+                                        c_opt=c_opt,
+                                        c_vac=c_vac,
+                                        CF_sl=CF_sl,
+                                        CF_opt=CF_opt,
+                                        CF_vac=CF_vac,
+                                        pressure=p,
+                                        temperature=T,
+                                        density=rho, 
+                                        heat_capacity=cp,
+                                        viscosity=mu,
+                                        thermal_conductivity=l,
+                                        prandtl=Pr,
+                                        gamma=gamma,
+                                        mach=M,
+                                        sonic_velocity=a,
+                                        enthalpy=H)
+        except Exception as err:
+            return str(err) # TODO: Fix this, different type returns for same function (use Union or RuntimeError)
+
+        
+    def get_params_from_mr_input(self, pc, mr_s, C):
+        if self.mixture_ratio.uom == "O/F":
+            mr = self.mixture_ratio.value
+            alpha = mr / mr_s
+        elif self.mixture_ratio.uom == "alpha":
+            alpha = self.mixture_ratio.value
+            mr = alpha * mr_s
+  
+        if self.exit_condition_type == 0: # Expansion Area Ratio
+            eps = self.exit_condition.value
+            pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
+        elif self.exit_condition_type == 1: # Pressure Ratio
+            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=self.exit_condition.value)
+            pe = pc / self.exit_condition.value
+        elif self.exit_condition_type == 2: # Exit Pressure
+            pe = self.exit_condition.value * pressure_uom(self.exit_condition.uom)
+            eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
+        
+        return mr, alpha, eps, pe
+    
+    def get_params_from_area_ratio(self, pc, mr_s, C):
+        eps = self.exit_condition.value
+        mr = optimizemr(C, pc, eps, self.optimization_mode)
+        alpha = mr / mr_s
+        pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
+        return mr, alpha, eps, pe
+    
+    def get_params_from_pressure_conditions(self, pc, mr_s, C):
+        if self.exit_condition_type == 1: # Pressure Ratio
+            pe = pc / self.exit_condition.value
+        elif self.exit_condition_type == 2: # Exit Pressure
+            pe = self.exit_condition.value * pressure_uom(self.exit_condition.uom)
+        
+        mr = optimizermr_at_pe(C, pc, pe, self.optimization_mode)
+        eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
+        alpha = mr / mr_s
+        return mr, alpha, eps, pe
