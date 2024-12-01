@@ -1,3 +1,4 @@
+from tabulate import tabulate
 from dataclasses import dataclass
 
 @dataclass
@@ -62,6 +63,16 @@ class PerformanceSimOutput:
         self.mach = Quantity(name="Mach Number", value=mach)
         self.sonic_velocity = Quantity(name="Sonic Velocity", value=sonic_velocity, uom=sonic_velocity_uom)
         self.enthalpy = Quantity(name="Enthalpy", value=enthalpy, uom=enthalpy_uom)
+
+    def get_performance(self):
+        headers = ["Parameter",            "SL",                          "Opt",                         "Vac",                         "Unit"]
+        results = [
+            ["Charateristic Velocity",     f"{self.cstar.value:.2f}",     f"{self.cstar.value:.2f}",     f"{self.cstar.value:.2f}",     self.cstar.uom],
+            ["Effective Exhaust Velocity", f"{self.c['SL'].value:.2f}",   f"{self.c['opt'].value:.2f}",  f"{self.c['vac'].value:.2f}",  self.c['SL'].uom],
+            ["Specific Impulse",           f"{self.Isp['SL'].value:.2f}", f"{self.Isp['opt'].value:.2f}", f"{self.Isp['vac'].value:.2f}", self.Isp['SL'].uom],
+            ["Thrust Coefficient",         f"{self.CF['SL'].value:.5f}",  f"{self.CF['opt'].value:.5f}", f"{self.CF['vac'].value:.5f}", self.CF['SL'].uom]
+        ]
+        return tabulate(results, headers, numalign="right", tablefmt="plain")
 
 class PerformanceSimInput:
     def __init__(self,
