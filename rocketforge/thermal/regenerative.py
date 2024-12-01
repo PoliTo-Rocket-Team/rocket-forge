@@ -1,126 +1,179 @@
 from numpy import *
-from matplotlib.pyplot import *
-from scipy.optimize import brentq
+import matplotlib.pyplot as plt
+import rocketforge.thermal.config as config
+import rocketforge.geometry.convergent as convergent
+import rocketforge.geometry.top as top
+import rocketforge.geometry.conical as conical
 from rocketprops.rocket_prop import get_prop
 
 
 def main():
-    ### INPUT ###
-    n_s = 80 # number of stations to compute
+    P = get_prop(config.coolant)
+    X, Y = get_geometry()
 
-    # Coolant
-    P = get_prop('CH4') # coolant
-    Tci = 115 # coolant inlet temperature
-    mc = 0.4925 # coolant mass flow rate
+    L_tot = config.L_c + config.L_e
+    x = linspace(0.0, L_tot, config.n_stations)
+    R = interp(x, X, Y)
+    A = pi * R**2
+    A_w = 2 * pi * R * L_tot / config.n_stations
 
-    # Geometry
-    Rcyl = 0.04712 * ones(30)
-    Rco = linspace(0.04712, 0.01666, 30)
-    Rd = linspace(0.01666+(0.02738-0.01666)/20, 0.02738, 20)
-    R = concatenate((Rcyl, Rco, Rd)) # station radius
-    Lc = 0.15589 # chamber length
-    Le = 0.05344 # divergent length
-    At = 0.000872 # throat section area
-    Dt = 2 * sqrt(At/pi)
-    Nc = 70 # number of channels (TODO)
-    deco = linspace(0.0025, 0.0012, 60)
-    ded = linspace(0.0012, 0.002, 20)
-    de = concatenate((deco, ded)) # channel diameter
-    Ac = de**2
-    k = 285 # wall thermal conductivity
-    dy = 0.0008 # wall thickness
-    A = de*Nc*(Lc+Le)/n_s # convective heat transfer surface
+    M = generate_profile(x, 0.1, 1.0, config.M_e)
+    Pr = generate_profile(x, config.Pr_0, config.Pr_t, config.Pr_e)
+    gamma = generate_profile(x, config.gamma, config.gamma, config.gamma_e)
 
-    # Thermodynamic properties
-    p = linspace(45*10**5, 70*10**5, n_s) # coolant line pressure
-    Prco = linspace(0.494049, 496142, 60)
-    Prd = array([0.498062, 0.499387, 0.500754, 0.502214, 0.503783, 0.505462, 0.507248, 0.509135, 0.511115, 0.513179, 0.515319, 0.517527, 0.519792, 0.522108, 0.524466, 0.526858, 0.529276, 0.531716, 0.534169, 0.536634])
-    Pr = concatenate((Prco, Prd)) # prandtl number
-    gammaco = linspace(1.14, 1.14168, 60)
-    gammad = array([1.14413, 1.14587, 1.14755, 1.14921, 1.15085, 1.15247, 1.15407, 1.15564, 1.15719, 1.1587, 1.16019, 1.16164, 1.16306, 1.16444, 1.16579, 1.1671, 1.16837, 1.16961, 1.17081, 1.17198])
-    gamma = concatenate((gammaco, gammad)) # gamma
-    Mcyl = zeros(30)
-    Mco = linspace(0, 1, 30)
-    Md = array([1.31303, 1.44362, 1.54177, 1.62242, 1.69165, 1.75262, 1.80726, 1.85687, 1.90236, 1.94441, 1.98353, 2.02012, 2.05451, 2.08696, 2.1177, 2.1469, 2.17472, 2.20129, 2.22673, 2.25115])
-    M = concatenate((Mcyl, Mco, Md)) # mach number
-    Tco = linspace(3369.19, 3183.06, 60)
-    Td = array([3056.48, 2995.56, 2946.76, 2904.76, 2867.33,2833.35,2802.07,2773.02,2745.83,2720.25,2696.06,2673.11,2651.26,2630.39,2610.43,2591.27,2572.87,2555.16,2538.09,2521.59])
-    T = concatenate((Tco, Td)) # temperature
-    pc = 40 * 10**5 # chamber pressure
-    Ts = 3369.19 # stagnation temperature
-    cstar = 1817.04 # delivered characteristic velocity
-    Pr0 = Pr[0] # upstream prandtl number
-    cp0 = 5830.22 # upstream specific heat capacity
-    mu0 = 1.06192 * 0.0001 # upstream dynamic viscosity
-    ### END INPUT ###
+    a = generate_profile(x, config.a1, config.a2, config.a3)
+    b = generate_profile(x, config.b1, config.b2, config.b3)
+    delta = generate_profile(x, config.d1, config.d2, config.d3)
+    d_e = 2 * a * b / (a + b)
+    p = linspace(config.p_ci, config.pcoOvpc * config.p_c, config.n_stations)
 
-    # Variables initialization
-    i = 0
-    Twg = zeros(n_s)
-    Tc = zeros(n_s)
-    lambdac = zeros(n_s)
-    cpc = zeros(n_s)
-    rhoc = zeros(n_s)
-    muc = zeros(n_s)
+    T_aw = (
+        config.T_c
+        * (1 + Pr**0.33 * (gamma - 1) / 2 * M**2)
+        / (1 + (gamma - 1) / 2 * M**2)
+    )
 
+    T_wg = full(config.n_stations, config.T_ci)
+    T_wc = full(config.n_stations, config.T_ci)
+    T_c = full(config.n_stations, config.T_ci)
+    cp_c = [P.CpAtTdegR(T_c[i] * 1.8) * 4186.8 for i in range(config.n_stations)]
+    mu_c = zeros(config.n_stations)
+    lambda_c = zeros(config.n_stations)
+
+    iter = 0
     while True:
-        # At each station, calculate the gas-side heat flux (convective and radiation) for given Twg
-        Taw = Ts * (1+Pr**0.33 * (gamma-1)/2 * M**2)/(1+(gamma-1)/2*M**2)
-        sigma = (0.5*Twg/Ts * (1+(gamma-1)/2*M**2)+0.5)**(-0.68) * (1+(gamma-1)/2*M**2)**(-0.12)
-        h = 0.026 / (Dt**0.2) * mu0**0.2 *cp0 / (Pr0**0.6) * (pc/cstar)**0.8 * (Dt/R)*0.1 *(At/pi/R**2)**0.9 * sigma
-        q = h * (Taw - Twg)
+        iter += 1
 
-        # At each station, calculate the coolant heating and coolant exit temperature for known
-        # input temperature (the direction of space-marching depends on the coolant flow direction).
-        Tc[0] = Tci
-        cpc[0] = P.CpAtTdegR(Tc[0] * 1.8) * 4186
-        for n in range(n_s-1):
-            Tc[n+1] = Tc[n] + q[n] * A[n] / cpc[n] / mc
-            cpc[n+1] = P.CpAtTdegR(Tc[n+1] * 1.8) * 4186
-        Tc = Tc[::-1]
-        cpc = cpc[::-1]
-        for n in range(n_s):
-            # rhoc[n] = P.SGLiqAtTdegR(Tc[n] * 1.8) * 1000
-            rhoc[n] = P.SG_compressed(Tc[n] * 1.8, p[n] / 6894.8) * 1000
-            # muc[n] = P.ViscAtTdegR(Tc[n] * 1.8) / 10
-            muc[n] = P.Visc_compressed(Tc[n] * 1.8, p[n] / 6894.8) / 10
-            lambdac[n] = P.CondAtTdegR(Tc[n] * 1.8) * 1.72958
+        h = bartz(M, A, gamma, T_wg)
+        q = h * (T_aw - T_wg)
+        
+        dT_c = q * A_w / config.m_dot_c / cp_c
+        for i in reversed(range(config.n_stations)):
+            if i != config.n_stations - 1:
+                T_c[i] = T_c[i + 1] + dT_c[i]
+        
+        for i in range(config.n_stations):
+            cp_c[i] = P.CpAtTdegR(T_c[i] * 1.8) * 4186.8
+            mu_c[i] = P.Visc_compressed(T_c[i] * 1.8, p[i] / 6894.75728) / 10
+            lambda_c[i] = P.CondAtTdegR(T_c[i] * 1.8) * 1.72958
 
-        # Calculate the coolant-side heat transfer coefficient hc
-        u = mc / rhoc / Ac
-        Rec = u * de * rhoc / muc
-        Prc = muc * cpc / lambdac
-        # Nu = 0.0185 * Rec**0.8 * Prc**0.4 * (Tc/Twc)**0.1 for methane
-        hc = [lambda Twc, n=n: 0.0185*Rec[n]**0.8 * Prc[n]**0.4 * (Tc[n]/Twc)**0.1 * lambdac[n] / de[n] for n in range(n_s)]
+        Re_c = 4 * config.m_dot_c / d_e / pi / mu_c
+        Pr_c = mu_c * cp_c / lambda_c
+        Nu = 0.023 * Re_c**0.8 * Pr_c**0.4
+        h_c = Nu * lambda_c / d_e
 
-        # From known heat flux and coolant-side heat transfer coefficient, calculate new values
-        # of the coolant-side temperature Twc and the gas-side temperature Twg
-        Twc = ones(n_s)
-        for n in range(n_s):
-            eq = lambda Twc: Tc[n] - Twc + q[n]/hc[n](Twc)
-            Twc[n] = brentq(eq, 1, 10000)
-        Twg_old = Twg
-        Twg = Twc + q * dy / k
-        i += 1
+        for i in range(config.max_iter):
+            hc_old = h_c
+            xi = sqrt(2 * h_c / delta / config.lambda_w) * b
+            eta_f = a / (a + delta) + 2 * b / (a + delta) * tanh(xi) / xi
+            h_c = h_c * eta_f
+            if all(abs((hc_old - h_c)/hc_old) < 0.05):
+                break
 
-        # Calculate the convergence criteria
-        if all(abs((Twg - Twg_old)/Twg) < 0.001):
-            print(f"Executed in {i} iterations.")
-            plot(Twg, label="Twg")
-            plot(Twc, label="Twc")
-            plot(Tc, label="Tc")
-            xlabel("Station")
-            grid()
-            legend()
-            figure()
-            plot(q/1000)
-            ylabel("Wall Heat Flux [$kW/m^2$]")
-            xlabel("Station")
-            grid()
-            show()
+        T_wc = T_c + q / h_c
+        T_wg_new = T_wc + q * config.t_w / config.lambda_w
+
+        if all(abs((T_wg - T_wg_new) / T_wg) < 0.05) or iter == config.max_iter:
+            T_wg = T_wg_new
             break
 
-    show()
+        T_wg = T_wg_new
+
+    fig, ax = plt.subplots()
+    ax.plot(x, T_wg, label="Twg")
+    ax.plot(x, T_wc, label="Twc")
+    ax.plot(x, T_c, label="Tc")
+    ax.set_xlabel("x [m]")
+    ax.set_ylabel("Temperature [K]")
+    ax.grid()
+    ax.legend()
+    ax2 = ax.twinx()
+    ax2.plot(X, Y, color="black", label="Thrust chamber contour")
+    ax2.set_ylabel("Radius [m]")
+    ax2.axis([0, max(x), 0, max(x)])
+    ax2.legend(loc="upper left")
+    plt.title("Temperature distribution")
+
+    fig2, ax3 = plt.subplots()
+    ax3.plot(x, q / 1000, label="Heat flux")
+    ax3.set_xlabel("x [m]")
+    ax3.set_ylabel("Heat flux [kW/m^2]")
+    ax3.grid()
+    ax3.legend()
+    ax4 = ax3.twinx()
+    ax4.plot(X, Y, color="black", label="Thrust chamber contour")
+    ax4.set_ylabel("Radius [m]")
+    ax4.axis([0, max(x), 0, max(x)])
+    ax4.legend(loc="upper left")
+    plt.title("Heat flux distribution")
+
+    plt.show()
+
+
+def bartz(M, A, gamma, T_wg):
+    R_t = sqrt(config.A_t / pi)
+    sigma = (
+        (0.5 * (T_wg / config.T_c) * (1 + (gamma - 1) / 2 * M**2) + 0.5)**(-0.68) 
+        * (1 + (gamma - 1) / 2 * M**2)**(-0.12)
+    )
+    h_gas = (
+        0.026 / (2 * R_t) ** 0.2
+        * config.mu_0**0.2
+        * config.cp_0 / config.Pr_0**0.6
+        * (config.p_c / config.c_star) ** 0.8
+        * (2 / config.RnOvRt) ** 0.1
+        * (config.A_t / A) ** 0.9
+        * sigma
+        / config.tuning_factor
+    )
+    return h_gas
+
+
+def get_geometry():
+    XC, YC = convergent.get(
+        config.A_t,
+        config.R1OvRt,
+        config.L_c,
+        radians(config.b),
+        config.R2OvR2max,
+        config.eps_c,
+    )
+    if config.shape == 0:
+        XD, YD = conical.get(
+            config.A_t,
+            config.RnOvRt,
+            config.eps,
+            config.L_e,
+            radians(config.theta)
+        )
+    else:
+        XD, YD = top.get(
+            config.A_t,
+            config.RnOvRt,
+            config.L_e,
+            radians(config.thetan),
+            radians(config.thetae),
+            config.eps,
+        )
+    X = concatenate([XC, XD]) + config.L_c
+    Y = concatenate([YC, YD])
+    return X, Y
+
+
+def generate_profile(x, y_c, y_t, y_e):
+    return piecewise(
+        x,
+        [
+            x <= config.L_cyl,
+            (x > config.L_cyl) & (x <= config.L_c),
+            x > config.L_c,
+        ],
+        [
+            lambda _: y_c,
+            lambda _: linspace(y_c, y_t, sum((x > config.L_cyl) & (x <= config.L_c))),
+            lambda _: linspace(y_t, y_e, sum(x > config.L_c)),
+        ],
+    )
 
 
 if __name__ == "__main__":
