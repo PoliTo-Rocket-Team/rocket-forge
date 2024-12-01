@@ -6,7 +6,7 @@ class Quantity():
     value: float = None
     uom: str = None
 
-class PerformanceSimData:
+class PerformanceSimInput:
     def __init__(self,
                  oxidizer=None,
                  fuel=None,
