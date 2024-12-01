@@ -74,6 +74,24 @@ class PerformanceSimOutput:
         ]
         return tabulate(results, headers, numalign="right", tablefmt="plain")
 
+    def get_thermodynamics(self):
+        i = len(self.pressure.value)
+        headers = ["Parameter", "Chamber", "Throat"] + [f"{x / (i - 1) * 100:.2f}%" for x in range(1,i-1)] + ["Exit", "Unit"]
+        results = [[[self.pressure.name] +              self.pressure.value +              [self.pressure.uom]],
+                   [[self.temperature.name] +           self.temperature.value +           [self.temperature.uom]],
+                   [[self.density.name] +               self.density.value +               [self.density.uom]],
+                   [[self.heat_capacity.name] +         self.heat_capacity.value +         [self.heat_capacity.uom]],
+                   [[self.viscosity.name] +             self.viscosity.value +             [self.viscosity.uom]],
+                   [[self.thermal_conductivity.name] +  self.thermal_conductivity.value +  [self.thermal_conductivity.uom]],
+                   [[self.prandtl.name] +               self.prandtl.value +               [self.prandtl.uom]],
+                   [[self.gamma.name] +                 self.gamma.value +                 [self.gamma.uom]],
+                   [[self.mach.name] +                  self.mach.value +                  [self.mach.uom]],
+                   [[self.sonic_velocity.name] +        self.sonic_velocity.value +        [self.sonic_velocity.uom]],
+                   [[self.enthalpy.name] +              self.enthalpy.value +              [self.enthalpy.uom]]        
+        ]
+        return tabulate(results, headers, numalign="right", tablefmt="plain")
+
+
 class PerformanceSimInput:
     def __init__(self,
                  oxidizer=None,
