@@ -6,6 +6,63 @@ class Quantity():
     value: float = None
     uom: str = None
 
+class PerformanceSimOutput:
+    def __init__(self,
+                 cstar=None,                 cstar_uom="m/s",
+                 Isp_sl=None,                Isp_sl_uom="s",
+                 Isp_opt=None,               Isp_opt_uom="s",
+                 Isp_vac=None,               Isp_vac_uom="s",
+                 Isp_vac_eq=None,            Isp_vac_eq_uom="s",
+                 Isp_vac_fr=None,            Isp_vac_fr_uom="s",
+                 c_sl=None,                  c_sl_uom="m/s",
+                 c_opt=None,                 c_opt_uom="m/s",
+                 c_vac=None,                 c_vac_uom="m/s",
+                 CF_sl=None,
+                 CF_opt=None,
+                 CF_vac=None, 
+                 pressure=None,              pressure_uom="bar",
+                 temperature=None,           temperature_uom="K",
+                 density=None,               density_uom="kg/m^3",
+                 heat_capacity=None,         heat_capacity_uom="J/kg-K",
+                 viscosity=None,             viscosity_uom="millipoise",
+                 thermal_conductivity=None,  thermal_conductivity_uom="mcal/cm-K-s",
+                 prandtl=None,
+                 gamma=None,
+                 mach=None,
+                 sonic_velocity=None,        sonic_velocity_uom="m/s",
+                 enthalpy=None,              enthalpy_uom="kJ/kg"
+                 ):
+        self.cstar = Quantity(name="Characteristic Velocity", value=cstar, uom=cstar_uom)
+        self.Isp = {
+            "SL": Quantity(name="Sea Level Specific Impulse", value=Isp_sl, uom=Isp_sl_uom),
+            "opt": Quantity(name="Optimum Expansion Specific Impulse", value=Isp_opt, uom=Isp_opt_uom),
+            "vac": Quantity(name="Vacuum Specific Impulse", value=Isp_vac, uom=Isp_vac_uom),
+            "vac_eq": Quantity(name="Vacuum Specific Impulse (Equilibrium)", value=Isp_vac_eq, uom=Isp_vac_eq_uom),
+            "vac_fr": Quantity(name="Vacuum Specific Impulse (Frozen)", value=Isp_vac_fr, uom=Isp_vac_fr_uom)
+        }
+        self.c = {
+            "SL": Quantity(name="Sea Level Effective Exhaust Velocity", value=c_sl, uom=c_sl_uom),
+            "opt": Quantity(name="Optimum Expansion Effective Exhaust Velocity", value=c_opt, uom=c_opt_uom),
+            "vac": Quantity(name="Vacuum Effective Exhaust Velocity", value=c_vac, uom=c_vac_uom)
+        }
+        self.CF = {
+            "SL": Quantity(name="Sea Level Thrust Coefficient", value=CF_sl),
+            "opt": Quantity(name="Optimum Expansion Thrust Coefficient", value=CF_opt),
+            "vac": Quantity(name="Vacuum Thrust Coefficient", value=CF_vac)
+        }
+
+        self.pressure = Quantity(name="Pressure", value=pressure, uom=pressure_uom)
+        self.temperature = Quantity(name="Temperature", value=temperature, uom=temperature_uom)
+        self.density = Quantity(name="Density", value=density, uom=density_uom)
+        self.heat_capacity = Quantity("Heat Capacity", value=heat_capacity, uom=heat_capacity_uom)
+        self.viscosity = Quantity(name="Viscosity", value=viscosity, uom=viscosity_uom)
+        self.thermal_conductivity = Quantity(name="Thermal Conductivity", value=thermal_conductivity, uom=thermal_conductivity_uom)
+        self.prandtl = Quantity(name="Prandtl Number", value=prandtl)
+        self.gamma = Quantity(name="Gamma", value=gamma)
+        self.mach = Quantity(name="Mach Number", value=mach)
+        self.sonic_velocity = Quantity(name="Sonic Velocity", value=sonic_velocity, uom=sonic_velocity_uom)
+        self.enthalpy = Quantity(name="Enthalpy", value=enthalpy, uom=enthalpy_uom)
+
 class PerformanceSimInput:
     def __init__(self,
                  oxidizer=None,
