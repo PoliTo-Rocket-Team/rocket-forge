@@ -6,6 +6,7 @@ fuelfilm = 0.0
 n_stations = None
 max_iter = None
 tuning_factor = None
+stability = None
 
 gamma = None
 gamma_e = None
@@ -52,5 +53,6 @@ b3 = None
 d1 = None
 d2 = None
 d3 = None
+NC = None
 
 coolant = None
