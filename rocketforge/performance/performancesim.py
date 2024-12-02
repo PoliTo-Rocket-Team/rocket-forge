@@ -13,6 +13,12 @@ class Quantity():
 class PerformanceSimOutput:
     def __init__(self,
                  cstar=None,                 cstar_uom="m/s",
+                 eps=None,
+                 exp_p_ratio=None,
+                 pe=None,                    pe_uom="bar",
+                 mr=None,
+                 mr_s=None,
+                 alpha=None,
                  Isp_sl=None,                Isp_sl_uom="s",
                  Isp_opt=None,               Isp_opt_uom="s",
                  Isp_vac=None,               Isp_vac_uom="s",
@@ -37,6 +43,12 @@ class PerformanceSimOutput:
                  enthalpy=None,              enthalpy_uom="kJ/kg"
                  ):
         self.cstar = Quantity(name="Characteristic Velocity", value=cstar, uom=cstar_uom)
+        self.eps = Quantity(name="Expansion Area Ratio", value=eps)
+        self.exp_p_ratio = Quantity(name="Expansion Pressure Ratio", value=exp_p_ratio)
+        self.pe = Quantity(name="Exit Pressure", value=pe, uom=pe_uom)
+        self.mr = Quantity(name="Mixture Ratio", value=mr)
+        self.mr_s = Quantity(name="Mixture Ratio (stoichiometric)", value=mr_s)
+        self.alpha = Quantity(name="Alpha (oxidizer excess coefficient)", value=alpha)
         self.Isp = {
             "SL": Quantity(name="Sea Level Specific Impulse", value=Isp_sl, uom=Isp_sl_uom),
             "opt": Quantity(name="Optimum Expansion Specific Impulse", value=Isp_opt, uom=Isp_opt_uom),
@@ -244,6 +256,12 @@ class PerformanceSimInput:
                 H.append(C.get_Enthalpies(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[2])
 
             return PerformanceSimOutput(cstar=cstar,
+                                        eps=eps,
+                                        exp_p_ratio=pc/pe,
+                                        pe=pe_output,
+                                        mr=mr,
+                                        mr_s=mr_s,
+                                        alpha=alpha,
                                         Isp_sl=Isp_sl,
                                         Isp_opt=Isp_opt,
                                         Isp_vac=Isp_vac,
