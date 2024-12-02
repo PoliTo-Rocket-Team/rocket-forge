@@ -149,7 +149,7 @@ def bartz(M, A, gamma, T_wg):
         * config.mu_0**0.2
         * config.cp_0 / config.Pr_0**0.6
         * (config.p_c / config.c_star) ** 0.8
-        * (2.0 / config.RnOvRt) ** 0.1
+        * (4.0 / (config.RnOvRt + config.R1OvRt)) ** 0.1
         * (config.A_t / A) ** 0.9
         * sigma
         / config.tuning_factor
