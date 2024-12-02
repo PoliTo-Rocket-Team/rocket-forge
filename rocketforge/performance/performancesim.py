@@ -132,7 +132,9 @@ class PerformanceSimInput:
         self.mixture_ratio = Quantity(name="Mixture Ratio", value=float(mixture_ratio), uom=mixture_ratio_uom)
         self.optimization_mode = optimization_mode # 0: Mixture ratio from input, 1: Isp (vac), 2: Isp (opt), 3: Isp (SL)
         self.inlet_condition_type = inlet_condition_type # 0: Contraction area ratio, 1: Infinite area combustor
-        self.inlet_condition = Quantity(name="Inlet Condition", value=float(inlet_condition_value))
+        self.inlet_condition = Quantity(
+            name="Inlet Condition",
+            value=float(inlet_condition_value) if inlet_condition_value is not None else None)
         self.exit_condition_type = exit_condition_type # 0: Expansion area ratio, 1: Pressure ratio, 2: Exit pressure 
         self.exit_condition = Quantity(name="Exit Condition", value=float(exit_condition_value), uom=exit_condition_uom)
         self.nominal_thrust = Quantity(name="Nominal Thrust", value=float(nominal_thrust), uom=nominal_thrust_uom)
