@@ -119,6 +119,22 @@ def main():
     ax4.legend(loc="upper left")
     plt.title("Heat flux distribution")
 
+    fig3, ax5 = plt.subplots()
+    ax5.plot(x, a, label="a")
+    ax5.plot(x, b, label="b")
+    ax5.plot(x, delta, label="delta")
+    ax5.set_xlabel("x [m]")
+    ax5.set_ylabel("Length [m]")
+    ax5.grid()
+    ax5.legend(loc="upper right")
+    ax5.axis([0, max(x), 0, 1.5 * max([max(a), max(b), max(delta)])])
+    ax6 = ax5.twinx()
+    ax6.plot(X, Y, color="black", label="Thrust chamber contour")
+    ax6.set_ylabel("Radius [m]")
+    ax6.axis([0, max(x), 0, max(x)])
+    ax6.legend(loc="upper left")
+    plt.title("Cooling channels")
+
     plt.show()
 
 
