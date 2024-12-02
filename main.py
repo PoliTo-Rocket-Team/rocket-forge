@@ -52,6 +52,7 @@ class RocketForge(CTk):
         # Nested analysis frame
         self.nestedframe = NestedFrame(self)
         self.nestedframe.grid(column=1, row=0)
+        self.nestedframe.set_initial_frame(self.initialframe)
 
         # Thermal analysis frame
         self.thermalframe = ThermalFrame(self)

@@ -78,7 +78,6 @@ class NestedFrame(CTkFrame):
         self.textbox.place(relwidth=59/60, relx=0.5, rely=0.99, anchor="s")
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
-    # __init__
 
     def create_row(self, row_num, label, units, plotoptions):
         row = {}
@@ -104,7 +103,6 @@ class NestedFrame(CTkFrame):
         self.toggle_row(row, False)
 
         return row
-    # create_row
 
     def toggle_row(self, row, state=None):
         if state is None:
@@ -116,4 +114,6 @@ class NestedFrame(CTkFrame):
                     widget.configure(state="normal")
                 else:
                     widget.configure(state="disabled")
-    # toggle_row
+
+    def set_initial_frame(self, initial_frame):
+        self.initial_frame = initial_frame
