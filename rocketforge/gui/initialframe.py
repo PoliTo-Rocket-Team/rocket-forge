@@ -9,6 +9,7 @@ from rocketforge.utils.conversions import pressure_uom, thrust_uom
 from rocketforge.utils.helpers import updatetextbox
 from rocketforge.performance.mixtureratio import optimizemr, optimizermr_at_pe
 from rocketforge.performance.theoreticalperf import theoretical
+from rocketforge.performance.performancesim import generate_sim_input
 
 
 class InitialFrame(ctk.CTkFrame):
@@ -328,88 +329,21 @@ class InitialFrame(ctk.CTkFrame):
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
     def expressrun(self):
-        try: 
-            config.ox = self.oxoptmenu.get()
-            config.fuel = self.fueloptmenu.get()
-            config.pc = float(self.pcentry.get()) * pressure_uom(self.pcuom.get())
-            if self.inletcondition.get() == 0:
-                config.epsc = float(self.epscentry.get())
-            else:
-                config.epsc = None
-
-            C = CEA_Obj(
-                oxName=config.ox,
-                fuelName=config.fuel,
-                fac_CR=config.epsc,
-                cstar_units="m/s",
-                pressure_units="Pa",
-                temperature_units="K",
-                sonic_velocity_units="m/s",
-                enthalpy_units="kJ/kg",
-                density_units="kg/m^3",
-                specific_heat_units="J/kg-K",
-            )
-
-            config.mr_s = C.getMRforER(ERphi=1)
-
-            if self.optimizationmode.get() == 0:
-                if self.mruom.get() == "O/F":
-                    config.mr = float(self.mrentry.get())
-                    config.alpha = config.mr / config.mr_s
-                elif self.mruom.get() == "alpha":
-                    config.alpha = float(self.mrentry.get())
-                    config.mr = config.alpha * config.mr_s
-
-                if self.exitcondition.get() == 0:
-                    config.eps = float(self.epsentry.get())
-                    config.pe = config.pc / C.get_PcOvPe(Pc=config.pc, MR=config.mr, eps=config.eps)
-                elif self.exitcondition.get() == 1:
-                    config.eps = C.get_eps_at_PcOvPe(
-                        Pc=config.pc, MR=config.mr, PcOvPe=float(self.peratioentry.get())
-                    )
-                    config.pe = config.pc / float(self.peratioentry.get())
-                elif self.exitcondition.get() == 2:
-                    config.pe = float(self.peentry.get()) * pressure_uom(self.peuom.get())
-                    config.eps = C.get_eps_at_PcOvPe(Pc=config.pc, MR=config.mr, PcOvPe=config.pc / config.pe)
-
-            elif self.exitcondition.get() == 0:
-                config.eps = float(self.epsentry.get())
-                config.mr = optimizemr(C, config.pc, config.eps, self.optimizationmode.get())
-                config.alpha = config.mr / config.mr_s
-                config.pe = config.pc / C.get_PcOvPe(Pc=config.pc, MR=config.mr, eps=config.eps)
-
-            else:
-                if self.exitcondition.get() == 1:
-                    config.pe = config.pc / float(self.peratioentry.get())
-                elif self.exitcondition.get() == 2:
-                    config.pe = float(self.peentry.get()) * pressure_uom(self.peuom.get())
-                config.mr = optimizermr_at_pe(C, config.pc, config.pe, self.optimizationmode.get())
-                config.eps = C.get_eps_at_PcOvPe(Pc=config.pc, MR=config.mr, PcOvPe=config.pc / config.pe)
-                config.alpha = config.mr / config.mr_s
-
-            results = [
-                ["Expansion Area Ratio", config.eps, ""],
-                ["Expansion pressure ratio", config.pc / config.pe, ""],
-                ["Exit Pressure", config.pe / 100000, "bar"],
-                ["Mixture Ratio", config.mr, ""],
-                ["Mixture Ratio (stoichiometric)", config.mr_s, ""],
-                ["Alpha (oxidizer excess coefficient)", config.alpha, ""],
-            ]
-            output2 = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".3f")
-            output1 = theoretical()[0]
-            output = output1 + 2 * "\n" + output2
+        try:
+            simulation_data = generate_sim_input(initial_frame=self)
+            simulation_output = simulation_data.simulation_run()
+            output = simulation_output.get_performance()
         except Exception as err:
             output = str(err)
+        updatetextbox(self.textbox, repr(simulation_data) + 2*"\n" + output, True)
 
-        updatetextbox(self.textbox, output, True)
-
-        try:
-            config.thrust = float(self.thrustentry.get()) * thrust_uom(self.thrustuom.get())
-            pamb = float(self.thrustentry2.get()) * pressure_uom(self.thrustuom2.get())
-            config.c = C.estimate_Ambient_Isp(Pc=config.pc, MR=config.mr, eps=config.eps, Pamb=pamb)[0] * 9.80655
-            config.At = config.thrust * config.cstar / config.c / config.pc
-        except Exception:
-            config.At = None
+        # try:
+        #     config.thrust = float(self.thrustentry.get()) * thrust_uom(self.thrustuom.get())
+        #     pamb = float(self.thrustentry2.get()) * pressure_uom(self.thrustuom2.get())
+        #     config.c = C.estimate_Ambient_Isp(Pc=config.pc, MR=config.mr, eps=config.eps, Pamb=pamb)[0] * 9.80655
+        #     config.At = config.thrust * config.cstar / config.c / config.pc
+        # except Exception:
+        #     config.At = None
 
     def get_mixture_ratio(self):
         return self.mrentry.get(), self.mruom.get()
