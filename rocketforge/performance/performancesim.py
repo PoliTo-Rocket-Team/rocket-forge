@@ -169,7 +169,7 @@ class PerformanceSimInput:
 
         inletcond = self.inlet_condition.value if self.inlet_condition_type == 0 else "" # Not really needed but keeps consistency with other empty cells
         exituom = self.exit_condition.uom if self.exit_condition_type == 2 else ""
-        table = [["Oxidizer:",         self.oxidizer,                                "Fuel:",                    self.fuel],
+        table = [["Oxidizer:",          self.oxidizer,                                "Fuel:",                    self.fuel],
                  ["Chamber Pressure",   self.chamber_pressure.value,                  "",                         self.chamber_pressure.uom],
                  ["Mixture Ratio",      self.mixture_ratio.value,                     "",                         self.mixture_ratio.uom],
                  ["Optimization Mode",  optimizations[self.optimization_mode],        "",                         ""],
