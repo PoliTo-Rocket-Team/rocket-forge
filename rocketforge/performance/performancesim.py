@@ -371,7 +371,7 @@ def generate_sim_input(initial_frame = None, nested_frame = None, **kwargs) -> P
 
     # Get exit condition
     if nested_eps is None:
-        exit_condition_type, exit_condition_value, exit_condition_uom = initial_frame.get_exit_condition_value()
+        exit_condition_type, exit_condition_value, exit_condition_uom = initial_frame.get_exit_condition()
     else:
         exit_condition_value = nested_eps
         exit_condition_type, exit_condition_uom = nested_frame.get_exit_type_and_uom()
