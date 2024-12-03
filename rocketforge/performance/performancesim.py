@@ -29,7 +29,7 @@ class PerformanceSimOutput:
                  c_vac=None,                 c_vac_uom="m/s",
                  CF_sl=None,
                  CF_opt=None,
-                 CF_vac=None, 
+                 CF_vac=None,
                  pressure=None,              pressure_uom="bar",
                  temperature=None,           temperature_uom="K",
                  density=None,               density_uom="kg/m^3",
@@ -112,7 +112,7 @@ class PerformanceSimOutput:
                    [[self.gamma.name] +                 self.gamma.value +                 [self.gamma.uom]],
                    [[self.mach.name] +                  self.mach.value +                  [self.mach.uom]],
                    [[self.sonic_velocity.name] +        self.sonic_velocity.value +        [self.sonic_velocity.uom]],
-                   [[self.enthalpy.name] +              self.enthalpy.value +              [self.enthalpy.uom]]        
+                   [[self.enthalpy.name] +              self.enthalpy.value +              [self.enthalpy.uom]]
         ]
         return tabulate(results, headers, numalign="right", tablefmt="plain")
 
@@ -145,7 +145,7 @@ class PerformanceSimInput:
         self.inlet_condition = Quantity(
             name="Inlet Condition",
             value=float(inlet_condition_value) if inlet_condition_value is not None else None)
-        self.exit_condition_type = exit_condition_type # 0: Expansion area ratio, 1: Pressure ratio, 2: Exit pressure 
+        self.exit_condition_type = exit_condition_type # 0: Expansion area ratio, 1: Pressure ratio, 2: Exit pressure
         self.exit_condition = Quantity(name="Exit Condition", value=float(exit_condition_value), uom=exit_condition_uom)
         self.nominal_thrust = Quantity(name="Nominal Thrust", value=float(nominal_thrust), uom=nominal_thrust_uom)
         self.design_external_pressure = Quantity(name="Design External Pressure", value=float(design_external_pressure), uom=design_external_pressure_uom)
@@ -166,7 +166,7 @@ class PerformanceSimInput:
             1: "Pressure ratio",
             2: "Exit pressure"
         }
-        
+
         inletcond = self.inlet_condition.value if self.inlet_condition_type == 0 else "" # Not really needed but keeps consistency with other empty cells
         exituom = self.exit_condition.uom if self.exit_condition_type == 2 else ""
         table = [["Oxidizer:",         self.oxidizer,                                "Fuel:",                    self.fuel],
@@ -179,7 +179,7 @@ class PerformanceSimInput:
                  ["at",                 self.design_external_pressure.value,          "",                         self.design_external_pressure.uom],
         ]
         return tabulate(table, numalign="right", tablefmt="plain")
-    
+
     def simulation_run(self, i=2, fr=0, fat=0) -> PerformanceSimOutput:
         try:
             pamb = 101325 # Assuming standard atmospheric pressure in Pa
@@ -202,7 +202,7 @@ class PerformanceSimInput:
                 specific_heat_units="J/kg-K")
 
             mr_s = C.getMRforER(ERphi=1)
-            
+
             if optimization_mode == 0: # MR from input
                 mr, alpha, eps, pe = self.get_params_from_mr_input(pc, mr_s, C)
             elif exit_condition_type == 0: # Expansion area ratio
@@ -290,7 +290,7 @@ class PerformanceSimInput:
                                         CF_vac=CF_vac,
                                         pressure=p,
                                         temperature=T,
-                                        density=rho, 
+                                        density=rho,
                                         heat_capacity=cp,
                                         viscosity=mu,
                                         thermal_conductivity=l,
@@ -300,9 +300,8 @@ class PerformanceSimInput:
                                         sonic_velocity=a,
                                         enthalpy=H)
         except Exception as err:
-            return str(err) # TODO: Fix this, different type returns for same function (use Union or RuntimeError)
+            return str(err) # FIXME: shouldn't have different type returns for same function (use Union or RuntimeError)
 
-        
     def get_params_from_mr_input(self, pc, mr_s, C):
         if self.mixture_ratio.uom == "O/F":
             mr = self.mixture_ratio.value
@@ -310,7 +309,7 @@ class PerformanceSimInput:
         elif self.mixture_ratio.uom == "alpha":
             alpha = self.mixture_ratio.value
             mr = alpha * mr_s
-  
+
         if self.exit_condition_type == 0: # Expansion Area Ratio
             eps = self.exit_condition.value
             pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
@@ -320,22 +319,21 @@ class PerformanceSimInput:
         elif self.exit_condition_type == 2: # Exit Pressure
             pe = self.exit_condition.value * pressure_uom(self.exit_condition.uom)
             eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
-        
         return mr, alpha, eps, pe
-    
+
     def get_params_from_area_ratio(self, pc, mr_s, C):
         eps = self.exit_condition.value
         mr = optimizemr(C, pc, eps, self.optimization_mode)
         alpha = mr / mr_s
         pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps)
         return mr, alpha, eps, pe
-    
+
     def get_params_from_pressure_conditions(self, pc, mr_s, C):
         if self.exit_condition_type == 1: # Pressure Ratio
             pe = pc / self.exit_condition.value
         elif self.exit_condition_type == 2: # Exit Pressure
             pe = self.exit_condition.value * pressure_uom(self.exit_condition.uom)
-        
+
         mr = optimizermr_at_pe(C, pc, pe, self.optimization_mode)
         eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
         alpha = mr / mr_s

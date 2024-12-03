@@ -29,7 +29,7 @@ class NestedFrame(CTkFrame):
         # Create the input grid frame
         self.inputgrid = CTkFrame(self, border_width=1)
         self.inputgrid.place(anchor="n", relx=0.5, rely=0.03 + 28/600, relwidth=59/60) # Horrible but it works for now
-        
+
         # Configure grid layout
         self.inputgrid.grid_columnconfigure(0, weight=0, minsize=100)
         for i in range(1,5):
