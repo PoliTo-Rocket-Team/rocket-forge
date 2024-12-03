@@ -166,13 +166,15 @@ class PerformanceSimInput:
             1: "Pressure ratio",
             2: "Exit pressure"
         }
-        inletcond = self.inlet_condition.value if self.inlet_condition_type == 0 else "" #TODO: maybe not needed if None 
+        
+        inletcond = self.inlet_condition.value if self.inlet_condition_type == 0 else "" # Not really needed but keeps consistency with other empty cells
+        exituom = self.exit_condition.uom if self.exit_condition_type == 2 else ""
         table = [["Oxidizer:",         self.oxidizer,                                "Fuel:",                    self.fuel],
                  ["Chamber Pressure",   self.chamber_pressure.value,                  "",                         self.chamber_pressure.uom],
                  ["Mixture Ratio",      self.mixture_ratio.value,                     "",                         self.mixture_ratio.uom],
                  ["Optimization Mode",  optimizations[self.optimization_mode],        "",                         ""],
                  ["Inlet Condition",    inlet_conditions[self.inlet_condition_type],  inletcond,                  ""],
-                 ["Exit Condition",     exit_conditions[self.exit_condition_type],    self.exit_condition.value,  self.exit_condition.uom],
+                 ["Exit Condition",     exit_conditions[self.exit_condition_type],    self.exit_condition.value,  exituom],
                  ["Nominal Thrust",     self.nominal_thrust.value,                    "",                         self.nominal_thrust.uom],
                  ["at",                 self.design_external_pressure.value,          "",                         self.design_external_pressure.uom],
         ]
