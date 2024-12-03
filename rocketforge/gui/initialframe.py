@@ -410,3 +410,25 @@ class InitialFrame(ctk.CTkFrame):
             config.At = config.thrust * config.cstar / config.c / config.pc
         except Exception:
             config.At = None
+
+    def get_mixture_ratio(self):
+        return self.mrentry.get(), self.mruom.get()
+
+    def get_chamber_pressure(self):
+        return self.pcentry.get(), self.pcuom.get()
+
+    def get_exit_condition(self):
+        exit_condition = self.exitcondition.get()
+        if exit_condition == 0:
+            return exit_condition, self.epsentry.get(), None
+        elif exit_condition == 1:
+            return exit_condition, self.peratioentry.get(), None
+        elif exit_condition == 2:
+            return exit_condition, self.peentry.get(), self.peuom.get()
+
+    def get_inlet_condition(self):
+        inlet_condition = self.inletcondition.get()
+        if inlet_condition == 0:
+            return inlet_condition, self.epscentry.get()
+        elif inlet_condition == 1:
+            return inlet_condition, None
