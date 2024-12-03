@@ -340,3 +340,56 @@ class PerformanceSimInput:
         eps = C.get_eps_at_PcOvPe(Pc=pc, MR=mr, PcOvPe=pc / pe)
         alpha = mr / mr_s
         return mr, alpha, eps, pe
+
+# Passing parameters to the function as kwargs overrides inputs from the engine definition frame
+def generate_sim_input(initial_frame = None, nested_frame = None, **kwargs) -> PerformanceSimInput:
+    nested_mr = kwargs.get('nested_mr', None)
+    nested_pc = kwargs.get('nested_pc', None)
+    nested_epsc = kwargs.get('nested_epsc', None)
+    nested_eps = kwargs.get('nested_eps', None)
+
+    # Get mixture ratio
+    if nested_mr is None:
+        mixture_ratio, mixture_ratio_uom = initial_frame.get_mixture_ratio()
+    else:
+        mixture_ratio = nested_mr
+        mixture_ratio_uom = nested_frame.rows[0]["unit_dropdown"].get()
+
+    # Get chamber pressure
+    if nested_pc is None:
+        chamber_pressure, chamber_pressure_uom = initial_frame.get_chamber_pressure()
+    else:
+        chamber_pressure = nested_pc
+        chamber_pressure_uom = nested_frame.rows[1]["unit_dropdown"].get()
+
+    # Get inlet condition
+    if nested_epsc is None:
+        inlet_condition_type, inlet_condition_value = initial_frame.get_inlet_condition()
+    else:
+        inlet_condition_type = 0 if nested_frame.rows[2]["unit_dropdown"].get() == "Contraction Area Ratio (Ac/At)" else 1 #TODO this sucks
+        inlet_condition_value = nested_epsc
+
+    # Get exit condition
+    if nested_eps is None:
+        exit_condition_type, exit_condition_value, exit_condition_uom = initial_frame.get_exit_condition_value()
+    else:
+        exit_condition_value = nested_eps
+        exit_condition_type, exit_condition_uom = nested_frame.get_exit_type_and_uom()
+
+    return PerformanceSimInput(
+        oxidizer=initial_frame.oxoptmenu.get(),
+        fuel=initial_frame.fueloptmenu.get(),
+        chamber_pressure=chamber_pressure,
+        chamber_pressure_uom=chamber_pressure_uom,
+        mixture_ratio=mixture_ratio,
+        mixture_ratio_uom=mixture_ratio_uom,
+        optimization_mode=initial_frame.optimizationmode.get(),
+        inlet_condition_type=inlet_condition_type,
+        inlet_condition_value=inlet_condition_value,
+        exit_condition_type=exit_condition_type,
+        exit_condition_value=exit_condition_value,
+        exit_condition_uom=exit_condition_uom,
+        nominal_thrust=initial_frame.thrustentry.get(),
+        nominal_thrust_uom=initial_frame.thrustuom.get(),
+        design_external_pressure=initial_frame.thrustentry2.get(),
+        design_external_pressure_uom=initial_frame.thrustuom2.get())
