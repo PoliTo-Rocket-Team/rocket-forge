@@ -5,6 +5,7 @@ from customtkinter import CTkEntry, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMe
 from rocketforge.utils.conversions import pressure_uom
 from rocketforge.utils.helpers import updateentry, updatetextbox
 import os
+import re
 
 
 class NestedFrame(CTkFrame):
@@ -117,3 +118,14 @@ class NestedFrame(CTkFrame):
 
     def set_initial_frame(self, initial_frame):
         self.initial_frame = initial_frame
+
+    def get_exit_type_and_uom(self):
+        dropdown_value = self.rows[3]["unit_dropdown"].get()
+        # Match strings starting with "Exit Pressure" and capture content in parentheses
+        match = re.match(r'^Exit Pressure.*\((.*?)\)', dropdown_value)
+        if match:
+            return 2, match.group(1)
+        if dropdown_value == "Expansion Area Ratio (Ae/At)":
+            return 0, None
+        elif dropdown_value == "Pressure Ratio (pc/pe)":
+            return 1, None
