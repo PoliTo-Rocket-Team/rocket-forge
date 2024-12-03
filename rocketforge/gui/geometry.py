@@ -411,12 +411,9 @@ class GeometryFrame(ctk.CTkFrame):
         except Exception:
             pass
     
-    def optimizeTn(self):
-        gamma = config.gammae
-        Me = config.Me
-        if self.thetanentry.get() == "":
-            thetan = (sqrt((gamma+1)/(gamma-1))*arctan(sqrt((gamma-1)*(Me**2-1)/(gamma+1)))-arctan(sqrt(Me**2-1)))/2
-            updateentry(self.thetanentry, thetan / angle_uom(self.thetanuom.get()))
+    def optimizeTn(self, gamma, Me):
+        thetan = (sqrt((gamma+1)/(gamma-1))*arctan(sqrt((gamma-1)*(Me**2-1)/(gamma+1)))-arctan(sqrt(Me**2-1)))/2
+        updateentry(self.thetanentry, thetan / angle_uom(self.thetanuom.get()))
     
     def clear_plot(self):
         self.ax.clear()
