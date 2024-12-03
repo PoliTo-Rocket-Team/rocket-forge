@@ -30,6 +30,7 @@ class PerformanceSimOutput:
                  CF_sl=None,
                  CF_opt=None,
                  CF_vac=None,
+                 At = None,                  At_uom="m^2",
                  pressure=None,              pressure_uom="bar",
                  temperature=None,           temperature_uom="K",
                  density=None,               density_uom="kg/m^3",
@@ -67,6 +68,7 @@ class PerformanceSimOutput:
             "vac": Quantity(name="Vacuum Thrust Coefficient", value=CF_vac)
         }
 
+        self.At = Quantity(name="Throat Area", value=At, uom=At_uom)
         self.pressure = Quantity(name="Pressure", value=pressure, uom=pressure_uom)
         self.temperature = Quantity(name="Temperature", value=temperature, uom=temperature_uom)
         self.density = Quantity(name="Density", value=density, uom=density_uom)
@@ -243,6 +245,10 @@ class PerformanceSimInput:
             # Enthalpy
             Hc, Ht, He = C.get_Enthalpies(Pc=pc, MR=mr, eps=eps, frozen=fr, frozenAtThroat=fat)
 
+            thrust = self.nominal_thrust.value * thrust_uom(self.nominal_thrust.uom)
+
+            At = thrust * cstar / c_sl / pc
+
             # Thermodynamic properties initialization
             p = [pc / 100000]
             T = [Tc]
@@ -289,6 +295,7 @@ class PerformanceSimInput:
                                         CF_opt=CF_opt,
                                         CF_vac=CF_vac,
                                         pressure=p,
+                                        At=At,
                                         temperature=T,
                                         density=rho,
                                         heat_capacity=cp,
