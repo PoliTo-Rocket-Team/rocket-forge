@@ -87,7 +87,17 @@ class PerformanceSimOutput:
             ["Specific Impulse",           f"{self.Isp['SL'].value:.2f}", f"{self.Isp['opt'].value:.2f}", f"{self.Isp['vac'].value:.2f}", self.Isp['SL'].uom],
             ["Thrust Coefficient",         f"{self.CF['SL'].value:.5f}",  f"{self.CF['opt'].value:.5f}", f"{self.CF['vac'].value:.5f}", self.CF['SL'].uom]
         ]
-        return tabulate(results, headers, numalign="right", tablefmt="plain")
+        output1 = tabulate(results, headers, numalign="right", tablefmt="plain")
+
+        table = [[self.eps.name,          self.eps.value,          ""],
+                 [self.exp_p_ratio.name,  self.exp_p_ratio.value,  ""],
+                 [self.pe.name,           self.pe.value,           self.pe.uom],
+                 [self.mr.name,           self.mr.value,           ""],
+                 [self.mr_s.name,         self.mr_s.value,         ""],
+                 [self.alpha.name,        self.alpha.value,        ""]
+        ]
+        output2 = tabulate(table, numalign="right", tablefmt="plain", floatfmt=".3f")
+        return output1 + 2*"\n" + output2
 
     def get_thermodynamics(self):
         i = len(self.pressure.value)
