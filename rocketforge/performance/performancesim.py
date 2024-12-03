@@ -212,6 +212,7 @@ class PerformanceSimInput:
             cstar = C.get_Cstar(Pc=pc, MR=mr)
             # Exit pressure
             pe = pc / C.get_PcOvPe(Pc=pc, MR=mr, eps=eps, frozen=fr, frozenAtThroat=fat)
+            pe_output = pe / pressure_uom("bar") # from Pa to bar
             # Vacuum specific impulse
             Isp_vac = C.get_Isp(Pc=pc, MR=mr, eps=eps, frozen=fr, frozenAtThroat=fat)
             # Vacuum specific impulse (equilibrium)
