@@ -9,7 +9,7 @@ from rocketforge.utils.conversions import pressure_uom, thrust_uom
 from rocketforge.utils.helpers import updatetextbox
 from rocketforge.performance.mixtureratio import optimizemr, optimizermr_at_pe
 from rocketforge.performance.theoreticalperf import theoretical
-from rocketforge.performance.performancesim import generate_sim_input
+from rocketforge.performance.performancesim import PerformanceSimOutput, generate_sim_input
 
 
 class InitialFrame(ctk.CTkFrame):
@@ -328,7 +328,7 @@ class InitialFrame(ctk.CTkFrame):
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
-    def expressrun(self):
+    def expressrun(self) -> PerformanceSimOutput:
         try:
             simulation_data = generate_sim_input(initial_frame=self)
             simulation_output = simulation_data.simulation_run()
@@ -336,14 +336,7 @@ class InitialFrame(ctk.CTkFrame):
         except Exception as err:
             output = str(err)
         updatetextbox(self.textbox, repr(simulation_data) + 2*"\n" + output, True)
-
-        # try:
-        #     config.thrust = float(self.thrustentry.get()) * thrust_uom(self.thrustuom.get())
-        #     pamb = float(self.thrustentry2.get()) * pressure_uom(self.thrustuom2.get())
-        #     config.c = C.estimate_Ambient_Isp(Pc=config.pc, MR=config.mr, eps=config.eps, Pamb=pamb)[0] * 9.80655
-        #     config.At = config.thrust * config.cstar / config.c / config.pc
-        # except Exception:
-        #     config.At = None
+        return simulation_output
 
     def get_mixture_ratio(self):
         return self.mrentry.get(), self.mruom.get()
