@@ -1,31 +1,43 @@
 # Global performance variables
+
+# Propellants
 ox = None
 fuel = None
+
+# Design parameters
 pc = None
-epsc = None
-mr_s = None
-mr = None
-alpha = None
 eps = None
+epsc = None
+mr = None
+mr_s = None
+alpha = None
 pe = None
-cstar = None
-gammae = None
-Me = None
 thrust = None
 pamb = None
+
+# Performance
+cstar = None
 c = None
-At = None
-Le = None
-theta_e = None
-Tc = None
-Te = None
-we = None
 Isp_vac = None
 Isp_vac_fr = None
 Isp_vac_eq = None
+
+# Geometry
+At = None
+Le = None
+theta_e = None
+
+# Correction Factors
 z_r = None
 z_f = None
 z_d = None
 z_n = None
 z_overall = None
+
+# Thermodynamic properties
 td_props = None
+gammae = None
+Me = None
+Tc = None
+Te = None
+we = None
