@@ -12,6 +12,7 @@ class Quantity():
 
 class PerformanceSimOutput:
     def __init__(self,
+                 input_data = None,
                  cstar=None,                 cstar_uom="m/s",
                  eps=None,
                  exp_p_ratio=None,
@@ -43,6 +44,7 @@ class PerformanceSimOutput:
                  sonic_velocity=None,        sonic_velocity_uom="m/s",
                  enthalpy=None,              enthalpy_uom="kJ/kg"
                  ):
+        self.input_data = input_data
         self.cstar = Quantity(name="Characteristic Velocity", value=cstar, uom=cstar_uom)
         self.eps = Quantity(name="Expansion Area Ratio", value=eps)
         self.exp_p_ratio = Quantity(name="Expansion Pressure Ratio", value=exp_p_ratio)
@@ -275,7 +277,8 @@ class PerformanceSimInput:
                 a.append(C.get_SonicVelocities(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[2])
                 H.append(C.get_Enthalpies(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[2])
 
-            return PerformanceSimOutput(cstar=cstar,
+            return PerformanceSimOutput(input_data = self,
+                                        cstar=cstar,
                                         eps=eps,
                                         exp_p_ratio=pc/pe,
                                         pe=pe_output,
