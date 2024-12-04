@@ -17,15 +17,15 @@ lambda_w = None
 t_w = None
 
 ## Channels geometry
-a1 = None
-a2 = None
-a3 = None
-b1 = None
-b2 = None
-b3 = None
-d1 = None
-d2 = None
-d3 = None
+a1 = 1.0e-3
+a2 = 1.0e-3
+a3 = 1.0e-3
+b1 = 1.0e-3
+b2 = 1.0e-3
+b3 = 1.0e-3
+d1 = 1.0e-3
+d2 = 1.0e-3
+d3 = 1.0e-3
 NC = None
 
 ## Chamber geometry
@@ -58,11 +58,11 @@ T_c = None
 M_e = None
 
 ## Advanced options
-pcoOvpc = None
-n_stations = None
-max_iter = None
-tuning_factor = None
-stability = None
+pcoOvpc = 1.2
+n_stations = 200
+max_iter = 200
+tuning_factor = 1.0
+stability = 0.5
 
 # Radiation cooling parameters
 eps_w = None
