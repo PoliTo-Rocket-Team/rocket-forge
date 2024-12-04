@@ -25,20 +25,44 @@ class ThermalFrame(ctk.CTkFrame):
         ).place(anchor="w", relx=0.02, rely=0.18)
 
         CTkLabel(self, text="Coolant").place(anchor="w", relx=0.52, rely=0.18)
-        self.coolant = tk.StringVar(value="")
+        self.coolant = tk.StringVar(value="Methane")
         CTkOptionMenu(
             self,
-            values=[""],
+            values=[
+                "A50",
+                "CLF5",
+                "Ethane",
+                "Ethanol",
+                "F2",
+                "IRFNA",
+                "LOX",
+                "Methane",
+                "Methanol",
+                "MHF3",
+                "MMH",
+                "MON10",
+                "MON25",
+                "MON30",
+                "N2H4",
+                "N2O4",
+                "N2O",
+                "NH3",
+                "PH2",
+                "Propane",
+                "RP1",
+                "UDMH",
+                "Water",
+            ],
             variable=self.coolant, width=118
         ).place(anchor="e", relx=0.98, rely=0.18, x=0, y=0)
 
         CTkLabel(self, text="Coolant mass flow rate").place(anchor="w", relx=0.02, rely=0.25)
-        self.mdotcentry = CTkEntry(self, state="disabled", width=59)
+        self.mdotcentry = CTkEntry(self, width=59)
         self.mdotcentry.place(anchor="e", relx=229/600, rely=0.25)
-        self.mdotcuom = tk.StringVar(value="")
+        self.mdotcuom = tk.StringVar(value="kg/s")
         CTkOptionMenu(
             self,
-            values=[""],
+            values=["kg/s", "g/s", "lb/s"],
             variable=self.mdotcuom, width=59
         ).place(anchor="e", relx=0.48, rely=0.25, x=0, y=0)
 
@@ -46,42 +70,42 @@ class ThermalFrame(ctk.CTkFrame):
         CTkButton(self, text="Oxidizer mass flow rate", width=135).place(anchor="e", relx=0.95, rely=0.25)
 
         CTkLabel(self, text="Coolant inlet temperature").place(anchor="w", relx=0.02, rely=0.32)
-        self.tcientry = CTkEntry(self, state="disabled", width=59)
+        self.tcientry = CTkEntry(self, width=59)
         self.tcientry.place(anchor="e", relx=229/600, rely=0.32)
-        self.tciuom = tk.StringVar(value="")
+        self.tciuom = tk.StringVar(value="K")
         CTkOptionMenu(
             self,
-            values=[""],
+            values=["K", "C", "F", "R"],
             variable=self.tciuom, width=59
         ).place(anchor="e", relx=0.48, rely=0.32, x=0, y=0)
 
         CTkLabel(self, text="Coolant inlet pressure").place(anchor="w", relx=0.52, rely=0.32)
-        self.pcientry = CTkEntry(self, state="disabled", width=59)
+        self.pcientry = CTkEntry(self, width=59)
         self.pcientry.place(anchor="e", relx=529/600, rely=0.32)
-        self.pciuom = tk.StringVar(value="")
+        self.pciuom = tk.StringVar(value="bar")
         CTkOptionMenu(
             self,
-            values=[""],
+            values=["MPa", "bar", "Pa", "psia", "atm"],
             variable=self.pciuom, width=59
         ).place(anchor="e", relx=0.98, rely=0.32, x=0, y=0)
 
         CTkLabel(self, text="Inner wall thickness").place(anchor="w", relx=0.02, rely=0.39)
-        self.tentry = CTkEntry(self, state="disabled", width=59)
+        self.tentry = CTkEntry(self, width=59)
         self.tentry.place(anchor="e", relx=229/600, rely=0.39)
-        self.tuom = tk.StringVar(value="")
+        self.tuom = tk.StringVar(value="mm")
         CTkOptionMenu(
             self,
-            values=[""],
+            values=["m", "cm", "mm", "in", "ft"],
             variable=self.tuom, width=59
         ).place(anchor="e", relx=0.48, rely=0.39, x=0, y=0)
 
         CTkLabel(self, text="Wall conductivity").place(anchor="w", relx=0.52, rely=0.39)
-        self.kentry = CTkEntry(self, state="disabled", width=59)
+        self.kentry = CTkEntry(self, width=59)
         self.kentry.place(anchor="e", relx=529/600, rely=0.39)
-        self.kuom = tk.StringVar(value="")
+        self.kuom = tk.StringVar(value="W/mK")
         CTkOptionMenu(
             self,
-            values=[""],
+            values=[],
             variable=self.kuom, width=59
         ).place(anchor="e", relx=0.98, rely=0.39, x=0, y=0)
 
@@ -101,7 +125,7 @@ class ThermalFrame(ctk.CTkFrame):
         ).place(anchor="w", relx=0.02, rely=0.60)
 
         CTkLabel(self, text="Wall emissivity").place(anchor="w", relx=0.52, rely=0.60)
-        self.radepsentry = CTkEntry(self, state="disabled", width=118)
+        self.radepsentry = CTkEntry(self, width=118)
         self.radepsentry.place(anchor="e", relx=0.98, rely=0.60)
 
         self.filmframe = CTkFrame(self, border_width=0, height=28, width=590)
@@ -118,12 +142,12 @@ class ThermalFrame(ctk.CTkFrame):
 
         CTkLabel(self, text="Fuel film cooling percentage").place(anchor="w", relx=0.02, rely=0.81)
         CTkLabel(self, text="%").place(anchor="e", relx=0.48, rely=0.81)
-        self.fuelfilm = CTkEntry(self, state="disabled", width=80)
+        self.fuelfilm = CTkEntry(self, width=80)
         self.fuelfilm.place(anchor="e", relx=0.46, rely=0.81)
 
         CTkLabel(self, text="Oxidizer film cooling percentage").place(anchor="w", relx=0.52, rely=0.81)
         CTkLabel(self, text="%").place(anchor="e", relx=0.98, rely=0.81)
-        self.oxfilm = CTkEntry(self, state="disabled", width=80)
+        self.oxfilm = CTkEntry(self, width=80)
         self.oxfilm.place(anchor="e", relx=0.96, rely=0.81)
 
         CTkButton(self, text="Plot temperatures", width=135).place(anchor="center", relx=0.125, rely=0.92)
@@ -138,16 +162,12 @@ class ThermalFrame(ctk.CTkFrame):
 
     def toggle_regen_cooling(self):
         config.regen = self.regenvar.get()
-        ...
 
     def toggle_rad_cooling(self):
         config.rad = self.radvar.get()
-        self.radepsentry.configure(state="normal" if config.rad else "disabled")
 
     def toggle_film_cooling(self):
         config.film = self.filmvar.get()
-        self.oxfilm.configure(state="normal" if config.film else "disabled")
-        self.fuelfilm.configure(state="normal" if config.film else "disabled")
 
     def load_regen_cooling(self):
         config.coolant = self.coolant.get()
