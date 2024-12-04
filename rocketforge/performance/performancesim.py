@@ -244,11 +244,10 @@ class PerformanceSimInput:
             ac, at, ae = C.get_SonicVelocities(Pc=pc, MR=mr, eps=eps, frozen=fr, frozenAtThroat=fat)
             # Enthalpy
             Hc, Ht, He = C.get_Enthalpies(Pc=pc, MR=mr, eps=eps, frozen=fr, frozenAtThroat=fat)
-
+            # Thrust
             thrust = self.nominal_thrust.value * thrust_uom(self.nominal_thrust.uom)
-
-            At = thrust * cstar / c_sl / pc
-
+            # Throat area
+            At = (thrust * cstar) / (c_sl * pc)
             # Thermodynamic properties initialization
             p = [pc / 100000]
             T = [Tc]
