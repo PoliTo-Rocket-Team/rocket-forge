@@ -167,7 +167,7 @@ class RocketForge(CTk):
         self.deiconify()
 
     def run(self):
-        self.statuslabel.configure(text="Status: running...")
+        self.statuslabel.configure(text="Status: starting...")
         self.statuslabel.update()
 
         if tconf.film:
@@ -179,7 +179,13 @@ class RocketForge(CTk):
                 tconf.film = False
 
         try:
+            self.statuslabel.configure(text="Status: running...")
+            self.statuslabel.update()
             self.initialframe.expressrun()
+        except Exception:
+            pass
+
+        try:
             self.statuslabel.configure(text="Status: computing geometry...")
             self.statuslabel.update()
             self.geometryframe.optimizeTn()
