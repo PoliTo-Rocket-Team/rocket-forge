@@ -22,6 +22,14 @@ def mass_uom(uom: str) -> float:
     return uoms[uom]
 
 
+def temperature_uom(value: float, uom : str) -> float:
+    """
+    Converts temperature unit of measure to Kelvins
+    """
+    uoms = {"K": (0.0, 1.0), "C": (273.15, 1.0), "F": (255.3722, 1.0/1.8), "R": (0.0, 1.0/1.8)}
+    return uoms[uom][0] + value * uoms[uom[1]]
+
+
 def mdot_uom(uom: str) -> float:
     """
     Converts mass flow rate unit of measure to kg/s
