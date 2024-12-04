@@ -2,6 +2,7 @@ import tkinter as tk
 import customtkinter as ctk
 from customtkinter import CTkEntry, CTkButton, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMenu
 import rocketforge.thermal.config as config
+from rocketforge.utils.conversions import mdot_uom, temperature_uom, pressure_uom, length_uom
 
 
 class ThermalFrame(ctk.CTkFrame):
