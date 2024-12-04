@@ -612,9 +612,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.cthetaentry.place_forget()
         self.cthetaoptmenu.place_forget()
 
-    def loadgeometry(self):
-        self.eps = config.eps
-        self.epsc = config.epsc
-        At, Le, thetae = self.plot()
-        geometry = [At, Le, thetae]
-        return geometry
+    def loadgeometry(self, eps, epsc):
+        self.eps = eps
+        self.epsc = epsc
+        return list(self.plot())

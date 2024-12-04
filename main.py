@@ -172,6 +172,7 @@ class RocketForge(CTk):
         self.statuslabel.update()
         try:
             simulation_output = self.initialframe.expressrun()
+            simulation_input = simulation_output.input_data
             self.statuslabel.configure(text="Status: computing geometry...")
             self.statuslabel.update()
             # Comupute inital parabola angle if not given by user
@@ -187,7 +188,7 @@ class RocketForge(CTk):
                 else:
                     updateentry(self.geometryframe.throatareaentry, At / area_uom("cm2"))
                     self.geometryframe.throatareauom.set("cm2")
-            geometry = self.geometryframe.loadgeometry()
+            geometry = self.geometryframe.loadgeometry(eps=simulation_output.eps.value, epsc=simulation_input.inlet_condition.value) #TODO loadgeometry could be removed leaving only plot
         except Exception:
             geometry = (0, 0, 0)
 
