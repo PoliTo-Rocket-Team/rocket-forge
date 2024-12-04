@@ -170,13 +170,32 @@ class RocketForge(CTk):
         self.statuslabel.configure(text="Status: starting...")
         self.statuslabel.update()
 
+        if tconf.regen:
+            try:
+                self.statuslabel.configure(text="Status: loading regenerative cooling...")
+                self.statuslabel.update()
+                self.thermalframe.load_regen_cooling()
+            except Exception:
+                self.thermalframe.regenvar.set(False)
+                self.thermalframe.toggle_regen_cooling()
+        
+        if tconf.rad:
+            try:
+                self.statuslabel.configure(text="Status: loading radiation cooling...")
+                self.statuslabel.update()
+                self.thermalframe.load_rad_cooling()
+            except Exception:
+                self.thermalframe.radvar.set(False)
+                self.thermalframe.toggle_rad_cooling()
+
         if tconf.film:
             try:
                 self.statuslabel.configure(text="Status: loading film cooling...")
                 self.statuslabel.update()
                 self.thermalframe.load_film_cooling()
             except Exception:
-                tconf.film = False
+                self.thermalframe.filmvar.set(False)
+                self.thermalframe.toggle_film_cooling()
 
         try:
             self.statuslabel.configure(text="Status: running...")

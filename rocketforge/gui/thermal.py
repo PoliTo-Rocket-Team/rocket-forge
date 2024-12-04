@@ -16,9 +16,11 @@ class ThermalFrame(ctk.CTkFrame):
         CTkLabel(self.regenframe, text="Regenerative cooling").place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
         self.regenframe.place(anchor="center", relx=0.5, rely=0.11, x=0, y=0)
         
+        self.regenvar = ctk.BooleanVar(value=False)
         CTkCheckBox(
             self,
             text="Enable regenerative cooling",
+            variable=self.regenvar,
             command=self.toggle_regen_cooling
         ).place(anchor="w", relx=0.02, rely=0.18)
 
@@ -90,9 +92,11 @@ class ThermalFrame(ctk.CTkFrame):
         CTkLabel(self.filmframe, text="Radiation cooling").place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
         self.filmframe.place(anchor="center", relx=0.5, rely=0.53, x=0, y=0)
 
+        self.radvar = ctk.BooleanVar(value=False)
         CTkCheckBox(
             self,
             text="Enable radiation cooling (work in progress)",
+            variable=self.radvar,
             command=self.toggle_rad_cooling
         ).place(anchor="w", relx=0.02, rely=0.60)
 
@@ -104,9 +108,11 @@ class ThermalFrame(ctk.CTkFrame):
         CTkLabel(self.filmframe, text="Film cooling").place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
         self.filmframe.place(anchor="center", relx=0.5, rely=0.67, x=0, y=0)
 
+        self.filmvar = ctk.BooleanVar(value=False)
         CTkCheckBox(
             self,
             text="Enable film cooling along injector head (thermal model still in development)",
+            variable=self.filmvar,
             command=self.toggle_film_cooling
         ).place(anchor="w", relx=0.02, rely=0.74)
 
@@ -127,16 +133,30 @@ class ThermalFrame(ctk.CTkFrame):
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
-    def toggle_film_cooling(self):
-        config.film = not config.film
-        self.oxfilm.configure(state="normal" if config.film else "disabled")
-        self.fuelfilm.configure(state="normal" if config.film else "disabled")
-
     def toggle_regen_cooling(self):
+        config.regen = self.regenvar.get()
         ...
 
     def toggle_rad_cooling(self):
+        config.rad = self.radvar.get()
+        self.radepsentry.configure(state="normal" if config.rad else "disabled")
+
+    def toggle_film_cooling(self):
+        config.film = self.filmvar.get()
+        self.oxfilm.configure(state="normal" if config.film else "disabled")
+        self.fuelfilm.configure(state="normal" if config.film else "disabled")
+
+    def load_regen_cooling(self):
+        config.coolant = self.coolant.get()
+        config.m_dot_c = float(self.mdotcentry.get()) * mdot_uom(self.mdotcuom.get())
+        config.T_ci = temperature_uom(float(self.tcientry.get()), self.tciuom.get())
+        config.p_ci = float(self.pcientry.get()) * pressure_uom(self.pciuom.get())
+        config.t_w = float(self.tentry.get()) * length_uom(self.tuom.get())
+        config.lambda_w = float(self.kentry.get())
         ...
+    
+    def load_rad_cooling(self):
+        config.eps_w = float(self.radepsentry.get())
 
     def load_film_cooling(self):
         config.oxfilm = 0.0 if self.oxfilm.get() == "" else float(self.oxfilm.get())
