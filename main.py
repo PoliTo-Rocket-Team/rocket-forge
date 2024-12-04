@@ -240,6 +240,18 @@ class RocketForge(CTk):
         except Exception:
             pass
 
+        try:
+            self.statuslabel.configure(text="Status: performing thermal analysis...")
+            self.statuslabel.update()
+            self.thermalframe.run()
+        except Exception:
+            self.thermalframe.regenvar.set(False)
+            self.thermalframe.toggle_regen_cooling()
+            self.thermalframe.radvar.set(False)
+            self.thermalframe.toggle_rad_cooling()
+            self.thermalframe.filmvar.set(False)
+            self.thermalframe.toggle_film_cooling()
+
         try: 
             self.statuslabel.configure(text="Status: loading tanks...")
             self.statuslabel.update()

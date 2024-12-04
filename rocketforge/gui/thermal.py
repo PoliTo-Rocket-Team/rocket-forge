@@ -133,6 +133,9 @@ class ThermalFrame(ctk.CTkFrame):
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
+    def run(self):
+        ...
+
     def toggle_regen_cooling(self):
         config.regen = self.regenvar.get()
         ...
