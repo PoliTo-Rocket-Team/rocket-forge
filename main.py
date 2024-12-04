@@ -10,6 +10,7 @@ from rocketforge.gui.tanks          import TanksFrame
 from rocketforge.gui.mission        import MissionFrame
 from rocketforge.utils.resources    import resource_path
 from rocketforge.utils.helpers      import updateentry, updatetextbox
+from rocketforge.utils.conversions  import area_uom
 from customtkinter                  import CTk, CTkButton, CTkFont, CTkFrame, CTkLabel, CTkImage
 from tkinter                        import filedialog, messagebox
 from configparser                   import ConfigParser
@@ -173,16 +174,18 @@ class RocketForge(CTk):
             simulation_output = self.initialframe.expressrun()
             self.statuslabel.configure(text="Status: computing geometry...")
             self.statuslabel.update()
+            # Comupute inital parabola angle if not given by user
             if self.geometryframe.thetanentry.get() == "":
                 gammae = simulation_output.gamma.value[-1]
                 Me = simulation_output.mach.value[-1]
                 self.geometryframe.optimizeTn(gamma=gammae, Me=Me)
-            if conf.At != None:
-                if conf.At > 0.01:
-                    updateentry(self.geometryframe.throatareaentry, conf.At)
+            At = simulation_output.At.value
+            if At != None:
+                if At > 0.01:
+                    updateentry(self.geometryframe.throatareaentry, At)
                     self.geometryframe.throatareauom.set("m2")
                 else:
-                    updateentry(self.geometryframe.throatareaentry, conf.At * 10000)
+                    updateentry(self.geometryframe.throatareaentry, At / area_uom("cm2"))
                     self.geometryframe.throatareauom.set("cm2")
             geometry = self.geometryframe.loadgeometry()
         except Exception:
