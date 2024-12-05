@@ -295,29 +295,34 @@ class ThermalFrame(ctk.CTkFrame):
             CTkLabel(self.advancedwindow, text="pInjectors/pChamber").place(anchor="w", relx=0.05, rely=1/12)
             self.pcoOvpcentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
             self.pcoOvpcentry.place(anchor="e", relx=0.95, rely=1/12)
+            updateentry(self.pcoOvpcentry, config.pcoOvpc)
 
             CTkLabel(self.advancedwindow, text="Number of stations").place(anchor="w", relx=0.05, rely=3/12)
             self.nsentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
             self.nsentry.place(anchor="e", relx=0.95, rely=3/12)
+            updateentry(self.nsentry, config.n_stations)
 
             CTkLabel(self.advancedwindow, text="Maximum iterations").place(anchor="w", relx=0.05, rely=5/12)
             self.maxiterentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
             self.maxiterentry.place(anchor="e", relx=0.95, rely=5/12)
+            updateentry(self.maxiterentry, config.max_iter)
 
             CTkLabel(self.advancedwindow, text="Tuning coefficient").place(anchor="w", relx=0.05, rely=7/12)
             self.tuningentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
             self.tuningentry.place(anchor="e", relx=0.95, rely=7/12)
+            updateentry(self.tuningentry, config.tuning_factor)
 
             CTkLabel(self.advancedwindow, text="Stability coefficient").place(anchor="w", relx=0.05, rely=9/12)
             self.stabentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
             self.stabentry.place(anchor="e", relx=0.95, rely=9/12)
+            updateentry(self.stabentry, config.stability)
 
             CTkButton(
-                self.advancedwindow, text="Reset", width=90
+                self.advancedwindow, text="Reset", command=self.reset_advanced, width=90
             ).place(anchor="center", relx=0.3, rely=11/12)
 
             CTkButton(
-                self.advancedwindow, text="Set", width=90
+                self.advancedwindow, text="Set", command=self.set_advanced, width=90
             ).place(anchor="center", relx=0.7, rely=11/12)
 
             self.advancedwindow.after(50, self.advancedwindow.lift)
@@ -326,6 +331,22 @@ class ThermalFrame(ctk.CTkFrame):
         else:
             self.advancedwindow.lift()
             self.advancedwindow.focus()
+
+    def set_advanced(self):
+        config.pcoOvpc = float(self.pcoOvpcentry.get())
+        config.n_stations = float(self.nsentry.get())
+        config.max_iter = float(self.maxiterentry.get())
+        config.tuning_factor = float(self.tuningentry.get())
+        config.stability = float(self.stabentry.get())
+        self.advancedwindow.destroy()
+    
+    def reset_advanced(self):
+        config.pcoOvpc = 1.2
+        config.n_stations = 200
+        config.max_iter = 200
+        config.tuning_factor = 1.0
+        config.stability = 0.5
+        self.advancedwindow.destroy()
 
     def toggle_regen_cooling(self):
         config.regen = self.regenvar.get()
