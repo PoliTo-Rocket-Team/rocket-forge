@@ -221,16 +221,16 @@ class InitialFrame(ctk.CTkFrame):
         if os.name == "nt":
             self.textbox = ctk.CTkTextbox(
                 self,
-                height=90,
+                height=102,
                 state="disabled",
                 wrap="none",
                 font=("Courier New", 12),
             )
         else:
             self.textbox = ctk.CTkTextbox(
-                self, height=90, state="disabled", wrap="none", font=("Mono", 12)
+                self, height=102, state="disabled", wrap="none", font=("Mono", 12)
             )
-        self.textbox.place(relwidth=0.98, relx=0.01, rely=0.79, anchor="nw")
+        self.textbox.place(relwidth=0.98, relx=0.5, rely=0.99, anchor="s")
 
         self.optimizationlabel = CTkLabel(self)
         self.optimizationlabel.configure(text="Mixture ratio optimization")
