@@ -82,7 +82,7 @@ class PerformanceFrame(ctk.CTkFrame):
 
         x = theoretical(iter, frozen, frozenatthroat)
 
-        updatetextbox(self.thermodynamicframe.textbox, x[-1], True)
+        updatetextbox(self.thermodynamicframe.textbox, x, True)
 
         correction_factors()
 
