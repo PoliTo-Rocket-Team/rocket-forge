@@ -22,6 +22,14 @@ Isp_vac = None
 Isp_vac_fr = None
 Isp_vac_eq = None
 
+# Delivered Performance
+cstar_d = None
+CF_d = None
+thrust_d = None
+m_f_d = None
+m_ox_d = None
+k_film = None
+
 # Geometry
 At = None
 Le = None
