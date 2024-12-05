@@ -19,6 +19,7 @@ def delivered():
         k_film = (1 + (tconf.fuelfilm + config.mr*tconf.oxfilm)/100/(1 + config.mr))
     else:
         k_film = 1.0
+    config.k_film = k_film
 
     # Sea level pressure
     pSL = 101325
@@ -28,6 +29,7 @@ def delivered():
 
     # Characteristic velocity
     cstar_d = z_c * cstar
+    config.cstar_d = cstar_d
 
     # Mass flow
     m_d = pc * At / cstar_d
@@ -37,6 +39,8 @@ def delivered():
     if tconf.film:
         m_f_d = m_f_d * (1 + tconf.fuelfilm/100)
         m_ox_d = m_ox_d * (1 + tconf.oxfilm/100)
+    config.m_f_d = m_f_d
+    config.m_ox_d = m_ox_d
 
     # Specific impulse
     Fe = Ae / m_d
@@ -53,6 +57,10 @@ def delivered():
     T_vac_d = CF_vac_d * At * pc / k_film
     T_opt_d = CF_opt_d * At * pc / k_film
     T_SL_d = CF_SL_d * At * pc / k_film
+
+    # Target Thrust
+    config.CF_d = (Is_vac_d * 9.80655 - Fe * config.pamb) / cstar_d
+    config.thrust_d = config.CF_d * At * pc / k_film
 
     # Output formatting
     headers = ["Parameter", "SL", "Opt", "Vac", "Unit"]
