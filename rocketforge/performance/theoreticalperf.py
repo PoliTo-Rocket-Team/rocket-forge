@@ -1,4 +1,5 @@
 import rocketforge.performance.config as config
+import rocketforge.thermal.config as tconf
 from tabulate import tabulate
 from rocketcea.cea_obj_w_units import CEA_Obj
 
@@ -110,5 +111,19 @@ def theoretical(i=2, fr=0, fat=0):
     config.td_props = results
     config.gammae = results[7][-2]
     config.Me = results[8][-2]
+
+    # Thermal global variables
+    tconf.gamma = results[7][2]
+    tconf.gamma_e = results[7][-2]
+    tconf.M_e = results[8][-2]
+
+    # Frozen chamber transport properties
+    cp0, mu0, l0, Pr0 = C.get_Chamber_Transport(Pc=pc, MR=mr, eps=eps, frozen=1)
+    tconf.cp_0 = cp0
+    tconf.mu_0 = mu0 / 1.0e4
+    tconf.Pr_0 = Pr0
+    tconf.Pr_t = C.get_Exit_Transport(Pc=pc, MR=mr, eps=1.0, frozen=1)[3]
+    tconf.Pr_e = C.get_Exit_Transport(Pc=pc, MR=mr, eps=eps, frozen=1)[3]
+    tconf.T_c = C.get_Temperatures(Pc=pc, MR=mr, eps=eps, frozen=1)[0]
 
     return output
