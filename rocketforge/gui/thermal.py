@@ -364,8 +364,8 @@ class ThermalFrame(ctk.CTkFrame):
     def set_advanced(self):
         try:
             config.pcoOvpc = float(self.pcoOvpcentry.get())
-            config.n_stations = float(self.nsentry.get())
-            config.max_iter = float(self.maxiterentry.get())
+            config.n_stations = int(float(self.nsentry.get()))
+            config.max_iter = int(float(self.maxiterentry.get()))
             config.tuning_factor = float(self.tuningentry.get())
             config.stability = float(self.stabentry.get())
             self.advancedwindow.destroy()
