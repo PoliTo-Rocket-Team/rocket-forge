@@ -21,6 +21,7 @@ class ThermalFrame(ctk.CTkFrame):
         self.regenframe = CTkFrame(self, border_width=0, height=28, width=590)
         CTkLabel(self.regenframe, text="Regenerative cooling").place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
         self.regenframe.place(anchor="center", relx=0.5, rely=0.11, x=0, y=0)
+        self.regen = None
         
         self.regenvar = ctk.BooleanVar(value=False)
         CTkCheckBox(
