@@ -2,8 +2,9 @@ import tkinter as tk
 import customtkinter as ctk
 from customtkinter import CTkEntry, CTkButton, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMenu
 import rocketforge.thermal.config as config
+import rocketforge.thermal.regenerative as regen
 from rocketforge.utils.conversions import mdot_uom, temperature_uom, pressure_uom, length_uom
-
+from rocketforge.utils.resources import resource_path
 
 class ThermalFrame(ctk.CTkFrame):
     def __init__(self, master=None, **kw):
@@ -109,8 +110,14 @@ class ThermalFrame(ctk.CTkFrame):
             variable=self.kuom, width=59
         ).place(anchor="e", relx=0.98, rely=0.39, x=0, y=0)
 
-        CTkButton(self, text="Channels geometry...", width=135).place(anchor="center", relx=0.25, rely=0.46)
-        CTkButton(self, text="Advanced options...", width=135).place(anchor="center", relx=0.75, rely=0.46)
+        CTkButton(
+            self, text="Channels geometry...", command=self.channels_window, width=135
+        ).place(anchor="center", relx=0.25, rely=0.46)
+        self.channelswindow = None
+        CTkButton(
+            self, text="Advanced settings...", command=self.advanced_window, width=135
+        ).place(anchor="center", relx=0.75, rely=0.46)
+        self.advancedwindow = None
 
         self.filmframe = CTkFrame(self, border_width=0, height=28, width=590)
         CTkLabel(self.filmframe, text="Radiation cooling").place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
@@ -150,15 +157,163 @@ class ThermalFrame(ctk.CTkFrame):
         self.oxfilm = CTkEntry(self, width=80)
         self.oxfilm.place(anchor="e", relx=0.96, rely=0.81)
 
-        CTkButton(self, text="Plot temperatures", width=135).place(anchor="center", relx=0.125, rely=0.92)
-        CTkButton(self, text="Plot wall heat flux", width=135).place(anchor="center", relx=0.375, rely=0.92)
-        CTkButton(self, text="Plot channels geometry", width=135).place(anchor="center", relx=0.625, rely=0.92)
-        CTkButton(self, text="Details", width=135).place(anchor="center", relx=0.875, rely=0.92)
+        CTkButton(
+            self, text="Plot temperatures", command=self.plot_T, width=135
+        ).place(anchor="center", relx=0.125, rely=0.92)
+        CTkButton(
+            self, text="Plot wall heat flux", command=self.plot_q, width=135
+        ).place(anchor="center", relx=0.375, rely=0.92)
+        CTkButton(
+            self, text="Plot channels geometry", command=self.plot_g, width=135
+        ).place(anchor="center", relx=0.625, rely=0.92)
+        CTkButton(
+            self, text="Details", command=self.details, width=135
+        ).place(anchor="center", relx=0.875, rely=0.92)
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
     def run(self):
+        if config.regen:
+            regen.main()
+
+    def plot_T(self):
         ...
+
+    def plot_q(self):
+        ...
+
+    def plot_g(self):
+        ...
+
+    def details(self):
+        ...
+
+    def channels_window(self):
+        if self.channelswindow is None or not self.channelswindow.winfo_exists():
+            self.channelswindow = ctk.CTkToplevel()
+            self.channelswindow.title("Channels geometry")
+            self.channelswindow.configure(width=420, height=220)
+            self.channelswindow.resizable(False, False)
+            self.channelswindow.after(
+                201,
+                lambda: self.channelswindow.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                ),
+            )
+
+            CTkLabel(self.channelswindow, text="Chamber").place(anchor="center", relx=0.42, rely=0.8/11)
+            CTkLabel(self.channelswindow, text="Throat").place(anchor="center", relx=0.57, rely=0.8/11)
+            CTkLabel(self.channelswindow, text="Exit").place(anchor="center", relx=0.72, rely=0.8/11)
+
+            CTkLabel(self.channelswindow, text="Channels width").place(anchor="w", relx=0.05, rely=2/11)
+            self.a1 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.a1.place(anchor="w", relx=0.35, rely=2/11)
+            self.a2 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.a2.place(anchor="w", relx=0.5, rely=2/11)
+            self.a3 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.a3.place(anchor="w", relx=0.65, rely=2/11)
+            self.auom = tk.StringVar(value="mm")
+            CTkOptionMenu(
+                self.channelswindow,
+                values=["m", "cm", "mm", "in", "ft"],
+                variable=self.auom, width=59
+            ).place(anchor="e", relx=0.95, rely=2/11)
+
+            CTkLabel(self.channelswindow, text="Channels height").place(anchor="w", relx=0.05, rely=4/11)
+            self.b1 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.b1.place(anchor="w", relx=0.35, rely=4/11)
+            self.b2 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.b2.place(anchor="w", relx=0.5, rely=4/11)
+            self.b3 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.b3.place(anchor="w", relx=0.65, rely=4/11)
+            self.buom = tk.StringVar(value="mm")
+            CTkOptionMenu(
+                self.channelswindow,
+                values=["m", "cm", "mm", "in", "ft"],
+                variable=self.buom, width=59
+            ).place(anchor="e", relx=0.95, rely=4/11)
+
+            self.channelsmode = ctk.IntVar(value=1)
+            ctk.CTkRadioButton(
+                self.channelswindow, text="Rib width", variable=self.channelsmode, value=0,
+            ).place(anchor="w", relx=0.05, rely=6/11)
+            self.d1 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.d1.place(anchor="w", relx=0.35, rely=6/11)
+            self.d2 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.d2.place(anchor="w", relx=0.5, rely=6/11)
+            self.d3 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.d3.place(anchor="w", relx=0.65, rely=6/11)
+            self.duom = tk.StringVar(value="mm")
+            CTkOptionMenu(
+                self.channelswindow,
+                values=["m", "cm", "mm", "in", "ft"],
+                variable=self.duom, width=59
+            ).place(anchor="e", relx=0.95, rely=6/11)
+
+            ctk.CTkRadioButton(
+                self.channelswindow, text="Number of channels", variable=self.channelsmode, value=1,
+            ).place(anchor="w", relx=0.05, rely=8/11)
+            self.ncentry = CTkEntry(self.channelswindow, placeholder_text="0", width=118)
+            self.ncentry.place(anchor="w", relx=0.5, rely=8/11)
+
+            CTkButton(
+                self.channelswindow, text="Set", width=90
+            ).place(anchor="center", relx=0.5, rely=10/11)
+
+            self.channelswindow.after(50, self.channelswindow.lift)
+            self.channelswindow.after(50, self.channelswindow.focus)
+
+        else:
+            self.channelswindow.lift()
+            self.channelswindow.focus()
+
+    def advanced_window(self):
+        if self.advancedwindow is None or not self.advancedwindow.winfo_exists():
+            self.advancedwindow = ctk.CTkToplevel()
+            self.advancedwindow.title("Advanced settings")
+            self.advancedwindow.configure(width=300, height=250)
+            self.advancedwindow.resizable(False, False)
+            self.advancedwindow.after(
+                201,
+                lambda: self.advancedwindow.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                ),
+            )
+
+            CTkLabel(self.advancedwindow, text="pInjectors/pChamber").place(anchor="w", relx=0.05, rely=1/12)
+            self.pcoOvpcentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
+            self.pcoOvpcentry.place(anchor="e", relx=0.95, rely=1/12)
+
+            CTkLabel(self.advancedwindow, text="Number of stations").place(anchor="w", relx=0.05, rely=3/12)
+            self.nsentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
+            self.nsentry.place(anchor="e", relx=0.95, rely=3/12)
+
+            CTkLabel(self.advancedwindow, text="Maximum iterations").place(anchor="w", relx=0.05, rely=5/12)
+            self.maxiterentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
+            self.maxiterentry.place(anchor="e", relx=0.95, rely=5/12)
+
+            CTkLabel(self.advancedwindow, text="Tuning coefficient").place(anchor="w", relx=0.05, rely=7/12)
+            self.tuningentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
+            self.tuningentry.place(anchor="e", relx=0.95, rely=7/12)
+
+            CTkLabel(self.advancedwindow, text="Stability coefficient").place(anchor="w", relx=0.05, rely=9/12)
+            self.stabentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
+            self.stabentry.place(anchor="e", relx=0.95, rely=9/12)
+
+            CTkButton(
+                self.advancedwindow, text="Reset", width=90
+            ).place(anchor="center", relx=0.3, rely=11/12)
+
+            CTkButton(
+                self.advancedwindow, text="Set", width=90
+            ).place(anchor="center", relx=0.7, rely=11/12)
+
+            self.advancedwindow.after(50, self.advancedwindow.lift)
+            self.advancedwindow.after(50, self.advancedwindow.focus)
+
+        else:
+            self.advancedwindow.lift()
+            self.advancedwindow.focus()
 
     def toggle_regen_cooling(self):
         config.regen = self.regenvar.get()
@@ -176,7 +331,6 @@ class ThermalFrame(ctk.CTkFrame):
         config.p_ci = float(self.pcientry.get()) * pressure_uom(self.pciuom.get())
         config.t_w = float(self.tentry.get()) * length_uom(self.tuom.get())
         config.lambda_w = float(self.kentry.get())
-        ...
     
     def load_rad_cooling(self):
         config.eps_w = float(self.radepsentry.get())
