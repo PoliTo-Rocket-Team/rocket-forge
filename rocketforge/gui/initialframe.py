@@ -328,7 +328,7 @@ class InitialFrame(ctk.CTkFrame):
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
-    def expressrun(self):
+    def run(self):
         try: 
             config.ox = self.oxoptmenu.get()
             config.fuel = self.fueloptmenu.get()
@@ -396,9 +396,10 @@ class InitialFrame(ctk.CTkFrame):
                 ["Mixture Ratio (stoichiometric)", config.mr_s, ""],
                 ["Alpha (oxidizer excess coefficient)", config.alpha, ""],
             ]
-            output2 = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".3f")
-            output1 = theoretical()[0]
-            output = output1 + 2 * "\n" + output2
+            output = tabulate(results, numalign="right", tablefmt="plain", floatfmt=".3f")
+
+            theoretical()
+            
         except Exception as err:
             output = str(err)
 

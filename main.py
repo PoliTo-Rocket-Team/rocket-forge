@@ -200,7 +200,7 @@ class RocketForge(CTk):
         try:
             self.statuslabel.configure(text="Status: running...")
             self.statuslabel.update()
-            self.initialframe.expressrun()
+            self.initialframe.run()
         except Exception:
             pass
 
