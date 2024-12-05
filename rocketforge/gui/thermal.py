@@ -3,14 +3,17 @@ import customtkinter as ctk
 from customtkinter import CTkEntry, CTkButton, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMenu
 import rocketforge.thermal.config as config
 import rocketforge.performance.config as pconf
-import rocketforge.thermal.regenerative as regen
+from rocketforge.thermal.regenerative import Regen
 from rocketforge.utils.conversions import mdot_uom, temperature_uom, pressure_uom, length_uom
 from rocketforge.utils.resources import resource_path
 from rocketforge.utils.helpers import updateentry
+import warnings
+
 
 class ThermalFrame(ctk.CTkFrame):
     def __init__(self, master=None, **kw):
         super(ThermalFrame, self).__init__(master, **kw)
+        warnings.filterwarnings("error")
         self.topframe = CTkFrame(self, border_width=0, height=28, width=590)
         CTkLabel(self.topframe, text="Thermal Analysis").place(anchor="center", relx=0.5, rely=0.5, x=0, y=0) 
         self.topframe.place(anchor="n", relx=0.5, rely=0.01, x=0, y=0)
@@ -180,19 +183,27 @@ class ThermalFrame(ctk.CTkFrame):
 
     def run(self):
         if config.regen:
-            regen.main()
+            try:
+                self.regen = Regen()
+                self.regen.run()
+            except RuntimeWarning:
+                raise Exception
 
     def plot_T(self):
-        ...
+        if self.regen != None:
+            self.regen.plot_T()
 
     def plot_q(self):
-        ...
+        if self.regen != None:
+            self.regen.plot_q()
 
     def plot_g(self):
-        ...
+        if self.regen != None:
+            self.regen.plot_g()
 
     def details(self):
-        ...
+        if self.regen != None:
+            self.regen.details()
 
     def load_mdot_ox(self):
         updateentry(self.mdotcentry, pconf.m_ox_d)
