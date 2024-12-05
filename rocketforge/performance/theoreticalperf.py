@@ -78,7 +78,7 @@ def theoretical(i=2, fr=0, fat=0):
     T = ["Temperature", Tc]
     rho = ["Density", rhoc]
     cp = ["Heat capacity", cpc]
-    mu = ["Viscosity", muc]
+    mu = ["Viscosity", muc / 1.0e4]
     l = ["Thermal conductivity", lc]
     Pr = ["Prandtl", Prc]
     gamma = ["Gamma", 0]
@@ -93,7 +93,7 @@ def theoretical(i=2, fr=0, fat=0):
         T.append(C.get_Temperatures(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[2])
         rho.append(C.get_Densities(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[2])
         cp.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[0])
-        mu.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[1])
+        mu.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[1] / 1.0e4)
         l.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[2])
         Pr.append(C.get_Exit_Transport(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[3])
         gamma.append(C.get_exit_MolWt_gamma(Pc=pc, MR=mr, eps=x, frozen=fr, frozenAtThroat=fat)[1])
@@ -106,7 +106,7 @@ def theoretical(i=2, fr=0, fat=0):
     T.append("K")
     rho.append("kg/m^3")
     cp.append("J/kg-K")
-    mu.append("millipoise")
+    mu.append("Pa-s")
     l.append("mcal/cm-K-s")
     Pr.append("")
     gamma.append("")
