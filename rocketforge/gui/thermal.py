@@ -2,9 +2,11 @@ import tkinter as tk
 import customtkinter as ctk
 from customtkinter import CTkEntry, CTkButton, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMenu
 import rocketforge.thermal.config as config
+import rocketforge.performance.config as pconf
 import rocketforge.thermal.regenerative as regen
 from rocketforge.utils.conversions import mdot_uom, temperature_uom, pressure_uom, length_uom
 from rocketforge.utils.resources import resource_path
+from rocketforge.utils.helpers import updateentry
 
 class ThermalFrame(ctk.CTkFrame):
     def __init__(self, master=None, **kw):
@@ -67,8 +69,12 @@ class ThermalFrame(ctk.CTkFrame):
             variable=self.mdotcuom, width=59
         ).place(anchor="e", relx=0.48, rely=0.25, x=0, y=0)
 
-        CTkButton(self, text="Fuel mass flow rate", width=135).place(anchor="w", relx=0.49, rely=0.25)
-        CTkButton(self, text="Oxidizer mass flow rate", width=135).place(anchor="e", relx=0.95, rely=0.25)
+        CTkButton(
+            self, text="Fuel mass flow rate", command=self.load_mdot_fuel, width=135
+        ).place(anchor="w", relx=0.49, rely=0.25)
+        CTkButton(
+            self, text="Oxidizer mass flow rate", command=self.load_mdot_ox, width=135
+        ).place(anchor="e", relx=0.95, rely=0.25)
 
         CTkLabel(self, text="Coolant inlet temperature").place(anchor="w", relx=0.02, rely=0.32)
         self.tcientry = CTkEntry(self, width=59)
@@ -187,6 +193,12 @@ class ThermalFrame(ctk.CTkFrame):
 
     def details(self):
         ...
+
+    def load_mdot_ox(self):
+        updateentry(self.mdotcentry, pconf.m_ox_d)
+
+    def load_mdot_fuel(self):
+        updateentry(self.mdotcentry, pconf.m_f_d)
 
     def channels_window(self):
         if self.channelswindow is None or not self.channelswindow.winfo_exists():
