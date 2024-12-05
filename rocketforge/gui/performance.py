@@ -65,9 +65,7 @@ class PerformanceFrame(ctk.CTkFrame):
                 fg_color=self.on, hover_color=self.on_hover,
             )
 
-    def loadengine(self, geometry):
-        config.At, config.Le, config.theta_e = geometry
-
+    def run(self):
         if self.thermodynamicframe.frozenflow.get() == 0:
             frozen = 0
             frozenatthroat = 0

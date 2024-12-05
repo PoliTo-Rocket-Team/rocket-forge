@@ -215,21 +215,7 @@ class RocketForge(CTk):
         try:
             self.statuslabel.configure(text="Status: computing performance...")
             self.statuslabel.update()
-            self.performanceframe.loadengine(geometry)
-            if conf.At != None:
-                old_At = 0
-                Att = conf.At
-                while abs((conf.At - old_At)/conf.At) > 0.001:
-                    old_At = conf.At
-                    conf.At = Att / conf.z_n
-                    if conf.At > 0.01:
-                        updateentry(self.geometryframe.throatareaentry, conf.At)
-                        self.geometryframe.throatareauom.set("m2")
-                    else:
-                        updateentry(self.geometryframe.throatareaentry, conf.At * 10000)
-                        self.geometryframe.throatareauom.set("cm2")
-                    geometry = self.geometryframe.loadgeometry()
-                    self.performanceframe.loadengine(geometry)
+            self.performanceframe.run()
         except Exception:
             pass
 
