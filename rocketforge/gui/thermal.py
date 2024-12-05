@@ -333,12 +333,15 @@ class ThermalFrame(ctk.CTkFrame):
             self.advancedwindow.focus()
 
     def set_advanced(self):
-        config.pcoOvpc = float(self.pcoOvpcentry.get())
-        config.n_stations = float(self.nsentry.get())
-        config.max_iter = float(self.maxiterentry.get())
-        config.tuning_factor = float(self.tuningentry.get())
-        config.stability = float(self.stabentry.get())
-        self.advancedwindow.destroy()
+        try:
+            config.pcoOvpc = float(self.pcoOvpcentry.get())
+            config.n_stations = float(self.nsentry.get())
+            config.max_iter = float(self.maxiterentry.get())
+            config.tuning_factor = float(self.tuningentry.get())
+            config.stability = float(self.stabentry.get())
+            self.advancedwindow.destroy()
+        except Exception:
+            pass
     
     def reset_advanced(self):
         config.pcoOvpc = 1.2
