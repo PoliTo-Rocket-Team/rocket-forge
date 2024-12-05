@@ -4,6 +4,7 @@ from tkinter.filedialog import asksaveasfilename
 import customtkinter as ctk
 from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu, CTkButton, CTkImage
 import rocketforge.performance.config as config
+import rocketforge.thermal.config as tconf
 import rocketforge.geometry.top as top
 import rocketforge.geometry.tic as tic
 import rocketforge.geometry.conical as conical
@@ -268,8 +269,6 @@ class GeometryFrame(ctk.CTkFrame):
 
         self.canvas.get_tk_widget().place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
 
-        self.eps = None
-        self.epsc = None
         self.x = []
         self.y = []
         self.details_window = None
@@ -279,12 +278,20 @@ class GeometryFrame(ctk.CTkFrame):
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
     def plot(self):
+        if config.thrust != None:
+            if config.At > 0.01:
+                updateentry(self.throatareaentry, config.At)
+                self.throatareauom.set("m2")
+            else:
+                updateentry(self.throatareaentry, config.At * 10000)
+                self.throatareauom.set("cm2")
+
         # Compute divergent section
         try:
-            if self.eps == None:
+            if config.eps == None:
                 showwarning(title="Warning", message="Please define the area ratio and run the simulation first.")
                 raise Exception
-            eps = self.eps
+            eps = config.eps
             updateentry(self.epsentry, eps, True)
 
             At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
@@ -292,6 +299,8 @@ class GeometryFrame(ctk.CTkFrame):
 
             # Thrust-optimized parabolic (TOP)
             if self.shape.get() == "Thrust-optimized parabolic":
+                tconf.shape = 1
+
                 if self.divergentlengthuom.get() == "Le/Lc15":
                     Le = float(self.divergentlengthentry.get()) * conical.lc15(At, RnOvRt, eps)
                 else:
@@ -312,6 +321,7 @@ class GeometryFrame(ctk.CTkFrame):
 
             # Conical nozzle
             if self.shape.get() == "Conical":
+                tconf.shape = 0
 
                 selected = self.cselected.get()
                 
@@ -346,9 +356,9 @@ class GeometryFrame(ctk.CTkFrame):
 
         # Compute convergent section
         try:
-            if self.epsc == None:
+            if config.epsc == None:
                 raise Exception
-            epsc = float(self.epsc)
+            epsc = float(config.epsc)
             updateentry(self.epscentry, epsc, True)
             
             At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
@@ -406,12 +416,34 @@ class GeometryFrame(ctk.CTkFrame):
             except Exception:
                 pass
 
-            # Return values for performance estimation
-            return At, Le, thetae
+            config.At = At
+            config.Le = Le
+            config.theta_e = thetae
+
+            Rt = sqrt(At/pi)
+            Re = Rt * sqrt(eps)
+            Rc = Rt * sqrt(epsc)
+            R1 = R1OvRt * Rt
+            R2max = (Rc - Rt)/(1-cos(b)) - R1
+            R2 = R2OvR2max * R2max
+            m = - tan(b)
+            q = Rt + R1 * (1 - cos(b) - tan(b) * sin(b))
+            xB = (Rc - R2*(1-cos(b)) - q)/m - R2 * sin(b)
+            tconf.L_cyl = xB + Lc
+            tconf.L_c = Lc
+            tconf.L_e = Le
+            tconf.RnOvRt = RnOvRt
+            tconf.R1OvRt = R1OvRt
+            tconf.R2OvR2max = R2OvR2max
+            tconf.b = degrees(b)
+            tconf.theta = degrees(thetan)
+            tconf.thetan = degrees(thetan)
+            tconf.thetae = degrees(thetae)
+
         except Exception:
             pass
     
-    def optimizeTn(self):
+    def estimate_Tn(self):
         gamma = config.gammae
         Me = config.Me
         if self.thetanentry.get() == "":
@@ -614,10 +646,3 @@ class GeometryFrame(ctk.CTkFrame):
         self.cthetalabel.place_forget()
         self.cthetaentry.place_forget()
         self.cthetaoptmenu.place_forget()
-
-    def loadgeometry(self):
-        self.eps = config.eps
-        self.epsc = config.epsc
-        At, Le, thetae = self.plot()
-        geometry = [At, Le, thetae]
-        return geometry

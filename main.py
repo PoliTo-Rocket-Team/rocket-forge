@@ -207,17 +207,10 @@ class RocketForge(CTk):
         try:
             self.statuslabel.configure(text="Status: computing geometry...")
             self.statuslabel.update()
-            self.geometryframe.optimizeTn()
-            if conf.At != None:
-                if conf.At > 0.01:
-                    updateentry(self.geometryframe.throatareaentry, conf.At)
-                    self.geometryframe.throatareauom.set("m2")
-                else:
-                    updateentry(self.geometryframe.throatareaentry, conf.At * 10000)
-                    self.geometryframe.throatareauom.set("cm2")
-            geometry = self.geometryframe.loadgeometry()
+            self.geometryframe.estimate_Tn()
+            self.geometryframe.plot()
         except Exception:
-            geometry = (0, 0, 0)
+            pass
 
         try:
             self.statuslabel.configure(text="Status: computing performance...")
