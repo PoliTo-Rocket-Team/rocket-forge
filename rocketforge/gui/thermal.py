@@ -220,10 +220,13 @@ class ThermalFrame(ctk.CTkFrame):
             CTkLabel(self.channelswindow, text="Channels width").place(anchor="w", relx=0.05, rely=2/11)
             self.a1 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
             self.a1.place(anchor="w", relx=0.35, rely=2/11)
+            updateentry(self.a1, config.a1)
             self.a2 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
             self.a2.place(anchor="w", relx=0.5, rely=2/11)
+            updateentry(self.a2, config.a2)
             self.a3 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
             self.a3.place(anchor="w", relx=0.65, rely=2/11)
+            updateentry(self.a3, config.a3)
             self.auom = tk.StringVar(value="mm")
             CTkOptionMenu(
                 self.channelswindow,
@@ -234,10 +237,13 @@ class ThermalFrame(ctk.CTkFrame):
             CTkLabel(self.channelswindow, text="Channels height").place(anchor="w", relx=0.05, rely=4/11)
             self.b1 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
             self.b1.place(anchor="w", relx=0.35, rely=4/11)
+            updateentry(self.b1, config.b1)
             self.b2 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
             self.b2.place(anchor="w", relx=0.5, rely=4/11)
+            updateentry(self.b2, config.b2)
             self.b3 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
             self.b3.place(anchor="w", relx=0.65, rely=4/11)
+            updateentry(self.b3, config.b3)
             self.buom = tk.StringVar(value="mm")
             CTkOptionMenu(
                 self.channelswindow,
@@ -245,16 +251,19 @@ class ThermalFrame(ctk.CTkFrame):
                 variable=self.buom, width=59
             ).place(anchor="e", relx=0.95, rely=4/11)
 
-            self.channelsmode = ctk.IntVar(value=1)
+            self.channelsmode = ctk.IntVar(value=0)
             ctk.CTkRadioButton(
                 self.channelswindow, text="Rib width", variable=self.channelsmode, value=0,
             ).place(anchor="w", relx=0.05, rely=6/11)
             self.d1 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
             self.d1.place(anchor="w", relx=0.35, rely=6/11)
+            updateentry(self.d1, config.d1)
             self.d2 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
             self.d2.place(anchor="w", relx=0.5, rely=6/11)
+            updateentry(self.d2, config.d2)
             self.d3 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
             self.d3.place(anchor="w", relx=0.65, rely=6/11)
+            updateentry(self.d3, config.d3)
             self.duom = tk.StringVar(value="mm")
             CTkOptionMenu(
                 self.channelswindow,
@@ -267,9 +276,10 @@ class ThermalFrame(ctk.CTkFrame):
             ).place(anchor="w", relx=0.05, rely=8/11)
             self.ncentry = CTkEntry(self.channelswindow, placeholder_text="0", width=118)
             self.ncentry.place(anchor="w", relx=0.5, rely=8/11)
+            if config.NC != None: updateentry(self.ncentry, config.NC)
 
             CTkButton(
-                self.channelswindow, text="Set", width=90
+                self.channelswindow, text="Set", command=self.set_channels, width=90
             ).place(anchor="center", relx=0.5, rely=10/11)
 
             self.channelswindow.after(50, self.channelswindow.lift)
@@ -278,6 +288,25 @@ class ThermalFrame(ctk.CTkFrame):
         else:
             self.channelswindow.lift()
             self.channelswindow.focus()
+
+    def set_channels(self):
+        try:
+            config.a1 = float(self.a1.get())
+            config.a2 = float(self.a2.get())
+            config.a3 = float(self.a3.get())
+            config.b1 = float(self.b1.get())
+            config.b2 = float(self.b2.get())
+            config.b3 = float(self.b3.get())
+            if self.channelsmode.get() == 0:
+                config.d1 = float(self.d1.get())
+                config.d2 = float(self.d2.get())
+                config.d3 = float(self.d3.get())
+                config.NC = None
+            else:
+                config.NC = float(self.ncentry.get())
+            self.advancedwindow.destroy()
+        except Exception:
+            pass
 
     def advanced_window(self):
         if self.advancedwindow is None or not self.advancedwindow.winfo_exists():
