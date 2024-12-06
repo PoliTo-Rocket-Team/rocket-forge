@@ -51,7 +51,7 @@ class NestedFrame(CTkFrame):
             ("Chamber Pressure",            ["MPa", "bar", "Pa", "psia", "atm"]),
             ("Nozzle Inlet Conditions",     ["Contraction Area Ratio (Ac/At)",
                                              "Infinite Area Combustor"]),
-            ("Nozzle Outlet Conditions",    ["Exit Pressure (MPa)",
+            ("Nozzle Exit Conditions",      ["Exit Pressure (MPa)",
                                              "Exit Pressure (bar)",
                                              "Exit Pressure (Pa)",
                                              "Exit Pressure (psia)",
