@@ -28,7 +28,7 @@ class NestedFrame(CTkFrame):
         # Create the input grid frame
         self.inputgrid = CTkFrame(self, border_width=1)
         self.inputgrid.place(anchor="n", relx=0.5, rely=0.03 + 28/600, relwidth=59/60) # Horrible but it works for now
-        
+
         # Configure grid layout
         self.inputgrid.grid_columnconfigure(0, weight=0, minsize=100)
         for i in range(1,5):
@@ -78,7 +78,6 @@ class NestedFrame(CTkFrame):
         self.textbox.place(relwidth=59/60, relx=0.5, rely=0.99, anchor="s")
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
-    # __init__
 
     def create_row(self, row_num, label, units, plotoptions):
         row = {}
@@ -104,7 +103,6 @@ class NestedFrame(CTkFrame):
         self.toggle_row(row, False)
 
         return row
-    # create_row
 
     def toggle_row(self, row, state=None):
         if state is None:
@@ -116,4 +114,3 @@ class NestedFrame(CTkFrame):
                     widget.configure(state="normal")
                 else:
                     widget.configure(state="disabled")
-    # toggle_row
