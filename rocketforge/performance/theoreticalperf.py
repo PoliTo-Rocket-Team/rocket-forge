@@ -138,6 +138,8 @@ def theoretical(i=2, fr=0, fat=0):
     config.Isp_vac = Isp_vac
     config.Isp_vac_eq = Isp_vac_eq
     config.Isp_vac_fr = Isp_vac_fr
+    config.Isp_sl = Isp_sl
+    config.Isp_opt = Isp_opt
     config.td_props = results
     config.gammae = results[7][-2]
     config.Me = results[8][-2]
