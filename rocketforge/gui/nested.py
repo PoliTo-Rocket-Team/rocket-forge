@@ -62,7 +62,7 @@ class NestedFrame(CTkFrame):
         plotoptions = [
             "Specific Impulse (Is)",
             "Chamber Temperature (Tc)",
-            "Charateristic Velocity (c*)",
+            "Characteristic Velocity (c*)",
             "Thrust Coefficient (Cf)"
         ]
 
