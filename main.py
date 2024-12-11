@@ -28,7 +28,7 @@ class RocketForge(CTk):
         super().__init__(*args, **kwargs)
         self.withdraw()
         self.configure(height=480, padx=0, pady=0, width=720)
-        self.resizable(False, False)
+        self.resizable(True, True)
         self.title("Rocket Forge")
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.after(
@@ -262,7 +262,7 @@ class RocketForge(CTk):
             self.about = ctk.CTkToplevel()
             self.about.title("About")
             self.about.configure(width=300, height=200)
-            self.about.resizable(False, False)
+            self.about.resizable(True, True)
             self.about.after(
                 201,
                 lambda: self.about.iconphoto(
@@ -292,7 +292,7 @@ class RocketForge(CTk):
             self.preferences = ctk.CTkToplevel()
             self.preferences.title("Preferences")
             self.preferences.configure(width=300, height=80)
-            self.preferences.resizable(False, False)
+            self.preferences.resizable(True, True)
             self.preferences.after(
                 201,
                 lambda: self.preferences.iconphoto(
