@@ -411,6 +411,8 @@ class InitialFrame(ctk.CTkFrame):
             
         except Exception as err:
             output = str(err)
+            print("Error in InitialFrame.run()")
+            print(err)
 
         updatetextbox(self.textbox, output, True)
 

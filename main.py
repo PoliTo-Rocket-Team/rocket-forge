@@ -178,6 +178,7 @@ class RocketForge(CTk):
             except Exception:
                 self.thermalframe.regenvar.set(False)
                 self.thermalframe.toggle_regen_cooling()
+                print("Error loading regenerative cooling")
         
         if tconf.rad:
             try:
@@ -187,6 +188,7 @@ class RocketForge(CTk):
             except Exception:
                 self.thermalframe.radvar.set(False)
                 self.thermalframe.toggle_rad_cooling()
+                print("Error loading radiation cooling")
 
         if tconf.film:
             try:
@@ -196,13 +198,14 @@ class RocketForge(CTk):
             except Exception:
                 self.thermalframe.filmvar.set(False)
                 self.thermalframe.toggle_film_cooling()
+                print("Error loading film cooling")
 
         try:
             self.statuslabel.configure(text="Status: running...")
             self.statuslabel.update()
             self.initialframe.run()
         except Exception:
-            pass
+            print("Error occured while running the initial frame")
 
         try:
             self.statuslabel.configure(text="Status: computing geometry...")
@@ -210,7 +213,7 @@ class RocketForge(CTk):
             self.geometryframe.estimate_Tn()
             self.geometryframe.plot()
         except Exception:
-            pass
+            print("Error occured while computing geometry")
 
         try:
             self.statuslabel.configure(text="Status: computing performance...")
@@ -218,7 +221,7 @@ class RocketForge(CTk):
             self.performanceframe.run()
             self.estimate_At()
         except Exception:
-            pass
+            print("Error occured while computing performance")
 
         try:
             self.statuslabel.configure(text="Status: performing thermal analysis...")
@@ -231,20 +234,21 @@ class RocketForge(CTk):
             self.thermalframe.toggle_rad_cooling()
             self.thermalframe.filmvar.set(False)
             self.thermalframe.toggle_film_cooling()
+            print("Error occured while performing thermal analysis")
 
         try: 
             self.statuslabel.configure(text="Status: loading tanks...")
             self.statuslabel.update()
             self.tanksframe.compute()
         except Exception:
-            pass
+            print("Error occured while loading tanks")
 
         try:
             self.statuslabel.configure(text="Status: running flight simulation...")
             self.statuslabel.update()
             self.missionframe.run()
         except Exception:
-            pass
+            print("Error occured while running flight simulation")
 
         self.statuslabel.configure(text="Status: idle")
         self.statuslabel.update()
@@ -422,7 +426,7 @@ class RocketForge(CTk):
                 config.write(f)
 
         except Exception:
-            pass
+            print("Error occured while saving configuration file")
 
         self.statuslabel.configure(text="Status: idle")
         self.statuslabel.update()
@@ -522,7 +526,7 @@ class RocketForge(CTk):
             ttf.fuelxuom.set(config.get("Tanks", "pos_fuel_uom"))
 
         except Exception:
-            pass
+            print("Error occured while loading configuration file")
 
         self.statuslabel.configure(text="Status: idle")
         self.statuslabel.update()

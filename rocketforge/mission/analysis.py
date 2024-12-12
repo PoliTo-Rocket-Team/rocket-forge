@@ -76,7 +76,7 @@ def set_engine():
     try:
         config.rocket.add_motor(config.engine, position=config.engine_position)
     except Exception:
-        pass
+        print("Error adding engine to rocket")
 
 
 def set_rocket():

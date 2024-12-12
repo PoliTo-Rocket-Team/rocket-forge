@@ -12,6 +12,7 @@ def resource_path(relative_path: str) -> str:
         '''
         base_path = sys._MEIPASS
     except Exception:
+        print("Error: Could not find PyInstaller temporary directory")
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)

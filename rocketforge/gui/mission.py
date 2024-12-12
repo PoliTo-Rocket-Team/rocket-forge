@@ -134,6 +134,7 @@ class MissionFrame(ctk.CTkFrame):
             msa.simulate()
             self.console.disable()
         except Exception:
+            print("An error has occurred on mission frame")
             self.console.disable()
     
     def environment_window(self):
@@ -207,7 +208,7 @@ class MissionFrame(ctk.CTkFrame):
             updateentry(self.dayentry, config.day)
             updateentry(self.hourentry, config.hour)
         except Exception:
-            pass
+            print("An error has occurred on mission frame. Could not load environment")
 
     def set_environment(self):
         self.envlabel.configure(text="Setting up environment...")
@@ -225,6 +226,7 @@ class MissionFrame(ctk.CTkFrame):
             self.envlabel.configure(text="Environment has been set")
             self.envlabel.update()
         except Exception:
+            print("An error has occurred on mission frame. Could not set environment")
             self.envlabel.configure(text="An error has occurred")
             self.envlabel.update()
     
@@ -275,7 +277,7 @@ class MissionFrame(ctk.CTkFrame):
             updateentry(self.inclinationentry, config.inclination)
             updateentry(self.headingentry, config.heading)
         except Exception:
-            pass
+            print("An error has occurred on mission frame. Could not load rail")
 
     def set_rail(self):
         self.raillabel.configure(text="Setting up rail...")
@@ -288,6 +290,7 @@ class MissionFrame(ctk.CTkFrame):
             self.raillabel.configure(text="Rail has been configured")
             self.raillabel.update()
         except Exception:
+            print("An error has occurred on mission frame. Could not set rail")
             self.raillabel.configure(text="Rail is not configured")
             self.raillabel.update()
 
@@ -362,7 +365,7 @@ class MissionFrame(ctk.CTkFrame):
             updateentry(self.reentry, config.Re)
             updateentry(self.enginepositionentry, config.engine_position)
         except Exception:
-            pass
+            print("An error has occurred on mission frame. Could not load engine")
 
     def set_engine(self):
         self.enginelabel.configure(text="Setting up engine...")
@@ -371,6 +374,7 @@ class MissionFrame(ctk.CTkFrame):
             try:
                 config.thrust = float(self.thrustentry.get())
             except ValueError:
+                print("An error has occurred on mission frame. set_engine function throws value error.")
                 config.thrust = self.thrustentry.get()
             config.chamber_mass = float(self.chambermassentry.get())
             ei11 = float(self.enginei11entry.get())
@@ -385,6 +389,7 @@ class MissionFrame(ctk.CTkFrame):
             self.enginelabel.configure(text="Engine has been configured")
             self.enginelabel.update()
         except Exception:
+            print("An error has occurred on mission frame. Could not set engine")
             config.engine = None
             self.enginelabel.configure(text="Engine is not configured")
             self.enginelabel.update()
@@ -474,7 +479,7 @@ class MissionFrame(ctk.CTkFrame):
             updateentry(self.rocketi33entry, config.rocket_inertia[2])
             updateentry(self.noselengthentry, config.nose_length)
         except Exception:
-            pass
+            print("An error has occurred on mission frame. Could not load rocket")
 
     def set_rocket(self):
         self.rocketlabel.configure(text="Setting up rocket...")
@@ -495,6 +500,7 @@ class MissionFrame(ctk.CTkFrame):
             self.rocketlabel.configure(text="Rocket has been configured")
             self.rocketlabel.update()
         except Exception:
+            print("An error has occurred on mission frame. Could not set rocket")
             config.rocket = None
             self.rocketlabel.configure(text="Rocket is not configured")
             self.rocketlabel.update()
@@ -578,6 +584,7 @@ class MissionFrame(ctk.CTkFrame):
             self.finslabel.configure(text=f"Fin sets: {self.nfs}")
             self.finslabel.update()
         except Exception:
+            print("An error has occurred on mission frame. Could not add fins")
             config.rocket = None
             self.rocketlabel.configure(text="Rocket is not configured")
             self.rocketlabel.update()
@@ -751,6 +758,7 @@ class MissionFrame(ctk.CTkFrame):
             self.parachutelabel.configure(text=f"Parachutes: {self.np}")
             self.parachutelabel.update()
         except Exception:
+            print("An error has occurred on mission frame. Could not add parachute")
             config.rocket = None
             self.rocketlabel.configure(text="Rocket is not configured")
             self.rocketlabel.update()

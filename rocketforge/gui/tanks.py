@@ -313,4 +313,4 @@ class TanksFrame(ctk.CTkFrame):
             updateentry(self.oxmentry, m_ox, True)
             updateentry(self.fuelmentry, m_fuel, True)
         except Exception:
-            pass
+            print("Error computing tanks")

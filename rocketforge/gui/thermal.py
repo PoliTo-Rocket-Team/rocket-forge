@@ -188,6 +188,7 @@ class ThermalFrame(ctk.CTkFrame):
                 self.regen = Regen()
                 self.regen.run()
             except RuntimeWarning:
+                print("Warning: There is a problem with the regenerative cooling model. Please check the inputs. If the problem persists, check thermal.py")
                 raise Exception
 
     def plot_T(self):
@@ -318,7 +319,7 @@ class ThermalFrame(ctk.CTkFrame):
                 config.NC = float(self.ncentry.get())
             self.channelswindow.destroy()
         except Exception:
-            pass
+            print("Error occured while setting channels geometry. thermalframe.py")
 
     def advanced_window(self):
         if self.advancedwindow is None or not self.advancedwindow.winfo_exists():
@@ -382,7 +383,7 @@ class ThermalFrame(ctk.CTkFrame):
             config.stability = float(self.stabentry.get())
             self.advancedwindow.destroy()
         except Exception:
-            pass
+            print("Error occured while setting advanced settings. thermalframe.py")
     
     def reset_advanced(self):
         config.pcoOvpc = 1.2

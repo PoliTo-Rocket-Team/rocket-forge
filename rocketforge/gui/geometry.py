@@ -353,6 +353,7 @@ class GeometryFrame(ctk.CTkFrame):
         except Exception:
             xD = []
             yD = []
+            print("Error in divergent section")
 
         # Compute convergent section
         try:
@@ -377,6 +378,7 @@ class GeometryFrame(ctk.CTkFrame):
         except Exception:
             xC = []
             yC = []
+            print("Error in convergent section")
 
         try:
             # Concatenate coordinates
@@ -405,7 +407,7 @@ class GeometryFrame(ctk.CTkFrame):
                 self.ax.axis([xmin, xmax, 0, ymax])
 
             except Exception:
-                pass
+                print("Error in axis limits")
             self.ax.grid()
             self.ax.set_ylabel("Radius [m]")
             self.ax.set_xlabel("Axis [m]")
@@ -414,7 +416,7 @@ class GeometryFrame(ctk.CTkFrame):
             try:
                 self.load_details(At, Le, Lc, Lstar, eps, epsc, RnOvRt, b, thetan, thetae, R1OvRt, R2OvR2max)
             except Exception:
-                pass
+                print("Error in loading details (geometryframe class, geometry.py, plot function)")
 
             config.At = At
             config.Le = Le
@@ -441,7 +443,7 @@ class GeometryFrame(ctk.CTkFrame):
             tconf.thetae = degrees(thetae)
 
         except Exception:
-            pass
+            print("Error in plotting geometry")
     
     def estimate_Tn(self):
         gamma = config.gammae
@@ -471,7 +473,7 @@ class GeometryFrame(ctk.CTkFrame):
                         if self.x[i] != self.x[i-1]:
                             f.write(f"{self.x[i]:.7f},{self.y[i]:.7f},0\n")
         except Exception:
-            pass
+            print("Error in exporting plot")
 
     def details(self):
         if self.details_window is None or not self.details_window.winfo_exists():
@@ -562,7 +564,7 @@ class GeometryFrame(ctk.CTkFrame):
             else:
                 showwarning(title="Warning", message="There are no details to save")
         except Exception:
-            pass
+            print("Error in saving details")
 
     def help(self):
         if self.help_window is None or not self.help_window.winfo_exists():
