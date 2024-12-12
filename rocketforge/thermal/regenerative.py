@@ -38,7 +38,7 @@ class Regen():
             delta = generate_profile(x, config.d1, config.d2, config.d3, R)
             NC = C / (a + delta)
         d_e = 2.0 * a * b / (a + b)
-        p = linspace(config.p_ci, config.pcoOvpc * pconf.pc, config.n_stations)
+        p = linspace(config.pcoOvpc * pconf.pc, config.p_ci, config.n_stations)
 
         T_aw = (
             config.T_c
