@@ -534,7 +534,7 @@ class GeometryFrame(ctk.CTkFrame):
             ["Chamber radius", "Rc", f"{1000*Rc:.2f}", "mm"],
             ["Exit radius", "Re", f"{1000*Re:.2f}", "mm"],
             [],
-            ["Charachteristic chamber length", "L*", f"{1000*Lstar:.2f}", "mm"],
+            ["Characteristic chamber length", "L*", f"{1000*Lstar:.2f}", "mm"],
             ["Cylindrical section length", "Lcyl", f"{1000*Lcyl:.2f}", "mm"],
             ["Chamber length", "Lc", f"{1000*Lc:.2f}", "mm"],
             ["Divergent length", "Le", f"{1000*Le:.2f}", "mm"],
