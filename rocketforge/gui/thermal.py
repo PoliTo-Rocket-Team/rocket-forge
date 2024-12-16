@@ -152,6 +152,7 @@ class ThermalFrame(ctk.CTkFrame):
         CTkLabel(self, text="Wall emissivity").place(anchor="w", relx=0.52, rely=0.60)
         self.radepsentry = CTkEntry(self, width=118)
         self.radepsentry.place(anchor="e", relx=0.98, rely=0.60)
+        self.radepsentry.insert("0", "0.8")
 
         self.filmframe = CTkFrame(self, border_width=0, height=28, width=590)
         CTkLabel(self.filmframe, text="Film cooling").place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
