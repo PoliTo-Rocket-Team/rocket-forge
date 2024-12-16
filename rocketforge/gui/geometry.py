@@ -234,9 +234,9 @@ class GeometryFrame(ctk.CTkFrame):
         self.plotbutton.configure(text="Update plot", command=self.plot, width=100)
         self.plotbutton.place(anchor="center", relx=0.12, rely=0.53)
 
-        self.clearplotbutton = CTkButton(self)
-        self.clearplotbutton.configure(text="Clear plot", command=self.clear_plot, width=100)
-        self.clearplotbutton.place(anchor="center", relx=0.31, rely=0.53)
+        self.advancedbutton = CTkButton(self)
+        self.advancedbutton.configure(text="Advanced...", command=self.advanced, width=100)
+        self.advancedbutton.place(anchor="center", relx=0.31, rely=0.53)
 
         self.saveplotbutton = CTkButton(self)
         self.saveplotbutton.configure(text="Export plot...", command=self.export_plot, width=100)
@@ -271,9 +271,12 @@ class GeometryFrame(ctk.CTkFrame):
 
         self.x = []
         self.y = []
+        self.advancedwindow = None
         self.details_window = None
         self.details_output = ""
         self.help_window = None
+        self.ptscirc = 360
+        self.ptspar = 100
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
@@ -450,15 +453,47 @@ class GeometryFrame(ctk.CTkFrame):
             thetan = (sqrt((gamma+1)/(gamma-1))*arctan(sqrt((gamma-1)*(Me**2-1)/(gamma+1)))-arctan(sqrt(Me**2-1)))/2
             updateentry(self.thetanentry, thetan / angle_uom(self.thetanuom.get()))
     
-    def clear_plot(self):
-        self.ax.clear()
-        self.ax.grid()
-        self.ax.set_ylabel("Radius [m]")
-        self.ax.set_xlabel("Axis [m]")
-        self.canvas.draw()
-        self.x = []
-        self.y = []
-        self.details_output = ""
+    def advanced(self):
+        if self.advancedwindow is None or not self.advancedwindow.winfo_exists():
+            self.advancedwindow = ctk.CTkToplevel()
+            self.advancedwindow.title("Advanced settings")
+            self.advancedwindow.configure(width=300, height=120)
+            self.advancedwindow.resizable(False, False)
+            self.advancedwindow.after(
+                201,
+                lambda: self.advancedwindow.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                ),
+            )
+
+            CTkLabel(self.advancedwindow, text="Pts/circle").place(anchor="w", relx=0.1, rely=1/6)
+            self.ptscircentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=59)
+            self.ptscircentry.place(anchor="e", relx=0.9, rely=1/6)
+            updateentry(self.ptscircentry, self.ptscirc)
+
+            CTkLabel(self.advancedwindow, text="Points per parabola").place(anchor="w", relx=0.1, rely=3/6)
+            self.ptsparentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=59)
+            self.ptsparentry.place(anchor="e", relx=0.9, rely=3/6)
+            updateentry(self.ptsparentry, self.ptspar)
+
+            CTkButton(
+                self.advancedwindow, text="Set", command=self.set_advanced, width=90
+            ).place(anchor="center", relx=0.5, rely=5/6)
+
+            self.advancedwindow.after(50, self.advancedwindow.lift)
+            self.advancedwindow.after(50, self.advancedwindow.focus)
+
+        else:
+            self.advancedwindow.lift()
+            self.advancedwindow.focus()
+
+    def set_advanced(self):
+        try:
+            self.ptscirc = int(float(self.ptscircentry.get()))
+            self.ptspar = int(float(self.ptsparentry.get()))
+            self.advancedwindow.destroy()
+        except Exception:
+            pass
 
     def export_plot(self):
         try:
