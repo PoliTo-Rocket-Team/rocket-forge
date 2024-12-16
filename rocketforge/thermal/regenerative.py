@@ -41,7 +41,7 @@ class Regen():
             NC = C / (a + delta)
         d_e = 2.0 * a * b / (a + b)
 
-        if True:
+        if config.enable_dp:
             p = full(config.n_stations, config.pcoOvpc * pconf.pc)
             rho_c = zeros(config.n_stations)
             dp1 = zeros(config.n_stations)
@@ -102,7 +102,7 @@ class Regen():
             T_wc = T_c + q / h_c
             T_wg_new = T_wc + q * config.t_w / config.lambda_w
 
-            if True:
+            if config.enable_dp:
                 for i in range(config.n_stations):
                     rho_c[i] = P.SG_compressed(T_c[i] * 1.8, p[i] / 6894.75728) * 1000.0
                 u_c = Re_c * mu_c / d_e / rho_c
@@ -135,7 +135,7 @@ class Regen():
 
             T_wg = (1.0 - config.stability) * T_wg + config.stability * T_wg_new
         
-        if True:
+        if config.enable_dp:
             Dp = sum(dp)
 
         self.x = x
@@ -153,7 +153,7 @@ class Regen():
             self.q_rad = q_rad
             self.q_rc = q_rc
 
-        if True:
+        if config.enable_dp:
             self.p = p
             self.dp1 = dp1
             self.dp2 = dp2
