@@ -150,6 +150,23 @@ class Regen():
         self.X = X
         self.Y = Y
 
+        _, ax = plt.subplots()
+        ax.plot(self.x, p / 100000, label="Coolant pressure")
+        ax.plot(self.x, dp1 / 100000, label="Friction losses")
+        ax.plot(self.x, dp2 / 100000, label="Geometric losses")
+        ax.plot(self.x, dp3 / 100000, label="Acceleration losses")
+        ax.set_xlabel("x [m]")
+        ax.set_ylabel("Pressure [bar]")
+        ax.grid()
+        ax.legend(loc="upper right")
+        axt = ax.twinx()
+        axt.plot(self.X, self.Y, color="black", label="Thrust chamber contour")
+        axt.set_ylabel("Radius [m]")
+        axt.axis([0, max(self.x), 0, max(self.x)])
+        axt.legend(loc="upper left")
+        plt.title(f"Coolant Pressure (total losses: {Dp / 100000:.2f} bar)")
+        plt.show()
+
     def plot_T(self):
         _, ax = plt.subplots()
         ax.plot(self.x, self.T_wg, label="Twg")
