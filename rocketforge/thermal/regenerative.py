@@ -155,6 +155,10 @@ class Regen():
         self.X = X
         self.Y = Y
 
+        if config.rad:
+            self.q_rad = q_rad
+            self.q_rc = q_rc
+
         _, ax = plt.subplots()
         ax.plot(self.x, p / 100000, label="Coolant pressure")
         ax.plot(self.x, dp1 / 100000, label="Friction losses")
@@ -192,7 +196,11 @@ class Regen():
 
     def plot_q(self):
         _, ax = plt.subplots()
-        ax.plot(self.x, self.q / 1000, label="Heat flux")
+        ax.plot(self.x, self.q / 1000, label="Total Heat flux")
+        if config.rad:
+            ax.plot(self.x, (self.q - self.q_rad + self.q_rc) / 1000, label="Convective heat flux")
+            ax.plot(self.x, self.q_rad / 1000, label="Radiation heat flux")
+            ax.plot(self.x, self.q_rc / 1000, label="Radiation cooling heat flux")
         ax.set_xlabel("x [m]")
         ax.set_ylabel("Heat flux [kW/m^2]")
         ax.grid()
