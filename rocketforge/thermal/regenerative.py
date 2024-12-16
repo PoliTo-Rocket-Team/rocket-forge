@@ -71,7 +71,7 @@ class Regen():
             q = h * (T_aw - T_wg)
             
             if config.rad:
-                q_rad = 0.0 # TODO
+                q_rad = full(config.n_stations, 0.0) # TODO
                 q_rc = rad(config.eps_w, T_wc)
                 q += q_rad - q_rc
 
