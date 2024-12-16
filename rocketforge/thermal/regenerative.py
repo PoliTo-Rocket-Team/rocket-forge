@@ -6,7 +6,7 @@ import rocketforge.geometry.convergent as convergent
 import rocketforge.geometry.top as top
 import rocketforge.geometry.conical as conical
 from rocketforge.thermal.friction_factor import moody, tkachenko, colebrook_white
-from rocketforge.thermal.heat_flux import bartz
+from rocketforge.thermal.heat_flux import bartz, rad
 from rocketprops.rocket_prop import get_prop
 
 
@@ -70,6 +70,11 @@ class Regen():
             h = bartz(M, A, gamma, T_wg)
             q = h * (T_aw - T_wg)
             
+            if config.rad:
+                q_rad = 0.0 # TODO
+                q_rc = rad(config.eps_w, T_wc)
+                q += q_rad - q_rc
+
             dT_c = q * A_w / config.m_dot_c / cp_c
             for i in reversed(range(config.n_stations)):
                 if i != config.n_stations - 1:
