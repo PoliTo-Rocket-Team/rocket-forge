@@ -153,11 +153,19 @@ class Regen():
             self.q_rad = q_rad
             self.q_rc = q_rc
 
+        if True:
+            self.p = p
+            self.dp1 = dp1
+            self.dp2 = dp2
+            self.dp3 = dp3
+            self.Dp = Dp
+
+    def plot_p(self):
         _, ax = plt.subplots()
-        ax.plot(self.x, p / 100000, label="Coolant pressure")
-        ax.plot(self.x, dp1 / 100000, label="Friction losses")
-        ax.plot(self.x, dp2 / 100000, label="Geometric losses")
-        ax.plot(self.x, dp3 / 100000, label="Acceleration losses")
+        ax.plot(self.x, self.p / 100000, label="Coolant pressure")
+        ax.plot(self.x, self.dp1 / 100000, label="Friction losses")
+        ax.plot(self.x, self.dp2 / 100000, label="Geometric losses")
+        ax.plot(self.x, self.dp3 / 100000, label="Acceleration losses")
         ax.set_xlabel("x [m]")
         ax.set_ylabel("Pressure [bar]")
         ax.grid()
@@ -167,7 +175,7 @@ class Regen():
         axt.set_ylabel("Radius [m]")
         axt.axis([0, max(self.x), 0, max(self.x)])
         axt.legend(loc="upper left")
-        plt.title(f"Coolant Pressure (total losses: {Dp / 100000:.2f} bar)")
+        plt.title(f"Coolant Pressure (total losses: {self.Dp / 100000:.2f} bar)")
         plt.show()
 
     def plot_T(self):
