@@ -169,11 +169,13 @@ class ThermalFrame(ctk.CTkFrame):
         CTkLabel(self, text="%").place(anchor="e", relx=0.48, rely=0.81)
         self.fuelfilm = CTkEntry(self, width=80)
         self.fuelfilm.place(anchor="e", relx=0.46, rely=0.81)
+        self.fuelfilm.insert("0", "0.0")
 
         CTkLabel(self, text="Oxidizer film cooling percentage").place(anchor="w", relx=0.52, rely=0.81)
         CTkLabel(self, text="%").place(anchor="e", relx=0.98, rely=0.81)
         self.oxfilm = CTkEntry(self, width=80)
         self.oxfilm.place(anchor="e", relx=0.96, rely=0.81)
+        self.oxfilm.insert("0", "0.0")
 
         CTkButton(
             self, text="Plot temperatures", command=self.plot_T, width=135
