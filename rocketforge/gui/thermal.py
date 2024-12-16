@@ -91,7 +91,10 @@ class ThermalFrame(ctk.CTkFrame):
             variable=self.tciuom, width=59
         ).place(anchor="e", relx=0.48, rely=0.32, x=0, y=0)
 
-        CTkLabel(self, text="Coolant inlet pressure").place(anchor="w", relx=0.52, rely=0.32)
+        self.dp = ctk.BooleanVar(value=False)
+        ctk.CTkRadioButton(
+            self, text="Coolant inlet pressure", variable=self.dp, value=False
+        ).place(anchor="w", relx=0.52, rely=0.32)
         self.pcientry = CTkEntry(self, width=59)
         self.pcientry.place(anchor="e", relx=529/600, rely=0.32)
         self.pciuom = tk.StringVar(value="bar")
@@ -100,6 +103,10 @@ class ThermalFrame(ctk.CTkFrame):
             values=["MPa", "bar", "Pa", "psia", "atm"],
             variable=self.pciuom, width=59
         ).place(anchor="e", relx=0.98, rely=0.32, x=0, y=0)
+
+        ctk.CTkRadioButton(
+            self, text="Compute pressure drops", variable=self.dp, value=True
+        ).place(anchor="w", relx=0.52, rely=0.39)
 
         CTkLabel(self, text="Inner wall thickness").place(anchor="w", relx=0.02, rely=0.39)
         self.tentry = CTkEntry(self, width=59)
@@ -111,27 +118,20 @@ class ThermalFrame(ctk.CTkFrame):
             variable=self.tuom, width=59
         ).place(anchor="e", relx=0.48, rely=0.39, x=0, y=0)
 
-        CTkLabel(self, text="Wall conductivity").place(anchor="w", relx=0.52, rely=0.39)
+        CTkLabel(self, text="Wall conductivity").place(anchor="w", relx=0.02, rely=0.46)
         self.kentry = CTkEntry(self, width=59)
-        self.kentry.place(anchor="e", relx=529/600, rely=0.39)
+        self.kentry.place(anchor="e", relx=229/600, rely=0.46)
         self.kuom = tk.StringVar(value="W/mK")
         CTkOptionMenu(
             self,
             values=[],
             variable=self.kuom, width=59
-        ).place(anchor="e", relx=0.98, rely=0.39, x=0, y=0)
+        ).place(anchor="e", relx=0.48, rely=0.46, x=0, y=0)
 
         CTkButton(
             self, text="Channels geometry...", command=self.channels_window, width=135
-        ).place(anchor="center", relx=0.14, rely=0.46)
-        self.channelswindow = None
-        CTkButton(
-            self, text="Plot channels geometry", command=self.plot_g, width=135
-        ).place(anchor="center", relx=0.38, rely=0.46)
-        CTkButton(
-            self, text="Pressure drops...", width=135
         ).place(anchor="center", relx=0.62, rely=0.46)
-        self.pressurewindow = None
+        self.channelswindow = None
         CTkButton(
             self, text="Advanced settings...", command=self.advanced_window, width=135
         ).place(anchor="center", relx=0.86, rely=0.46)
@@ -441,7 +441,11 @@ class ThermalFrame(ctk.CTkFrame):
         config.coolant = self.coolant.get()
         config.m_dot_c = float(self.mdotcentry.get()) * mdot_uom(self.mdotcuom.get())
         config.T_ci = temperature_uom(float(self.tcientry.get()), self.tciuom.get())
-        config.p_ci = float(self.pcientry.get()) * pressure_uom(self.pciuom.get())
+        config.enable_dp = self.dp.get()
+        if config.enable_dp:
+            config.p_ci = pconf.pc * config.pcoOvpc
+        else:
+            config.p_ci = float(self.pcientry.get()) * pressure_uom(self.pciuom.get())
         config.t_w = float(self.tentry.get()) * length_uom(self.tuom.get())
         config.lambda_w = float(self.kentry.get())
     
