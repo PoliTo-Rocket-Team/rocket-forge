@@ -61,6 +61,7 @@ n_stations = 200
 max_iter = 200
 tuning_factor = 1.0
 stability = 0.5
+absolute_roughness = 0.00025
 dp_method = 0
 
 # Radiation cooling parameters
