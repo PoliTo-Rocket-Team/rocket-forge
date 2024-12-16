@@ -5,6 +5,7 @@ import rocketforge.performance.config as pconf
 import rocketforge.geometry.convergent as convergent
 import rocketforge.geometry.top as top
 import rocketforge.geometry.conical as conical
+from rocketforge.thermal.friction_factor import moody, tkachenko, colebrook_white
 from rocketforge.thermal.heat_flux import bartz
 from rocketprops.rocket_prop import get_prop
 
@@ -27,7 +28,7 @@ class Regen():
         b = generate_profile(x, config.b1, config.b2, config.b3, R)
         C = 2.0 * pi * (R + config.t_w + b / 2.0)
         if config.NC:
-            NC = config.NC
+            NC = full(config.n_stations, config.NC)
             if config.a1:
                 a = generate_profile(x, config.a1, config.a2, config.a3, R)
                 delta = C / NC - a
@@ -39,7 +40,15 @@ class Regen():
             delta = generate_profile(x, config.d1, config.d2, config.d3, R)
             NC = C / (a + delta)
         d_e = 2.0 * a * b / (a + b)
-        p = linspace(config.pcoOvpc * pconf.pc, config.p_ci, config.n_stations)
+
+        if True:
+            p = full(config.n_stations, config.pcoOvpc * pconf.pc)
+            rho_c = zeros(config.n_stations)
+            dp1 = zeros(config.n_stations)
+            dp2 = zeros(config.n_stations)
+            dp3 = zeros(config.n_stations)
+        else:
+            p = linspace(config.pcoOvpc * pconf.pc, config.p_ci, config.n_stations)
 
         T_aw = (
             config.T_c
@@ -88,12 +97,48 @@ class Regen():
             T_wc = T_c + q / h_c
             T_wg_new = T_wc + q * config.t_w / config.lambda_w
 
+            if True:
+                for i in range(config.n_stations):
+                    rho_c[i] = P.SG_compressed(T_c[i] * 1.8, p[i] / 6894.75728) * 1000.0
+                u_c = Re_c * mu_c / d_e / rho_c
+                roughness = 0.00025 / d_e
+                f = tkachenko(Re_c, roughness)
+                dp1 = 0.5 * rho_c * u_c**2 * f * L_tot / config.n_stations / d_e
+
+                for i in range(config.n_stations - 1):
+                    ratio = d_e[i] / d_e[i + 1]
+                    if ratio > 1.0:
+                        _K = (ratio**2 - 1.0)**2
+                    else:
+                        _K = 0.5 - 0.167 * ratio - 0.125 * ratio**2 - 0.208 * ratio**3
+                    dp2[i] = 0.5 * rho_c[i] * u_c[i]**2 * _K
+                    dp3[i] = (
+                        (2.0/(a[i]*b[i] + a[i+1]*b[i+1]))
+                        * (1.0/(a[i+1]*b[i+1]) - 1.0/(a[i]*b[i]))
+                        / rho_c[i] / NC[i]**2 * config.m_dot_c**2
+                    )
+
+                dp = dp1 + dp2 + dp3
+
+                K = 0.5
+                j = argmax(u_c)
+                dpc = 0.5 * rho_c[j] * u_c[j]**2 * K
+
+                for i in range(config.n_stations):
+                    if i != 0:
+                        p[i] = p[i - 1] + dp[i]
+                    if i == j:
+                        p[i] += dpc
+
             if all(abs((T_wg - T_wg_new) / T_wg) < 0.05) or iter == config.max_iter:
                 T_wg = T_wg_new
                 break
 
             T_wg = (1.0 - config.stability) * T_wg + config.stability * T_wg_new
         
+        if True:
+            Dp = sum(dp) + dpc
+
         self.x = x
         self.T_wg = T_wg
         self.T_wc = T_wc
