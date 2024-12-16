@@ -351,7 +351,7 @@ class GeometryFrame(ctk.CTkFrame):
                 updateentry(self.cthetaentry, thetae / angle_uom(self.cthetauom.get()))
                 thetan = thetae
 
-                xD, yD = conical.get(At, RnOvRt, eps, Le, thetae)
+                xD, yD = conical.get(At, RnOvRt, eps, Le, thetae, self.ptscirc)
 
         except Exception:
             xD = []

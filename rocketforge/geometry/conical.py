@@ -2,7 +2,7 @@ from numpy import *
 from scipy.optimize import brentq
 
 
-def get(At, RnOvRt, eps, Le, theta):
+def get(At, RnOvRt, eps, Le, theta, ptscirc=360):
     '''
     This function returns the x and y coordinates of the divergent section of a conical nozzle
     '''
@@ -17,7 +17,8 @@ def get(At, RnOvRt, eps, Le, theta):
     yE = Re
 
     # Divergent circular arc coordinates
-    x1 = linspace(0, xN, 20)
+    pts = int(ptscirc * theta / (2 * pi))
+    x1 = linspace(0, xN, pts)
     y1 = - sqrt(Rn**2 - x1**2) + Rt + Rn
 
     # Conical section
