@@ -20,3 +20,8 @@ def bartz(M, A, gamma, T_wg):
         / config.tuning_factor
     )
     return h_gas
+
+
+def rad(e, T):
+    q_rad = e * 5.670374419e-8 * T**4
+    return q_rad
