@@ -192,7 +192,7 @@ class Regen():
         ax.set_ylabel("Heat flux [kW/m^2]")
         ax.grid()
         ax.legend(loc="upper right")
-        ax.axis([0, max(self.x), 0, 1.2 * max(self.q)])
+        ax.axis([0, max(self.x), 0, 1.2 * max(self.q) / 1000])
         axt = ax.twinx()
         axt.plot(self.X, self.Y, color="black", label="Thrust chamber contour")
         axt.set_ylabel("Radius [m]")
