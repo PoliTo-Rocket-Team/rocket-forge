@@ -25,15 +25,10 @@ class GeometryFrame(ctk.CTkFrame):
         super(GeometryFrame, self).__init__(master, **kw)
         self.topframe = CTkFrame(self)
         self.topframe.configure(border_width=0, height=28, width=590)
-        self.toplabel = CTkLabel(self.topframe)
-        self.toplabel.configure(text="Chamber Geometry")
-        self.toplabel.place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
+        CTkLabel(self.topframe, text="Chamber Geometry").place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
         self.topframe.place(anchor="n", relx=0.5, rely=0.01, x=0, y=0)
 
-        self.throatarealabel = CTkLabel(self)
-        self.throatarealabel.configure(text="Throat area")
-        self.throatarealabel.place(anchor="w", relx=0.02, rely=0.11, x=0, y=0)
-
+        CTkLabel(self, text="Throat area").place(anchor="w", relx=0.02, rely=0.11, x=0, y=0)
         self.throatareaentry = CTkEntry(self)
         self.throatareaentry.configure(placeholder_text="0", width=59)
         self.throatareaentry.place(anchor="e", relx=229/600, rely=0.11, x=0, y=0)
@@ -46,19 +41,13 @@ class GeometryFrame(ctk.CTkFrame):
         self.throatareaoptmenu.place(anchor="e", relx=0.48, rely=0.11, x=0, y=0)
 
         # Convergent section
-        self.r1ovrtlabel = CTkLabel(self)
-        self.r1ovrtlabel.configure(text="R1/Rt")
-        self.r1ovrtlabel.place(anchor="w", relx=0.02, rely=0.18, x=0, y=0)
-
+        CTkLabel(self, text="R1/Rt").place(anchor="w", relx=0.02, rely=0.18, x=0, y=0)
         self.r1ovrtentry = CTkEntry(self)
         self.r1ovrtentry.configure(placeholder_text="0", width=118)
         self.r1ovrtentry.place(anchor="e", relx=0.48, rely=0.18, x=0, y=0)
         updateentry(self.r1ovrtentry, "1.5")
 
-        self.chamberlengthlabel = CTkLabel(self)
-        self.chamberlengthlabel.configure(text="Chamber length")
-        self.chamberlengthlabel.place(anchor="w", relx=0.02, rely=0.25, x=0, y=0)
-
+        CTkLabel(self, text="Chamber length").place(anchor="w", relx=0.02, rely=0.25, x=0, y=0)
         self.chamberlengthentry = CTkEntry(self)
         self.chamberlengthentry.configure(placeholder_text="0", width=59)
         self.chamberlengthentry.place(anchor="e", relx=229/600, rely=0.25, x=0, y=0)
@@ -71,10 +60,7 @@ class GeometryFrame(ctk.CTkFrame):
         )
         self.chamberlengthoptmenu.place(anchor="e", relx=0.48, rely=0.25, x=0, y=0)
 
-        self.blabel = CTkLabel(self)
-        self.blabel.configure(text="Contraction angle")
-        self.blabel.place(anchor="w", relx=0.02, rely=0.32, x=0, y=0)
-
+        CTkLabel(self, text="Contraction angle").place(anchor="w", relx=0.02, rely=0.32, x=0, y=0)
         self.bentry = CTkEntry(self)
         self.bentry.configure(placeholder_text="0", width=59)
         self.bentry.place(anchor="e", relx=229/600, rely=0.32, x=0, y=0)
@@ -87,28 +73,20 @@ class GeometryFrame(ctk.CTkFrame):
         )
         self.boptmenu.place(anchor="e", relx=0.48, rely=0.32, x=0, y=0)
 
-        self.r2ovr2maxlabel = CTkLabel(self)
-        self.r2ovr2maxlabel.configure(text="R2/R2max")
-        self.r2ovr2maxlabel.place(anchor="w", relx=0.02, rely=0.39, x=0, y=0)
-
+        CTkLabel(self, text="R2/R2max").place(anchor="w", relx=0.02, rely=0.39, x=0, y=0)
         self.r2ovr2maxentry = CTkEntry(self)
         self.r2ovr2maxentry.configure(placeholder_text="0", width=118)
         self.r2ovr2maxentry.place(anchor="e", relx=0.48, rely=0.39, x=0, y=0)
         updateentry(self.r2ovr2maxentry, "0.5")
 
-        self.epsclabel = CTkLabel(self)
-        self.epsclabel.configure(text="Contraction Area Ratio")
-        self.epsclabel.place(anchor="w", relx=0.02, rely=0.46, x=0, y=0)
-
+        CTkLabel(self, text="Contraction Area Ratio").place(anchor="w", relx=0.02, rely=0.46, x=0, y=0)
         self.epscentry = CTkEntry(self)
         self.epscentry.configure(width=118, state="disabled")
         self.epscentry.place(anchor="e", relx=0.48, rely=0.46, x=0, y=0)
         updateentry(self.epscentry, "Undefined", True)
 
         # Divergent Section
-        self.shapelabel = CTkLabel(self)
-        self.shapelabel.configure(text="Nozzle shape")
-        self.shapelabel.place(anchor="w", relx=0.52, rely=0.11, x=0, y=0)
+        CTkLabel(self, text="Nozzle shape").place(anchor="w", relx=0.52, rely=0.11, x=0, y=0)
 
         self.shapeoptmenu = CTkOptionMenu(self)
         self.shape = tk.StringVar(value="Thrust-optimized parabolic")
@@ -127,9 +105,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.rnovrtentry.place(anchor="e", relx=0.98, rely=0.18, x=0, y=0)
         updateentry(self.rnovrtentry, "0.382")
 
-        self.epslabel = CTkLabel(self)
-        self.epslabel.configure(text="Expansion Area Ratio")
-        self.epslabel.place(anchor="w", relx=0.52, rely=0.46, x=0, y=0)
+        CTkLabel(self, text="Expansion Area Ratio").place(anchor="w", relx=0.52, rely=0.46, x=0, y=0)
 
         self.epsentry = CTkEntry(self)
         self.epsentry.configure(width=118, state="disabled")
@@ -230,25 +206,25 @@ class GeometryFrame(ctk.CTkFrame):
         )
 
         # Buttons
-        self.plotbutton = CTkButton(self)
-        self.plotbutton.configure(text="Update plot", command=self.plot, width=100)
-        self.plotbutton.place(anchor="center", relx=0.12, rely=0.53)
+        CTkButton(
+            self, text="Update plot", command=self.plot, width=100
+        ).place(anchor="center", relx=0.12, rely=0.53)
 
-        self.advancedbutton = CTkButton(self)
-        self.advancedbutton.configure(text="Advanced...", command=self.advanced, width=100)
-        self.advancedbutton.place(anchor="center", relx=0.31, rely=0.53)
+        CTkButton(
+            self, text="Advanced...", command=self.advanced, width=100
+        ).place(anchor="center", relx=0.31, rely=0.53)
 
-        self.saveplotbutton = CTkButton(self)
-        self.saveplotbutton.configure(text="Export plot...", command=self.export_plot, width=100)
-        self.saveplotbutton.place(anchor="center", relx=0.5, rely=0.53)
+        CTkButton(
+            self, text="Export plot...", command=self.export_plot, width=100
+        ).place(anchor="center", relx=0.5, rely=0.53)
 
-        self.detailsbutton = CTkButton(self)
-        self.detailsbutton.configure(text="Details", command=self.details, width=100)
-        self.detailsbutton.place(anchor="center", relx=0.69, rely=0.53)
+        CTkButton(
+            self, text="Details", command=self.details, width=100
+        ).place(anchor="center", relx=0.69, rely=0.53)
 
-        self.savedetailsbutton = CTkButton(self)
-        self.savedetailsbutton.configure(text="Help", command=self.help, width=100)
-        self.savedetailsbutton.place(anchor="center", relx=0.88, rely=0.53)
+        CTkButton(
+            self, text="Help", command=self.help, width=100
+        ).place(anchor="center", relx=0.88, rely=0.53)
 
         # Plot
         self.plotframe = CTkFrame(self)
@@ -524,16 +500,15 @@ class GeometryFrame(ctk.CTkFrame):
             if os.name == "nt":
                 self.detailstextbox = ctk.CTkTextbox(
                     self.details_window,
-                    height=420,
                     state="disabled",
                     wrap="none",
                     font=("Courier New", 12),
                 )
             else:
                 self.detailstextbox = ctk.CTkTextbox(
-                    self.details_window, height=420, state="disabled", wrap="none", font=("Mono", 12)
+                    self.details_window, state="disabled", wrap="none", font=("Mono", 12)
                 )
-            self.detailstextbox.place(relwidth=0.95, relx=0.5, rely=0.025, anchor="n")
+            self.detailstextbox.place(relwidth=0.95, relheight=13/15, relx=0.5, rely=0.025, anchor="n")
 
             self.savedetailsbutton = CTkButton(self.details_window)
             self.savedetailsbutton.configure(text="Save...", command=self.save_details)
