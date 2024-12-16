@@ -107,7 +107,7 @@ class Regen():
                 for i in range(config.n_stations):
                     rho_c[i] = P.SG_compressed(T_c[i] * 1.8, p[i] / 6894.75728) * 1000.0
                 u_c = Re_c * mu_c / d_e / rho_c
-                roughness = 0.00025 / d_e
+                roughness = config.absolute_roughness / d_e
 
                 if config.dp_method == 0:
                     f = tkachenko(Re_c, roughness)
