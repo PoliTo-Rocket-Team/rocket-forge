@@ -107,7 +107,14 @@ class Regen():
                     rho_c[i] = P.SG_compressed(T_c[i] * 1.8, p[i] / 6894.75728) * 1000.0
                 u_c = Re_c * mu_c / d_e / rho_c
                 roughness = 0.00025 / d_e
-                f = tkachenko(Re_c, roughness)
+
+                if config.dp_method == 0:
+                    f = tkachenko(Re_c, roughness)
+                elif config.dp_method == 1:
+                    f = moody(Re_c, roughness)
+                elif config.dp_method == 2:
+                    f = colebrook_white(Re_c, roughness)
+
                 dp1 = 0.5 * rho_c * u_c**2 * f * L_tot / config.n_stations / d_e
 
                 for i in range(config.n_stations - 1):
