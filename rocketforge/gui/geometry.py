@@ -316,7 +316,7 @@ class GeometryFrame(ctk.CTkFrame):
                     showwarning(title="Warning", message="Final parabola angle must be greater than initial parabola angle")
                     raise Exception
             
-                xD, yD = top.get(At, RnOvRt, Le, thetan, thetae, eps)
+                xD, yD = top.get(At, RnOvRt, Le, thetan, thetae, eps, self.ptscirc, self.ptspar)
             
             # Truncated ideal contour (TIC)
             if self.shape.get() == "Truncated ideal contour":

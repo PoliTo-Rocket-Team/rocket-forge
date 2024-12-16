@@ -1,7 +1,7 @@
 from numpy import *
 
 
-def get(At, RnOvRt, Le, thetan, thetae, eps):
+def get(At, RnOvRt, Le, thetan, thetae, eps, ptscirc=360, ptspar=100):
     '''
     This function returns the x and y coordinates of the divergent for a thrust-optimized parabolic (TOP) nozzle
     '''
@@ -16,11 +16,12 @@ def get(At, RnOvRt, Le, thetan, thetae, eps):
     yE = Re
 
     # Divergent circular arc coordinates
-    x1 = linspace(0, xN, 25)
+    pts = int(ptscirc * thetan / (2 * pi))
+    x1 = linspace(0, xN, pts)
     y1 = - sqrt(Rn**2 - x1**2) + Rt + Rn
 
     # Canted parabola contour
-    theta = linspace(thetan, thetae, 200)
+    theta = linspace(thetan, thetae, ptspar)
     xA = (yE-xE*tan(thetae)-yN+xN*tan(thetan))/(tan(thetan)-tan(thetae))
     DN = (xA-xN)*(tan(thetan)-tan(theta))
     DE = (xE-xA)*(tan(thetae)-tan(theta))
