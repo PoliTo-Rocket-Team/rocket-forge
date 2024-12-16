@@ -12,6 +12,9 @@ m_dot_c = None
 T_ci = None
 p_ci = None
 
+## Enable pressure drops
+enable_dp = None
+
 ## Wall properties
 lambda_w = None
 t_w = None
@@ -26,7 +29,7 @@ b3 = 1.0e-3
 d1 = 1.0e-3
 d2 = 1.0e-3
 d3 = 1.0e-3
-NC = None
+NC = 100
 
 ## Chamber geometry
 shape = None
@@ -58,6 +61,7 @@ n_stations = 200
 max_iter = 200
 tuning_factor = 1.0
 stability = 0.5
+dp_method = 0
 
 # Radiation cooling parameters
 eps_w = None
