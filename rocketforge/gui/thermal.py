@@ -177,13 +177,16 @@ class ThermalFrame(ctk.CTkFrame):
 
         CTkButton(
             self, text="Plot temperatures", command=self.plot_T, width=135
-        ).place(anchor="center", relx=0.2, rely=0.92)
+        ).place(anchor="center", relx=0.14, rely=0.92)
         CTkButton(
             self, text="Plot wall heat flux", command=self.plot_q, width=135
-        ).place(anchor="center", relx=0.5, rely=0.92)
+        ).place(anchor="center", relx=0.38, rely=0.92)
+        CTkButton(
+            self, text="Coolant pressure", command=self.plot_p, width=135
+        ).place(anchor="center", relx=0.62, rely=0.92)
         CTkButton(
             self, text="Details", command=self.details, width=135
-        ).place(anchor="center", relx=0.8, rely=0.92)
+        ).place(anchor="center", relx=0.86, rely=0.92)
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
@@ -194,6 +197,12 @@ class ThermalFrame(ctk.CTkFrame):
                 self.regen.run()
             except RuntimeWarning:
                 raise Exception
+
+    def plot_p(self):
+        try:
+            self.regen.plot_p()
+        except Exception:
+            showwarning(title="Warning", message="Coolant pressure unavailable")
 
     def plot_T(self):
         if self.regen != None:
