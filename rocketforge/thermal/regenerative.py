@@ -203,7 +203,13 @@ def generate_profile(x, y_c, y_t, y_e, R):
             x > config.L_c,
         ],
         [
-            lambda _: y_c * (R[x <= config.L_c] - R_t) / (R_c - R_t) + y_t * (R_c - R[x <= config.L_c]) / (R_c - R_t),
-            lambda _: y_t * (R_e - R[x > config.L_c]) / (R_e - R_t) + y_e * (R[x > config.L_c] - R_t) / (R_e - R_t),
+            lambda _: (
+                y_c * (R[x <= config.L_c] - R_t) / (R_c - R_t)
+                + y_t * (R_c - R[x <= config.L_c]) / (R_c - R_t)
+            ),
+            lambda _: (
+                y_e * (R[x  > config.L_c] - R_t) / (R_e - R_t)
+                + y_t * (R_e - R[x  > config.L_c]) / (R_e - R_t)
+            ),
         ],
     )
