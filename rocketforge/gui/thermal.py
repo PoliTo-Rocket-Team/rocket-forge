@@ -1,5 +1,6 @@
 import tkinter as tk
 import customtkinter as ctk
+from tkinter.messagebox import showwarning
 from customtkinter import CTkEntry, CTkButton, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMenu
 import rocketforge.thermal.config as config
 import rocketforge.performance.config as pconf
