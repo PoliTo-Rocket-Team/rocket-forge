@@ -9,6 +9,8 @@ def updateentry(entry: CTkEntry, value: any, disabled: bool=False) -> None:
     entry.delete("0", "200")
     if type(value) == str:
         entry.insert("0", value)
+    elif type(value) == int:
+        entry.insert("0", f"{value}")
     else:
         entry.insert("0", f"{value:.4f}")
     if disabled:
