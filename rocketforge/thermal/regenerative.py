@@ -125,15 +125,9 @@ class Regen():
 
                 dp = dp1 + dp2 + dp3
 
-                K = 0.5
-                j = argmax(u_c)
-                dpc = 0.5 * rho_c[j] * u_c[j]**2 * K
-
                 for i in range(config.n_stations):
                     if i != 0:
                         p[i] = p[i - 1] + dp[i]
-                    if i == j:
-                        p[i] += dpc
 
             if all(abs((T_wg - T_wg_new) / T_wg) < 0.05) or iter == config.max_iter:
                 T_wg = T_wg_new
@@ -142,7 +136,7 @@ class Regen():
             T_wg = (1.0 - config.stability) * T_wg + config.stability * T_wg_new
         
         if True:
-            Dp = sum(dp) + dpc
+            Dp = sum(dp)
 
         self.x = x
         self.T_wg = T_wg
