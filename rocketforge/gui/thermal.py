@@ -193,18 +193,26 @@ class ThermalFrame(ctk.CTkFrame):
     def plot_T(self):
         if self.regen != None:
             self.regen.plot_T()
+        else:
+            showwarning(title="Warning", message="Temperatures unavailable")
 
     def plot_q(self):
         if self.regen != None:
             self.regen.plot_q()
+        else:
+            showwarning(title="Warning", message="Wall heat flux unavailable")
 
     def plot_g(self):
         if self.regen != None:
             self.regen.plot_g()
+        else:
+            showwarning(title="Warning", message="Channels geometry unavailable")
 
     def details(self):
         if self.regen != None:
             self.regen.details()
+        else:
+            showwarning(title="Warning", message="Details unavailable")
 
     def load_mdot_ox(self):
         updateentry(self.mdotcentry, pconf.m_ox_d)
