@@ -8,6 +8,7 @@ import rocketforge.geometry.conical as conical
 from rocketforge.thermal.friction_factor import moody, tkachenko, colebrook_white
 from rocketforge.thermal.heat_flux import bartz, rad
 from rocketprops.rocket_prop import get_prop
+from tkinter.filedialog import asksaveasfilename
 
 
 class Regen():
@@ -243,6 +244,21 @@ class Regen():
 
     def details(self):
         pass
+
+    def print_g(self):
+        try:
+            with open(asksaveasfilename(defaultextension=".csv"), "w") as f:
+                f.write(f"{self.x[0]:.7f},{self.a[0]:.7f},0\n")
+                for i in range(1, len(self.x)):
+                    if self.x[i] != self.x[i-1]:
+                        f.write(f"{self.x[i]:.7f},{self.a[i]:.7f},0\n")
+            with open(asksaveasfilename(defaultextension=".csv"), "w") as f:
+                f.write(f"{self.x[0]:.7f},{self.b[0]:.7f},0\n")
+                for i in range(1, len(self.x)):
+                    if self.x[i] != self.x[i-1]:
+                        f.write(f"{self.x[i]:.7f},{self.b[i]:.7f},0\n")
+        except Exception:
+            pass
 
 
 def get_geometry():
