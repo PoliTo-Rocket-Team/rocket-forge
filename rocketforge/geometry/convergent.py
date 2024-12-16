@@ -2,7 +2,7 @@ from numpy import *
 from scipy.integrate import quad
 
 
-def get(At, R1OvRt, Lc, b, R2OvR2max, epsc):
+def get(At, R1OvRt, Lc, b, R2OvR2max, epsc, ptscirc=360):
     '''
     This function returns the x and y coordinates of the convergent section of the nozzle
     '''
@@ -21,7 +21,8 @@ def get(At, R1OvRt, Lc, b, R2OvR2max, epsc):
     xD = - R1 * sin(b)
 
     # Convergent convex circular arc
-    x1 = linspace(xD, 0, 25)
+    pts = int(ptscirc * b / (2 * pi))
+    x1 = linspace(xD, 0, pts)
     y1 = Rt + R1 - sqrt(R1**2 - x1**2)
 
     # Linear converging section
@@ -29,7 +30,7 @@ def get(At, R1OvRt, Lc, b, R2OvR2max, epsc):
     y2 = m * x2 + q
 
     # Convergent concave circular arc
-    x3 = linspace(xB, xC, 25)
+    x3 = linspace(xB, xC, pts)
     y3 = Rc - R2 + sqrt(R2**2 - (x3 - xB)**2)
 
     # Chamber section

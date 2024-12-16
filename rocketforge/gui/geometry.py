@@ -376,7 +376,7 @@ class GeometryFrame(ctk.CTkFrame):
                 Lc = float(self.chamberlengthentry.get()) * length_uom(self.chamberlengthuom.get())
                 Lstar = convergent.get_Lstar(At, R1OvRt, Lc, b, R2OvR2max, epsc)
 
-            xC, yC = convergent.get(At, R1OvRt, Lc, b, R2OvR2max, epsc)
+            xC, yC = convergent.get(At, R1OvRt, Lc, b, R2OvR2max, epsc, self.ptscirc)
         except Exception:
             xC = []
             yC = []
