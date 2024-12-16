@@ -215,10 +215,16 @@ class ThermalFrame(ctk.CTkFrame):
             showwarning(title="Warning", message="Details unavailable")
 
     def load_mdot_ox(self):
-        updateentry(self.mdotcentry, pconf.m_ox_d)
+        try:
+            updateentry(self.mdotcentry, pconf.m_ox_d)
+        except Exception:
+            showwarning(title="Warning", message="Mass flow rate unavailable")
 
     def load_mdot_fuel(self):
-        updateentry(self.mdotcentry, pconf.m_f_d)
+        try:
+            updateentry(self.mdotcentry, pconf.m_f_d)
+        except Exception:
+            showwarning(title="Warning", message="Mass flow rate unavailable")
 
     def channels_window(self):
         if self.channelswindow is None or not self.channelswindow.winfo_exists():
