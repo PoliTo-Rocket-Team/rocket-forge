@@ -122,11 +122,18 @@ class ThermalFrame(ctk.CTkFrame):
 
         CTkButton(
             self, text="Channels geometry...", command=self.channels_window, width=135
-        ).place(anchor="center", relx=0.25, rely=0.46)
+        ).place(anchor="center", relx=0.14, rely=0.46)
         self.channelswindow = None
         CTkButton(
+            self, text="Plot channels geometry", command=self.plot_g, width=135
+        ).place(anchor="center", relx=0.38, rely=0.46)
+        CTkButton(
+            self, text="Pressure drops...", width=135
+        ).place(anchor="center", relx=0.62, rely=0.46)
+        self.pressurewindow = None
+        CTkButton(
             self, text="Advanced settings...", command=self.advanced_window, width=135
-        ).place(anchor="center", relx=0.75, rely=0.46)
+        ).place(anchor="center", relx=0.86, rely=0.46)
         self.advancedwindow = None
 
         self.filmframe = CTkFrame(self, border_width=0, height=28, width=590)
@@ -169,16 +176,13 @@ class ThermalFrame(ctk.CTkFrame):
 
         CTkButton(
             self, text="Plot temperatures", command=self.plot_T, width=135
-        ).place(anchor="center", relx=0.125, rely=0.92)
+        ).place(anchor="center", relx=0.2, rely=0.92)
         CTkButton(
             self, text="Plot wall heat flux", command=self.plot_q, width=135
-        ).place(anchor="center", relx=0.375, rely=0.92)
-        CTkButton(
-            self, text="Plot channels geometry", command=self.plot_g, width=135
-        ).place(anchor="center", relx=0.625, rely=0.92)
+        ).place(anchor="center", relx=0.5, rely=0.92)
         CTkButton(
             self, text="Details", command=self.details, width=135
-        ).place(anchor="center", relx=0.875, rely=0.92)
+        ).place(anchor="center", relx=0.8, rely=0.92)
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
