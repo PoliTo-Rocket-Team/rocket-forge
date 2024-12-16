@@ -59,7 +59,7 @@ class Regen():
         T_wg = full(config.n_stations, config.T_ci)
         T_wc = full(config.n_stations, config.T_ci)
         T_c = full(config.n_stations, config.T_ci)
-        cp_c = [P.CpAtTdegR(T_c[i] * 1.8) * 4186.8 for i in range(config.n_stations)]
+        cp_c = full(config.n_stations, P.CpAtTdegR(config.T_ci * 1.8) * 4186.8)
         mu_c = zeros(config.n_stations)
         lambda_c = zeros(config.n_stations)
 
