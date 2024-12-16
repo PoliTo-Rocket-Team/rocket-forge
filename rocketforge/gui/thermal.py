@@ -136,7 +136,7 @@ class ThermalFrame(ctk.CTkFrame):
         self.radvar = ctk.BooleanVar(value=False)
         CTkCheckBox(
             self,
-            text="Enable radiation cooling (work in progress)",
+            text="Enable radiation cooling",
             variable=self.radvar,
             command=self.toggle_rad_cooling
         ).place(anchor="w", relx=0.02, rely=0.60)
