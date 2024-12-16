@@ -25,15 +25,10 @@ class GeometryFrame(ctk.CTkFrame):
         super(GeometryFrame, self).__init__(master, **kw)
         self.topframe = CTkFrame(self)
         self.topframe.configure(border_width=0, height=28, width=590)
-        self.toplabel = CTkLabel(self.topframe)
-        self.toplabel.configure(text="Chamber Geometry")
-        self.toplabel.place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
+        CTkLabel(self.topframe, text="Chamber Geometry").place(anchor="center", relx=0.5, rely=0.5, x=0, y=0)
         self.topframe.place(anchor="n", relx=0.5, rely=0.01, x=0, y=0)
 
-        self.throatarealabel = CTkLabel(self)
-        self.throatarealabel.configure(text="Throat area")
-        self.throatarealabel.place(anchor="w", relx=0.02, rely=0.11, x=0, y=0)
-
+        CTkLabel(self, text="Throat area").place(anchor="w", relx=0.02, rely=0.11, x=0, y=0)
         self.throatareaentry = CTkEntry(self)
         self.throatareaentry.configure(placeholder_text="0", width=59)
         self.throatareaentry.place(anchor="e", relx=229/600, rely=0.11, x=0, y=0)
@@ -46,19 +41,13 @@ class GeometryFrame(ctk.CTkFrame):
         self.throatareaoptmenu.place(anchor="e", relx=0.48, rely=0.11, x=0, y=0)
 
         # Convergent section
-        self.r1ovrtlabel = CTkLabel(self)
-        self.r1ovrtlabel.configure(text="R1/Rt")
-        self.r1ovrtlabel.place(anchor="w", relx=0.02, rely=0.18, x=0, y=0)
-
+        CTkLabel(self, text="R1/Rt").place(anchor="w", relx=0.02, rely=0.18, x=0, y=0)
         self.r1ovrtentry = CTkEntry(self)
         self.r1ovrtentry.configure(placeholder_text="0", width=118)
         self.r1ovrtentry.place(anchor="e", relx=0.48, rely=0.18, x=0, y=0)
         updateentry(self.r1ovrtentry, "1.5")
 
-        self.chamberlengthlabel = CTkLabel(self)
-        self.chamberlengthlabel.configure(text="Chamber length")
-        self.chamberlengthlabel.place(anchor="w", relx=0.02, rely=0.25, x=0, y=0)
-
+        CTkLabel(self, text="Chamber length").place(anchor="w", relx=0.02, rely=0.25, x=0, y=0)
         self.chamberlengthentry = CTkEntry(self)
         self.chamberlengthentry.configure(placeholder_text="0", width=59)
         self.chamberlengthentry.place(anchor="e", relx=229/600, rely=0.25, x=0, y=0)
@@ -71,10 +60,7 @@ class GeometryFrame(ctk.CTkFrame):
         )
         self.chamberlengthoptmenu.place(anchor="e", relx=0.48, rely=0.25, x=0, y=0)
 
-        self.blabel = CTkLabel(self)
-        self.blabel.configure(text="Contraction angle")
-        self.blabel.place(anchor="w", relx=0.02, rely=0.32, x=0, y=0)
-
+        CTkLabel(self, text="Contraction angle").place(anchor="w", relx=0.02, rely=0.32, x=0, y=0)
         self.bentry = CTkEntry(self)
         self.bentry.configure(placeholder_text="0", width=59)
         self.bentry.place(anchor="e", relx=229/600, rely=0.32, x=0, y=0)
@@ -87,28 +73,20 @@ class GeometryFrame(ctk.CTkFrame):
         )
         self.boptmenu.place(anchor="e", relx=0.48, rely=0.32, x=0, y=0)
 
-        self.r2ovr2maxlabel = CTkLabel(self)
-        self.r2ovr2maxlabel.configure(text="R2/R2max")
-        self.r2ovr2maxlabel.place(anchor="w", relx=0.02, rely=0.39, x=0, y=0)
-
+        CTkLabel(self, text="R2/R2max").place(anchor="w", relx=0.02, rely=0.39, x=0, y=0)
         self.r2ovr2maxentry = CTkEntry(self)
         self.r2ovr2maxentry.configure(placeholder_text="0", width=118)
         self.r2ovr2maxentry.place(anchor="e", relx=0.48, rely=0.39, x=0, y=0)
         updateentry(self.r2ovr2maxentry, "0.5")
 
-        self.epsclabel = CTkLabel(self)
-        self.epsclabel.configure(text="Contraction Area Ratio")
-        self.epsclabel.place(anchor="w", relx=0.02, rely=0.46, x=0, y=0)
-
+        CTkLabel(self, text="Contraction Area Ratio").place(anchor="w", relx=0.02, rely=0.46, x=0, y=0)
         self.epscentry = CTkEntry(self)
         self.epscentry.configure(width=118, state="disabled")
         self.epscentry.place(anchor="e", relx=0.48, rely=0.46, x=0, y=0)
         updateentry(self.epscentry, "Undefined", True)
 
         # Divergent Section
-        self.shapelabel = CTkLabel(self)
-        self.shapelabel.configure(text="Nozzle shape")
-        self.shapelabel.place(anchor="w", relx=0.52, rely=0.11, x=0, y=0)
+        CTkLabel(self, text="Nozzle shape").place(anchor="w", relx=0.52, rely=0.11, x=0, y=0)
 
         self.shapeoptmenu = CTkOptionMenu(self)
         self.shape = tk.StringVar(value="Thrust-optimized parabolic")
@@ -127,9 +105,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.rnovrtentry.place(anchor="e", relx=0.98, rely=0.18, x=0, y=0)
         updateentry(self.rnovrtentry, "0.382")
 
-        self.epslabel = CTkLabel(self)
-        self.epslabel.configure(text="Expansion Area Ratio")
-        self.epslabel.place(anchor="w", relx=0.52, rely=0.46, x=0, y=0)
+        CTkLabel(self, text="Expansion Area Ratio").place(anchor="w", relx=0.52, rely=0.46, x=0, y=0)
 
         self.epsentry = CTkEntry(self)
         self.epsentry.configure(width=118, state="disabled")
@@ -230,25 +206,25 @@ class GeometryFrame(ctk.CTkFrame):
         )
 
         # Buttons
-        self.plotbutton = CTkButton(self)
-        self.plotbutton.configure(text="Update plot", command=self.plot, width=100)
-        self.plotbutton.place(anchor="center", relx=0.12, rely=0.53)
+        CTkButton(
+            self, text="Update plot", command=self.plot, width=100
+        ).place(anchor="center", relx=0.12, rely=0.53)
 
-        self.clearplotbutton = CTkButton(self)
-        self.clearplotbutton.configure(text="Clear plot", command=self.clear_plot, width=100)
-        self.clearplotbutton.place(anchor="center", relx=0.31, rely=0.53)
+        CTkButton(
+            self, text="Advanced...", command=self.advanced, width=100
+        ).place(anchor="center", relx=0.31, rely=0.53)
 
-        self.saveplotbutton = CTkButton(self)
-        self.saveplotbutton.configure(text="Export plot...", command=self.export_plot, width=100)
-        self.saveplotbutton.place(anchor="center", relx=0.5, rely=0.53)
+        CTkButton(
+            self, text="Export plot...", command=self.export_plot, width=100
+        ).place(anchor="center", relx=0.5, rely=0.53)
 
-        self.detailsbutton = CTkButton(self)
-        self.detailsbutton.configure(text="Details", command=self.details, width=100)
-        self.detailsbutton.place(anchor="center", relx=0.69, rely=0.53)
+        CTkButton(
+            self, text="Details", command=self.details, width=100
+        ).place(anchor="center", relx=0.69, rely=0.53)
 
-        self.savedetailsbutton = CTkButton(self)
-        self.savedetailsbutton.configure(text="Help", command=self.help, width=100)
-        self.savedetailsbutton.place(anchor="center", relx=0.88, rely=0.53)
+        CTkButton(
+            self, text="Help", command=self.help, width=100
+        ).place(anchor="center", relx=0.88, rely=0.53)
 
         # Plot
         self.plotframe = CTkFrame(self)
@@ -271,9 +247,12 @@ class GeometryFrame(ctk.CTkFrame):
 
         self.x = []
         self.y = []
+        self.advancedwindow = None
         self.details_window = None
         self.details_output = ""
         self.help_window = None
+        self.ptscirc = 360
+        self.ptspar = 100
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
@@ -313,7 +292,7 @@ class GeometryFrame(ctk.CTkFrame):
                     showwarning(title="Warning", message="Final parabola angle must be greater than initial parabola angle")
                     raise Exception
             
-                xD, yD = top.get(At, RnOvRt, Le, thetan, thetae, eps)
+                xD, yD = top.get(At, RnOvRt, Le, thetan, thetae, eps, self.ptscirc, self.ptspar)
             
             # Truncated ideal contour (TIC)
             if self.shape.get() == "Truncated ideal contour":
@@ -348,7 +327,7 @@ class GeometryFrame(ctk.CTkFrame):
                 updateentry(self.cthetaentry, thetae / angle_uom(self.cthetauom.get()))
                 thetan = thetae
 
-                xD, yD = conical.get(At, RnOvRt, eps, Le, thetae)
+                xD, yD = conical.get(At, RnOvRt, eps, Le, thetae, self.ptscirc)
 
         except Exception:
             xD = []
@@ -373,7 +352,7 @@ class GeometryFrame(ctk.CTkFrame):
                 Lc = float(self.chamberlengthentry.get()) * length_uom(self.chamberlengthuom.get())
                 Lstar = convergent.get_Lstar(At, R1OvRt, Lc, b, R2OvR2max, epsc)
 
-            xC, yC = convergent.get(At, R1OvRt, Lc, b, R2OvR2max, epsc)
+            xC, yC = convergent.get(At, R1OvRt, Lc, b, R2OvR2max, epsc, self.ptscirc)
         except Exception:
             xC = []
             yC = []
@@ -450,15 +429,47 @@ class GeometryFrame(ctk.CTkFrame):
             thetan = (sqrt((gamma+1)/(gamma-1))*arctan(sqrt((gamma-1)*(Me**2-1)/(gamma+1)))-arctan(sqrt(Me**2-1)))/2
             updateentry(self.thetanentry, thetan / angle_uom(self.thetanuom.get()))
     
-    def clear_plot(self):
-        self.ax.clear()
-        self.ax.grid()
-        self.ax.set_ylabel("Radius [m]")
-        self.ax.set_xlabel("Axis [m]")
-        self.canvas.draw()
-        self.x = []
-        self.y = []
-        self.details_output = ""
+    def advanced(self):
+        if self.advancedwindow is None or not self.advancedwindow.winfo_exists():
+            self.advancedwindow = ctk.CTkToplevel()
+            self.advancedwindow.title("Advanced settings")
+            self.advancedwindow.configure(width=300, height=120)
+            self.advancedwindow.resizable(False, False)
+            self.advancedwindow.after(
+                201,
+                lambda: self.advancedwindow.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                ),
+            )
+
+            CTkLabel(self.advancedwindow, text="Pts/circle").place(anchor="w", relx=0.1, rely=1/6)
+            self.ptscircentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=59)
+            self.ptscircentry.place(anchor="e", relx=0.9, rely=1/6)
+            updateentry(self.ptscircentry, self.ptscirc)
+
+            CTkLabel(self.advancedwindow, text="Points per parabola").place(anchor="w", relx=0.1, rely=3/6)
+            self.ptsparentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=59)
+            self.ptsparentry.place(anchor="e", relx=0.9, rely=3/6)
+            updateentry(self.ptsparentry, self.ptspar)
+
+            CTkButton(
+                self.advancedwindow, text="Set", command=self.set_advanced, width=90
+            ).place(anchor="center", relx=0.5, rely=5/6)
+
+            self.advancedwindow.after(50, self.advancedwindow.lift)
+            self.advancedwindow.after(50, self.advancedwindow.focus)
+
+        else:
+            self.advancedwindow.lift()
+            self.advancedwindow.focus()
+
+    def set_advanced(self):
+        try:
+            self.ptscirc = int(float(self.ptscircentry.get()))
+            self.ptspar = int(float(self.ptsparentry.get()))
+            self.advancedwindow.destroy()
+        except Exception:
+            pass
 
     def export_plot(self):
         try:
@@ -489,16 +500,15 @@ class GeometryFrame(ctk.CTkFrame):
             if os.name == "nt":
                 self.detailstextbox = ctk.CTkTextbox(
                     self.details_window,
-                    height=420,
                     state="disabled",
                     wrap="none",
                     font=("Courier New", 12),
                 )
             else:
                 self.detailstextbox = ctk.CTkTextbox(
-                    self.details_window, height=420, state="disabled", wrap="none", font=("Mono", 12)
+                    self.details_window, state="disabled", wrap="none", font=("Mono", 12)
                 )
-            self.detailstextbox.place(relwidth=0.95, relx=0.5, rely=0.025, anchor="n")
+            self.detailstextbox.place(relwidth=0.95, relheight=13/15, relx=0.5, rely=0.025, anchor="n")
 
             self.savedetailsbutton = CTkButton(self.details_window)
             self.savedetailsbutton.configure(text="Save...", command=self.save_details)
@@ -534,7 +544,7 @@ class GeometryFrame(ctk.CTkFrame):
             ["Chamber radius", "Rc", f"{1000*Rc:.2f}", "mm"],
             ["Exit radius", "Re", f"{1000*Re:.2f}", "mm"],
             [],
-            ["Charachteristic chamber length", "L*", f"{1000*Lstar:.2f}", "mm"],
+            ["Characteristic chamber length", "L*", f"{1000*Lstar:.2f}", "mm"],
             ["Cylindrical section length", "Lcyl", f"{1000*Lcyl:.2f}", "mm"],
             ["Chamber length", "Lc", f"{1000*Lc:.2f}", "mm"],
             ["Divergent length", "Le", f"{1000*Le:.2f}", "mm"],
