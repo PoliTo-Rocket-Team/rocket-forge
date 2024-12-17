@@ -258,7 +258,7 @@ class ThermalFrame(ctk.CTkFrame):
             self.channelswindow.after(
                 201,
                 lambda: self.channelswindow.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 
@@ -374,7 +374,7 @@ class ThermalFrame(ctk.CTkFrame):
             self.advancedwindow.after(
                 201,
                 lambda: self.advancedwindow.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 

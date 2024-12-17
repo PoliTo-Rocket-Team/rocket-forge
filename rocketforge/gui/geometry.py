@@ -438,7 +438,7 @@ class GeometryFrame(ctk.CTkFrame):
             self.advancedwindow.after(
                 201,
                 lambda: self.advancedwindow.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 
@@ -493,7 +493,7 @@ class GeometryFrame(ctk.CTkFrame):
             self.details_window.after(
                 201,
                 lambda: self.details_window.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 
@@ -583,7 +583,7 @@ class GeometryFrame(ctk.CTkFrame):
             self.help_window.after(
                 201,
                 lambda: self.help_window.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 

@@ -34,7 +34,7 @@ class RocketForge(CTk):
         self.after(
             201,
             lambda: self.iconphoto(
-                False, tk.PhotoImage(file=resource_path("icon.png"))
+                False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
             ),
         )
 
@@ -263,7 +263,7 @@ class RocketForge(CTk):
             self.about.after(
                 201,
                 lambda: self.about.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 
@@ -293,7 +293,7 @@ class RocketForge(CTk):
             self.preferences.after(
                 201,
                 lambda: self.preferences.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 

@@ -145,7 +145,7 @@ class MissionFrame(ctk.CTkFrame):
             self.envwindow.after(
                 201,
                 lambda: self.envwindow.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 
@@ -237,7 +237,7 @@ class MissionFrame(ctk.CTkFrame):
             self.railwindow.after(
                 201,
                 lambda: self.railwindow.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 
@@ -300,7 +300,7 @@ class MissionFrame(ctk.CTkFrame):
             self.enginewindow.after(
                 201,
                 lambda: self.enginewindow.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 
@@ -402,7 +402,7 @@ class MissionFrame(ctk.CTkFrame):
             self.rocketwindow.after(
                 201,
                 lambda: self.rocketwindow.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 
@@ -518,7 +518,7 @@ class MissionFrame(ctk.CTkFrame):
             self.finswindow.after(
                 201,
                 lambda: self.finswindow.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 
@@ -601,7 +601,7 @@ class MissionFrame(ctk.CTkFrame):
             self.parachutewindow.after(
                 201,
                 lambda: self.parachutewindow.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 
@@ -658,7 +658,7 @@ class MissionFrame(ctk.CTkFrame):
             self.triggerwindow.after(
                 201,
                 lambda: self.triggerwindow.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("icon.png"))
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
                 ),
             )
 
