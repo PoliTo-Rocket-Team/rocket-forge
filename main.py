@@ -384,6 +384,8 @@ class RocketForge(CTk):
             }
             thf = self.thermalframe
             config["Thermal"] = {
+                "enable_rad": thf.radvar.get(),
+                "eps_w": thf.radepsentry.get(),
                 "enable_film": thf.filmvar.get(),
                 "fuel_film": thf.fuelfilm.get(),
                 "ox_film": thf.oxfilm.get(),
@@ -486,6 +488,8 @@ class RocketForge(CTk):
             gf.cthetauom.set(config.get("Geometry", "ctheta_uom"))
 
             thf = self.thermalframe
+            thf.radvar.set(config.get("Thermal", "enable_rad"))
+            updateentry(thf.radepsentry, config.get("Thermal", "eps_w"))
             thf.filmvar.set(config.get("Thermal", "enable_film"))
             updateentry(thf.fuelfilm, config.get("Thermal", "fuel_film"))
             updateentry(thf.oxfilm, config.get("Thermal", "ox_film"))
