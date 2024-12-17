@@ -171,13 +171,20 @@ class RocketForge(CTk):
         self.statuslabel.update()
 
         try:
+            self.statuslabel.configure(text="Status: running...")
+            self.statuslabel.update()
+            self.initialframe.run()
+        except Exception:
+            pass
+
+        try:
             self.statuslabel.configure(text="Status: loading regenerative cooling...")
             self.statuslabel.update()
             self.thermalframe.load_regen_cooling()
         except Exception:
             self.thermalframe.regenvar.set(False)
             self.thermalframe.toggle_regen_cooling()
-    
+
         try:
             self.statuslabel.configure(text="Status: loading radiation cooling...")
             self.statuslabel.update()
@@ -193,13 +200,6 @@ class RocketForge(CTk):
         except Exception:
             self.thermalframe.filmvar.set(False)
             self.thermalframe.toggle_film_cooling()
-
-        try:
-            self.statuslabel.configure(text="Status: running...")
-            self.statuslabel.update()
-            self.initialframe.run()
-        except Exception:
-            pass
 
         try:
             self.statuslabel.configure(text="Status: computing geometry...")
