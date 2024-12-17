@@ -409,7 +409,12 @@ class ThermalFrame(ctk.CTkFrame):
             updateentry(self.roughentry, config.absolute_roughness * 1000)
 
             CTkLabel(self.advancedwindow, text="Friction factor relation").place(anchor="w", relx=0.05, rely=13/16)
-            self.dp_method = ctk.StringVar(value="Tkachenko")
+            if config.dp_method == 0:
+                self.dp_method = ctk.StringVar(value="Tkachenko")
+            elif config.dp_method == 1:
+                self.dp_method = ctk.StringVar(value="Moody")
+            elif config.dp_method == 2:
+                self.dp_method = ctk.StringVar(value="Colebrook-White")
             self.dp_methodoptmenu = CTkOptionMenu(
                 self.advancedwindow,
                 values=["Tkachenko", "Moody", "Colebrook-White"],
