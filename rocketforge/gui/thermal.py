@@ -239,13 +239,13 @@ class ThermalFrame(ctk.CTkFrame):
 
     def load_mdot_ox(self):
         try:
-            updateentry(self.mdotcentry, pconf.m_ox_d)
+            updateentry(self.mdotcentry, pconf.m_ox_d / mdot_uom(self.mdotcuom.get()))
         except Exception:
             showwarning(title="Warning", message="Mass flow rate unavailable")
 
     def load_mdot_fuel(self):
         try:
-            updateentry(self.mdotcentry, pconf.m_f_d)
+            updateentry(self.mdotcentry, pconf.m_f_d / mdot_uom(self.mdotcuom.get()))
         except Exception:
             showwarning(title="Warning", message="Mass flow rate unavailable")
 
