@@ -406,6 +406,32 @@ class RocketForge(CTk):
             }
             thf = self.thermalframe
             config["Thermal"] = {
+                "enable_regen": thf.regenvar.get(),
+                "coolant": thf.coolant.get(),
+                "coolant_flow_rate": thf.mdotcentry.get(),
+                "coolant_flow_rate_uom": thf.mdotcuom.get(),
+                "coolant_Ti": thf.tcientry.get(),
+                "coolant_Ti_uom": thf.tciuom.get(),
+                "coolant_pi": thf.pcientry.get(),
+                "coolant_pi_uom": thf.pciuom.get(),
+                "pressure_drops": thf.dp.get(),
+                "inner_wall": thf.tentry.get(),
+                "inner_wall_uom": thf.tuom.get(),
+                "wall_conductivity": thf.kentry.get(),
+                "number_of_channels": tconf.NC,
+                "channels_ac": tconf.a1,
+                "channels_at": tconf.a2,
+                "channels_ae": tconf.a3,
+                "channels_bc": tconf.b1,
+                "channels_bt": tconf.b2,
+                "channels_be": tconf.b3,
+                "adv_pinj/pc": tconf.pcoOvpc,
+                "adv_stations": tconf.n_stations,
+                "adv_max_iter": tconf.max_iter,
+                "adv_tuning": tconf.tuning_factor,
+                "adv_stability": tconf.stability,
+                "adv_abs_roughness": tconf.absolute_roughness,
+                "adv_friction_method": tconf.dp_method,
                 "enable_rad": thf.radvar.get(),
                 "eps_w": thf.radepsentry.get(),
                 "enable_film": thf.filmvar.get(),
@@ -510,6 +536,32 @@ class RocketForge(CTk):
             gf.cthetauom.set(config.get("Geometry", "ctheta_uom"))
 
             thf = self.thermalframe
+            thf.regenvar.set(config.get("Thermal", "enable_regen"))
+            thf.coolant.set(config.get("Thermal", "coolant"))
+            updateentry(thf.mdotcentry, config.get("Thermal", "coolant_flow_rate"))
+            thf.mdotcuom.set(config.get("Thermal", "coolant_flow_rate_uom"))
+            updateentry(thf.tcientry, config.get("Thermal", "coolant_Ti"))
+            thf.tciuom.set(config.get("Thermal", "coolant_Ti_uom"))
+            updateentry(thf.pcientry, config.get("Thermal", "coolant_pi"))
+            thf.pciuom.set(config.get("Thermal", "coolant_pi_uom"))
+            thf.dp.set(config.get("Thermal", "pressure_drops"))
+            updateentry(thf.tentry, config.get("Thermal", "inner_wall"))
+            thf.tuom.set(config.get("Thermal", "inner_wall_uom"))
+            updateentry(thf.kentry, config.get("Thermal", "wall_conductivity"))
+            tconf.NC = int(float(config.get("Thermal", "number_of_channels")))
+            tconf.a1 = float(config.get("Thermal", "channels_ac"))
+            tconf.a2 = float(config.get("Thermal", "channels_at"))
+            tconf.a3 = float(config.get("Thermal", "channels_ae"))
+            tconf.b1 = float(config.get("Thermal", "channels_bc"))
+            tconf.b2 = float(config.get("Thermal", "channels_bt"))
+            tconf.b3 = float(config.get("Thermal", "channels_be"))
+            tconf.pcoOvpc = float(config.get("Thermal", "adv_pinj/pc"))
+            tconf.n_stations = int(float(config.get("Thermal", "adv_stations")))
+            tconf.max_iter = int(float(config.get("Thermal", "adv_max_iter")))
+            tconf.tuning_factor = float(config.get("Thermal", "adv_tuning"))
+            tconf.stability = float(config.get("Thermal", "adv_stability"))
+            tconf.absolute_roughness = float(config.get("Thermal", "adv_abs_roughness"))
+            tconf.dp_method = int(float(config.get("Thermal", "adv_friction_method")))
             thf.radvar.set(config.get("Thermal", "enable_rad"))
             updateentry(thf.radepsentry, config.get("Thermal", "eps_w"))
             thf.filmvar.set(config.get("Thermal", "enable_film"))
