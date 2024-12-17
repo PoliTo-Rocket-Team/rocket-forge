@@ -471,6 +471,7 @@ class ThermalFrame(ctk.CTkFrame):
         config.film = self.filmvar.get()
 
     def load_regen_cooling(self):
+        config.regen = self.regenvar.get()
         config.coolant = self.coolant.get()
         config.m_dot_c = float(self.mdotcentry.get()) * mdot_uom(self.mdotcuom.get())
         config.T_ci = temperature_uom(float(self.tcientry.get()), self.tciuom.get())
@@ -483,8 +484,10 @@ class ThermalFrame(ctk.CTkFrame):
         config.lambda_w = float(self.kentry.get())
     
     def load_rad_cooling(self):
+        config.rad = self.radvar.get()
         config.eps_w = float(self.radepsentry.get())
 
     def load_film_cooling(self):
+        config.film = self.filmvar.get()
         config.oxfilm = 0.0 if self.oxfilm.get() == "" else float(self.oxfilm.get())
         config.fuelfilm = 0.0 if self.fuelfilm.get() == "" else float(self.fuelfilm.get())
