@@ -587,7 +587,7 @@ class GeometryFrame(ctk.CTkFrame):
                 ),
             )
 
-            image = CTkImage(Image.open(resource_path("rocketforge/geometry/help.png")), size=(600, 300))
+            image = CTkImage(Image.open(resource_path("rocketforge/resources/help.png")), size=(600, 300))
             self.help_image = CTkLabel(self.help_window, text="", image=image)
             self.help_image.place(anchor="center", relx = 0.5, rely = 0.5)
 
