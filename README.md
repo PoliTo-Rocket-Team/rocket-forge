@@ -88,7 +88,7 @@ Be sure to disable antivirus for the Rocket Forge installation folder.
 
 Use PyInstaller inside the Rocket Forge installation folder to compile the software using the %FOLDER% variable:
 ```
-pyinstaller --windowed --onefile --add-data "%FOLDER%/rocketcea:rocketcea/" --add-data "%FOLDER%/rocketprops:rocketprops/" --add-data "%FOLDER%/rocketpy:rocketpy/" --add-data "%FOLDER%/customtkinter:customtkinter/" --add-data "%FOLDER%/PIL:PIL/" --add-data "icon.png:." --add-data "rocketforge/geometry/help.png:rocketforge/geometry/" --add-data "theme.json:." --icon=icon.png -n "Rocket Forge" --clean main.py 
+pyinstaller --windowed --onefile --add-data "%FOLDER%/rocketcea:rocketcea/" --add-data "%FOLDER%/rocketprops:rocketprops/" --add-data "%FOLDER%/rocketpy:rocketpy/" --add-data "%FOLDER%/customtkinter:customtkinter/" --add-data "%FOLDER%/PIL:PIL/" --add-data "rocketforge/resources/icon.png:rocketforge/resources/" --add-data "rocketforge/resources/help.png:resources" --add-data "theme.json:." --icon=rocketforge/resources/icon.png -n "Rocket Forge" --clean main.py 
 ```
 Executable file will be built inside the `dist` folder. To build an updated version of the executable, just use:
 ```
@@ -194,5 +194,5 @@ FOLDER=/path/to/your/python/libraries/folder
 ```
 Use PyInstaller to compile the software using the $FOLDER variable:
 ```
-pyinstaller --windowed --onefile --add-data "$FOLDER/rocketcea:rocketcea/" --add-data "$FOLDER/rocketprops:rocketprops/" --add-data "$FOLDER/rocketpy:rocketpy/" --add-data "$FOLDER/customtkinter:customtkinter/" --add-data "$FOLDER/PIL:PIL/" --add-data "icon.png:." --add-data "rocketforge/geometry/help.png:rocketforge/geometry/" --add-data "theme.json:." --icon=icon.png -n "Rocket Forge" --clean main.py 
+pyinstaller --windowed --onefile --add-data "$FOLDER/rocketcea:rocketcea/" --add-data "$FOLDER/rocketprops:rocketprops/" --add-data "$FOLDER/rocketpy:rocketpy/" --add-data "$FOLDER/customtkinter:customtkinter/" --add-data "$FOLDER/PIL:PIL/" --add-data "rocketforge/resources/icon.png:rocketforge/resources/" --add-data "rocketforge/resources/help.png:rocketforge/resources/" --add-data "theme.json:." --icon=rocketforge/resources/icon.png -n "Rocket Forge" --clean main.py 
 ```
