@@ -433,7 +433,7 @@ class GeometryFrame(ctk.CTkFrame):
         if self.advancedwindow is None or not self.advancedwindow.winfo_exists():
             self.advancedwindow = ctk.CTkToplevel()
             self.advancedwindow.title("Advanced settings")
-            self.advancedwindow.configure(width=300, height=120)
+            self.advancedwindow.configure(width=280, height=120)
             self.advancedwindow.resizable(False, False)
             self.advancedwindow.after(
                 201,
@@ -442,19 +442,24 @@ class GeometryFrame(ctk.CTkFrame):
                 ),
             )
 
-            CTkLabel(self.advancedwindow, text="Pts/circle").place(anchor="w", relx=0.1, rely=1/6)
-            self.ptscircentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=59)
-            self.ptscircentry.place(anchor="e", relx=0.9, rely=1/6)
+            self.advanced_frame = CTkFrame(
+                self.advancedwindow, border_width=3, corner_radius=0, width=280, height=120,
+            )
+            self.advanced_frame.grid(column=0, row=0)
+
+            CTkLabel(self.advanced_frame, text="Pts/circle").place(anchor="w", relx=0.1, rely=1/4)
+            self.ptscircentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=80)
+            self.ptscircentry.place(anchor="e", relx=0.9, rely=1/4)
             updateentry(self.ptscircentry, self.ptscirc)
 
-            CTkLabel(self.advancedwindow, text="Points per parabola").place(anchor="w", relx=0.1, rely=3/6)
-            self.ptsparentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=59)
-            self.ptsparentry.place(anchor="e", relx=0.9, rely=3/6)
+            CTkLabel(self.advanced_frame, text="Points per parabola").place(anchor="w", relx=0.1, rely=2/4)
+            self.ptsparentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=80)
+            self.ptsparentry.place(anchor="e", relx=0.9, rely=2/4)
             updateentry(self.ptsparentry, self.ptspar)
 
             CTkButton(
-                self.advancedwindow, text="Set", command=self.set_advanced, width=90
-            ).place(anchor="center", relx=0.5, rely=5/6)
+                self.advanced_frame, text="Set", command=self.set_advanced, width=90
+            ).place(anchor="center", relx=0.5, rely=3.2/4)
 
             self.advancedwindow.after(50, self.advancedwindow.lift)
             self.advancedwindow.after(50, self.advancedwindow.focus)
