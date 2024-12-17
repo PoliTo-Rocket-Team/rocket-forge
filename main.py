@@ -349,8 +349,6 @@ class RocketForge(CTk):
                 "exit_condition": self.initialframe.exitcondition.get(),
                 "mixture_ratio_optimization": self.initialframe.optimizationmode.get(),
                 "inlet_conditions": self.initialframe.inletcondition.get(),
-                # "mass_flux": self.initialframe.massflowrateentry.get(),
-                # "mass_flux_uom": self.initialframe.massflowrateuom.get(),
                 "contraction_ratio": self.initialframe.epscentry.get(),
                 "thrust": self.initialframe.thrustentry.get(),
                 "thrust_uom": self.initialframe.thrustuom.get(),
@@ -358,14 +356,9 @@ class RocketForge(CTk):
                 "ambient_pressure_uom": self.initialframe.thrustuom2.get(),
             }
             tf = self.performanceframe.thermodynamicframe
-            df = self.performanceframe.deliveredframe
             config["Performance"] = {
                 "flow_model": tf.frozenflow.get(),
                 "number_of_stations": tf.stationsentry.get(),
-                # "consider_multiphase": df.multiphase.get(),
-                # "condensed_heat_capacity": df.condheatcapacityentry.get(),
-                # "condensed_heat_capacity_uom": df.condheatcapacityuom.get(),
-                # "mass_frac_condensed": df.condmassfracentry.get(),
             }
             gf = self.geometryframe
             config["Geometry"] = {
