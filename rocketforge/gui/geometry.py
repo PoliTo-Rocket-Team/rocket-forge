@@ -502,22 +502,27 @@ class GeometryFrame(ctk.CTkFrame):
                 ),
             )
 
+            self.details_frame = CTkFrame(
+                self.details_window, border_width=3, corner_radius=0, width=450, height=480,
+            )
+            self.details_frame.grid(column=0, row=0)
+
             if os.name == "nt":
                 self.detailstextbox = ctk.CTkTextbox(
-                    self.details_window,
+                    self.details_frame,
                     state="disabled",
                     wrap="none",
                     font=("Courier New", 12),
                 )
             else:
                 self.detailstextbox = ctk.CTkTextbox(
-                    self.details_window, state="disabled", wrap="none", font=("Mono", 12)
+                    self.details_frame, state="disabled", wrap="none", font=("Mono", 12)
                 )
             self.detailstextbox.place(relwidth=0.95, relheight=13/15, relx=0.5, rely=0.025, anchor="n")
 
-            self.savedetailsbutton = CTkButton(self.details_window)
-            self.savedetailsbutton.configure(text="Save...", command=self.save_details)
-            self.savedetailsbutton.place(anchor="center", relx=0.5, rely=0.95)
+            CTkButton(
+                self.details_frame, text="Save...", command=self.save_details
+            ).place(anchor="center", relx=0.5, rely=0.95)
 
             updatetextbox(self.detailstextbox, self.details_output, True)
 
