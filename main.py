@@ -451,8 +451,6 @@ class RocketForge(CTk):
             idf.exitcondition.set(config.get("InitialData", "exit_condition"))
             idf.optimizationmode.set(config.get("InitialData", "mixture_ratio_optimization"))
             idf.inletcondition.set(config.get("InitialData", "inlet_conditions"))
-            # updateentry(idf.massflowrateentry, config.get("InitialData", "mass_flux"))
-            # idf.massflowrateuom.set(config.get("InitialData", "mass_flux_uom"))
             updateentry(idf.epscentry, config.get("InitialData", "contraction_ratio"))
             updateentry(idf.thrustentry, config.get("InitialData", "thrust"))
             idf.thrustuom.set(config.get("InitialData", "thrust_uom"))
@@ -460,14 +458,9 @@ class RocketForge(CTk):
             idf.thrustuom2.set(config.get("InitialData", "ambient_pressure_uom"))
 
             tf = self.performanceframe.thermodynamicframe
-            df = self.performanceframe.deliveredframe
 
             tf.frozenflow.set(config.get("Performance", "flow_model"))
             updateentry(tf.stationsentry, config.get("Performance", "number_of_stations"))
-            # df.multiphase.set(config.get("Performance", "consider_multiphase"))
-            # updateentry(df.condheatcapacityentry, config.get("Performance", "condensed_heat_capacity"))
-            # df.condheatcapacityuom.set(config.get("Performance", "condensed_heat_capacity_uom"))
-            # updateentry(df.condmassfracentry, config.get("Performance", "mass_frac_condensed"))
 
             gf = self.geometryframe
 
