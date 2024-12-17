@@ -258,7 +258,7 @@ class RocketForge(CTk):
         if self.about is None or not self.about.winfo_exists():
             self.about = ctk.CTkToplevel()
             self.about.title("About")
-            self.about.configure(width=300, height=200)
+            self.about.configure(width=260, height=250)
             self.about.resizable(False, False)
             self.about.after(
                 201,
@@ -267,15 +267,37 @@ class RocketForge(CTk):
                 ),
             )
 
-            aboutimage = CTkImage(Image.open(resource_path("icon.png")), size=(128, 128))
-            self.aboutimage = CTkLabel(self.about, text="", image=aboutimage)
-            self.aboutimage.place(anchor="center", relx=0.5, rely=0.28)
-            self.aboutname = CTkLabel(self.about, text="Rocket Forge", font=("Sans", 20))
-            self.aboutname.place(anchor="center", relx=0.5, rely=0.6)
-            self.aboutversion = CTkLabel(self.about, text="Version "+version)
-            self.aboutversion.place(anchor="center", relx=0.5, rely=0.75)
-            self.copyright = CTkLabel(self.about, text=copyright)
-            self.copyright.place(anchor="center", relx=0.5, rely=0.9)
+            self.aboutframe = CTkFrame(
+                self.about, border_width=3, corner_radius=0, width=260, height=250,
+            )
+            self.aboutframe.grid(column=0, row=0)
+
+            if ctk.get_appearance_mode() == "Light":
+                logo = CTkImage(Image.open(resource_path("rocketforge/resources/logo_dark.png")), size=(100, 100))
+            else:
+                logo = CTkImage(Image.open(resource_path("rocketforge/resources/logo.png")), size=(100, 100))
+            icon = CTkImage(Image.open(resource_path("rocketforge/resources/icon.png")), size=(128, 128))
+            CTkLabel(
+                self.aboutframe, text="", image=logo
+            ).place(anchor="center", relx=0.3, y=70)
+            CTkLabel(
+                self.aboutframe, text="", image=icon
+            ).place(anchor="center", relx=0.7, y=70)
+            CTkLabel(
+                self.aboutframe, text="Rocket Forge", font=("Sans", 20)
+            ).place(anchor="center", relx=0.5, y=135)
+            CTkLabel(
+                self.aboutframe, text="Version " + version
+            ).place(anchor="center", relx=0.5, y=158)
+            CTkLabel(
+                self.aboutframe, text=copyright
+            ).place(anchor="center", relx=0.5, y=180)
+            CTkLabel(
+                self.aboutframe, text=(
+                "Main author: Alessio Improta\n"
+                + "alessio.improta@studenti.polito.it"
+                )
+            ).place(anchor="center", relx=0.5, rely=0.88)
 
             self.about.after(50, self.about.lift)
             self.about.after(50, self.about.focus)
