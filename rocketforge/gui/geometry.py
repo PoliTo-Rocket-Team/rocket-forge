@@ -592,9 +592,15 @@ class GeometryFrame(ctk.CTkFrame):
                 ),
             )
 
+            self.help_frame = CTkFrame(
+                self.help_window, border_width=3, corner_radius=0, width=610, height=310,
+            )
+            self.help_frame.grid(column=0, row=0)
+
             image = CTkImage(Image.open(resource_path("rocketforge/resources/help.png")), size=(600, 300))
-            self.help_image = CTkLabel(self.help_window, text="", image=image)
-            self.help_image.place(anchor="center", relx = 0.5, rely = 0.5)
+            CTkLabel(
+                self.help_frame, text="", image=image
+            ).place(anchor="center", relx = 0.5, rely = 0.5)
 
             self.help_window.after(50, self.help_window.lift)
             self.help_window.after(50, self.help_window.focus)
