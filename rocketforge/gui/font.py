@@ -72,6 +72,7 @@ if not is_font_installed(font):
         install_font_windows(font_path, font)
     else:
         install_font(font_path)
+        fm.fontManager.addfont(font_path)
 else:
     print(f"{font} is already installed")
 
