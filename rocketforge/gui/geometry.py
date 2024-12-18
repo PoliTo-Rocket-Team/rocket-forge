@@ -433,7 +433,7 @@ class GeometryFrame(ctk.CTkFrame):
         if self.advancedwindow is None or not self.advancedwindow.winfo_exists():
             self.advancedwindow = ctk.CTkToplevel()
             self.advancedwindow.title("Advanced settings")
-            self.advancedwindow.configure(width=300, height=120)
+            self.advancedwindow.configure(width=280, height=120)
             self.advancedwindow.resizable(False, False)
             self.advancedwindow.after(
                 201,
@@ -442,19 +442,24 @@ class GeometryFrame(ctk.CTkFrame):
                 ),
             )
 
-            CTkLabel(self.advancedwindow, text="Pts/circle").place(anchor="w", relx=0.1, rely=1/6)
-            self.ptscircentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=59)
-            self.ptscircentry.place(anchor="e", relx=0.9, rely=1/6)
+            self.advanced_frame = CTkFrame(
+                self.advancedwindow, border_width=3, corner_radius=0, width=280, height=120,
+            )
+            self.advanced_frame.grid(column=0, row=0)
+
+            CTkLabel(self.advanced_frame, text="Pts/circle").place(anchor="w", relx=0.1, rely=1/4)
+            self.ptscircentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=80)
+            self.ptscircentry.place(anchor="e", relx=0.9, rely=1/4)
             updateentry(self.ptscircentry, self.ptscirc)
 
-            CTkLabel(self.advancedwindow, text="Points per parabola").place(anchor="w", relx=0.1, rely=3/6)
-            self.ptsparentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=59)
-            self.ptsparentry.place(anchor="e", relx=0.9, rely=3/6)
+            CTkLabel(self.advanced_frame, text="Points per parabola").place(anchor="w", relx=0.1, rely=2/4)
+            self.ptsparentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=80)
+            self.ptsparentry.place(anchor="e", relx=0.9, rely=2/4)
             updateentry(self.ptsparentry, self.ptspar)
 
             CTkButton(
-                self.advancedwindow, text="Set", command=self.set_advanced, width=90
-            ).place(anchor="center", relx=0.5, rely=5/6)
+                self.advanced_frame, text="Set", command=self.set_advanced, width=90
+            ).place(anchor="center", relx=0.5, rely=3.2/4)
 
             self.advancedwindow.after(50, self.advancedwindow.lift)
             self.advancedwindow.after(50, self.advancedwindow.focus)
@@ -497,22 +502,27 @@ class GeometryFrame(ctk.CTkFrame):
                 ),
             )
 
+            self.details_frame = CTkFrame(
+                self.details_window, border_width=3, corner_radius=0, width=450, height=480,
+            )
+            self.details_frame.grid(column=0, row=0)
+
             if os.name == "nt":
                 self.detailstextbox = ctk.CTkTextbox(
-                    self.details_window,
+                    self.details_frame,
                     state="disabled",
                     wrap="none",
                     font=("Courier New", 12),
                 )
             else:
                 self.detailstextbox = ctk.CTkTextbox(
-                    self.details_window, state="disabled", wrap="none", font=("Mono", 12)
+                    self.details_frame, state="disabled", wrap="none", font=("Mono", 12)
                 )
             self.detailstextbox.place(relwidth=0.95, relheight=13/15, relx=0.5, rely=0.025, anchor="n")
 
-            self.savedetailsbutton = CTkButton(self.details_window)
-            self.savedetailsbutton.configure(text="Save...", command=self.save_details)
-            self.savedetailsbutton.place(anchor="center", relx=0.5, rely=0.95)
+            CTkButton(
+                self.details_frame, text="Save...", command=self.save_details
+            ).place(anchor="center", relx=0.5, rely=0.95)
 
             updatetextbox(self.detailstextbox, self.details_output, True)
 
@@ -587,9 +597,15 @@ class GeometryFrame(ctk.CTkFrame):
                 ),
             )
 
+            self.help_frame = CTkFrame(
+                self.help_window, border_width=3, corner_radius=0, width=610, height=310,
+            )
+            self.help_frame.grid(column=0, row=0)
+
             image = CTkImage(Image.open(resource_path("rocketforge/resources/help.png")), size=(600, 300))
-            self.help_image = CTkLabel(self.help_window, text="", image=image)
-            self.help_image.place(anchor="center", relx = 0.5, rely = 0.5)
+            CTkLabel(
+                self.help_frame, text="", image=image
+            ).place(anchor="center", relx = 0.5, rely = 0.5)
 
             self.help_window.after(50, self.help_window.lift)
             self.help_window.after(50, self.help_window.focus)

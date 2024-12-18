@@ -262,20 +262,25 @@ class ThermalFrame(ctk.CTkFrame):
                 ),
             )
 
-            CTkLabel(self.channelswindow, text="Chamber").place(anchor="center", relx=0.42, rely=0.8/13)
-            CTkLabel(self.channelswindow, text="Throat").place(anchor="center", relx=0.57, rely=0.8/13)
-            CTkLabel(self.channelswindow, text="Exit").place(anchor="center", relx=0.72, rely=0.8/13)
+            self.channels_frame = CTkFrame(
+                self.channelswindow, border_width=3, corner_radius=0, width=420, height=260,
+            )
+            self.channels_frame.grid(column=0, row=0)
 
-            CTkLabel(self.channelswindow, text="Channels width").place(anchor="w", relx=0.05, rely=2/13)
-            self.a1 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            CTkLabel(self.channels_frame, text="Chamber").place(anchor="center", relx=0.42, rely=0.8/13)
+            CTkLabel(self.channels_frame, text="Throat").place(anchor="center", relx=0.57, rely=0.8/13)
+            CTkLabel(self.channels_frame, text="Exit").place(anchor="center", relx=0.72, rely=0.8/13)
+
+            CTkLabel(self.channels_frame, text="Channels width").place(anchor="w", relx=0.05, rely=2/13)
+            self.a1 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
             self.a1.place(anchor="w", relx=0.35, rely=2/13)
-            self.a2 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.a2 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
             self.a2.place(anchor="w", relx=0.5, rely=2/13)
-            self.a3 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.a3 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
             self.a3.place(anchor="w", relx=0.65, rely=2/13)
             self.auom = tk.StringVar(value="mm")
             CTkOptionMenu(
-                self.channelswindow,
+                self.channels_frame,
                 values=["m", "cm", "mm", "in", "ft"],
                 variable=self.auom, width=59
             ).place(anchor="e", relx=0.95, rely=2/13)
@@ -283,16 +288,16 @@ class ThermalFrame(ctk.CTkFrame):
             updateentry(self.a2, config.a2 / length_uom(self.auom.get()))
             updateentry(self.a3, config.a3 / length_uom(self.auom.get()))
 
-            CTkLabel(self.channelswindow, text="Channels height").place(anchor="w", relx=0.05, rely=4/13)
-            self.b1 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            CTkLabel(self.channels_frame, text="Channels height").place(anchor="w", relx=0.05, rely=4/13)
+            self.b1 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
             self.b1.place(anchor="w", relx=0.35, rely=4/13)
-            self.b2 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.b2 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
             self.b2.place(anchor="w", relx=0.5, rely=4/13)
-            self.b3 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.b3 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
             self.b3.place(anchor="w", relx=0.65, rely=4/13)
             self.buom = tk.StringVar(value="mm")
             CTkOptionMenu(
-                self.channelswindow,
+                self.channels_frame,
                 values=["m", "cm", "mm", "in", "ft"],
                 variable=self.buom, width=59
             ).place(anchor="e", relx=0.95, rely=4/13)
@@ -302,17 +307,17 @@ class ThermalFrame(ctk.CTkFrame):
 
             self.channelsmode = ctk.IntVar(value=1)
             ctk.CTkRadioButton(
-                self.channelswindow, text="Rib width", variable=self.channelsmode, value=0,
+                self.channels_frame, text="Rib width", variable=self.channelsmode, value=0,
             ).place(anchor="w", relx=0.05, rely=6/13)
-            self.d1 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.d1 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
             self.d1.place(anchor="w", relx=0.35, rely=6/13)
-            self.d2 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.d2 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
             self.d2.place(anchor="w", relx=0.5, rely=6/13)
-            self.d3 = CTkEntry(self.channelswindow, placeholder_text="0", width=59)
+            self.d3 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
             self.d3.place(anchor="w", relx=0.65, rely=6/13)
             self.duom = tk.StringVar(value="mm")
             CTkOptionMenu(
-                self.channelswindow,
+                self.channels_frame,
                 values=["m", "cm", "mm", "in", "ft"],
                 variable=self.duom, width=59
             ).place(anchor="e", relx=0.95, rely=6/13)
@@ -321,22 +326,22 @@ class ThermalFrame(ctk.CTkFrame):
             updateentry(self.d3, config.d3 / length_uom(self.duom.get()))
 
             ctk.CTkRadioButton(
-                self.channelswindow, text="Number of channels", variable=self.channelsmode, value=1,
+                self.channels_frame, text="Number of channels", variable=self.channelsmode, value=1,
             ).place(anchor="w", relx=0.05, rely=8/13)
-            self.ncentry = CTkEntry(self.channelswindow, placeholder_text="0", width=118)
+            self.ncentry = CTkEntry(self.channels_frame, placeholder_text="0", width=118)
             self.ncentry.place(anchor="w", relx=0.5, rely=8/13)
             if config.NC != None: updateentry(self.ncentry, config.NC)
 
             CTkButton(
-                self.channelswindow, text="Set", command=self.set_channels, width=90
+                self.channels_frame, text="Set", command=self.set_channels, width=90
             ).place(anchor="center", relx=0.5, rely=10/13)
 
             CTkButton(
-                self.channelswindow, text="Plot channels geometry", command=self.plot_g, width=140
+                self.channels_frame, text="Plot channels geometry", command=self.plot_g, width=140
             ).place(anchor="center", relx=0.3, rely=12/13)
 
             CTkButton(
-                self.channelswindow, text="Print channels geometry", command=self.print_g, width=140
+                self.channels_frame, text="Print channels geometry", command=self.print_g, width=140
             ).place(anchor="center", relx=0.7, rely=12/13)
 
             self.channelswindow.after(50, self.channelswindow.lift)
@@ -378,37 +383,42 @@ class ThermalFrame(ctk.CTkFrame):
                 ),
             )
 
-            CTkLabel(self.advancedwindow, text="pInjectors/pChamber").place(anchor="w", relx=0.05, rely=1/16)
-            self.pcoOvpcentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
+            self.advanced_frame = CTkFrame(
+                self.advancedwindow, border_width=3, corner_radius=0, width=300, height=290,
+            )
+            self.advanced_frame.grid(column=0, row=0)
+
+            CTkLabel(self.advanced_frame, text="pInjectors/pChamber").place(anchor="w", relx=0.05, rely=1/16)
+            self.pcoOvpcentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
             self.pcoOvpcentry.place(anchor="e", relx=0.95, rely=1/16)
             updateentry(self.pcoOvpcentry, config.pcoOvpc)
 
-            CTkLabel(self.advancedwindow, text="Number of stations").place(anchor="w", relx=0.05, rely=3/16)
-            self.nsentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
+            CTkLabel(self.advanced_frame, text="Number of stations").place(anchor="w", relx=0.05, rely=3/16)
+            self.nsentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
             self.nsentry.place(anchor="e", relx=0.95, rely=3/16)
             updateentry(self.nsentry, config.n_stations)
 
-            CTkLabel(self.advancedwindow, text="Maximum iterations").place(anchor="w", relx=0.05, rely=5/16)
-            self.maxiterentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
+            CTkLabel(self.advanced_frame, text="Maximum iterations").place(anchor="w", relx=0.05, rely=5/16)
+            self.maxiterentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
             self.maxiterentry.place(anchor="e", relx=0.95, rely=5/16)
             updateentry(self.maxiterentry, config.max_iter)
 
-            CTkLabel(self.advancedwindow, text="Tuning coefficient").place(anchor="w", relx=0.05, rely=7/16)
-            self.tuningentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
+            CTkLabel(self.advanced_frame, text="Tuning coefficient").place(anchor="w", relx=0.05, rely=7/16)
+            self.tuningentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
             self.tuningentry.place(anchor="e", relx=0.95, rely=7/16)
             updateentry(self.tuningentry, config.tuning_factor)
 
-            CTkLabel(self.advancedwindow, text="Stability coefficient").place(anchor="w", relx=0.05, rely=9/16)
-            self.stabentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
+            CTkLabel(self.advanced_frame, text="Stability coefficient").place(anchor="w", relx=0.05, rely=9/16)
+            self.stabentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
             self.stabentry.place(anchor="e", relx=0.95, rely=9/16)
             updateentry(self.stabentry, config.stability)
 
-            CTkLabel(self.advancedwindow, text="Absolute roughness [mm]").place(anchor="w", relx=0.05, rely=11/16)
-            self.roughentry = CTkEntry(self.advancedwindow, placeholder_text="0", width=118)
+            CTkLabel(self.advanced_frame, text="Absolute roughness [mm]").place(anchor="w", relx=0.05, rely=11/16)
+            self.roughentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
             self.roughentry.place(anchor="e", relx=0.95, rely=11/16)
             updateentry(self.roughentry, config.absolute_roughness * 1000)
 
-            CTkLabel(self.advancedwindow, text="Friction factor relation").place(anchor="w", relx=0.05, rely=13/16)
+            CTkLabel(self.advanced_frame, text="Friction factor relation").place(anchor="w", relx=0.05, rely=13/16)
             if config.dp_method == 0:
                 self.dp_method = ctk.StringVar(value="Tkachenko")
             elif config.dp_method == 1:
@@ -416,7 +426,7 @@ class ThermalFrame(ctk.CTkFrame):
             elif config.dp_method == 2:
                 self.dp_method = ctk.StringVar(value="Colebrook-White")
             self.dp_methodoptmenu = CTkOptionMenu(
-                self.advancedwindow,
+                self.advanced_frame,
                 values=["Tkachenko", "Moody", "Colebrook-White"],
                 variable=self.dp_method,
                 width=118
@@ -424,11 +434,11 @@ class ThermalFrame(ctk.CTkFrame):
             self.dp_methodoptmenu.place(anchor="e", relx=0.95, rely=13/16)
 
             CTkButton(
-                self.advancedwindow, text="Reset", command=self.reset_advanced, width=90
+                self.advanced_frame, text="Reset", command=self.reset_advanced, width=90
             ).place(anchor="center", relx=0.3, rely=15/16)
 
             CTkButton(
-                self.advancedwindow, text="Set", command=self.set_advanced, width=90
+                self.advanced_frame, text="Set", command=self.set_advanced, width=90
             ).place(anchor="center", relx=0.7, rely=15/16)
 
             self.advancedwindow.after(50, self.advancedwindow.lift)

@@ -310,7 +310,7 @@ class RocketForge(CTk):
         if self.preferences is None or not self.preferences.winfo_exists():
             self.preferences = ctk.CTkToplevel()
             self.preferences.title("Preferences")
-            self.preferences.configure(width=300, height=80)
+            self.preferences.configure(width=300, height=70)
             self.preferences.resizable(False, False)
             self.preferences.after(
                 201,
@@ -319,12 +319,16 @@ class RocketForge(CTk):
                 ),
             )
 
-            self.appearance_mode_label = CTkLabel(
-                self.preferences, text="Appearance Mode:", anchor="w"
+            self.prefsframe = CTkFrame(
+                self.preferences, border_width=3, corner_radius=0, width=300, height=70,
             )
-            self.appearance_mode_label.place(anchor="w", relx=0.05, rely=0.5)
+            self.prefsframe.grid(column=0, row=0)
+
+            CTkLabel(
+                self.prefsframe, text="Appearance Mode:", anchor="w"
+            ).place(anchor="w", relx=0.05, rely=0.5)
             self.appearance_mode_optionemenu = ctk.CTkOptionMenu(
-                self.preferences,
+                self.prefsframe,
                 values=["System", "Light", "Dark"],
                 variable=self.appearance_mode,
                 command=self.change_appearance_mode_event,
