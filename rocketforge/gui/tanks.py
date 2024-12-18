@@ -1,6 +1,7 @@
 import tkinter as tk
 import customtkinter as ctk
 import rocketforge.mission.config as config
+import rocketforge.mission.analysis as msa
 from customtkinter import CTkEntry, CTkFrame, CTkLabel, CTkButton
 from rocketforge.utils.conversions import mass_uom, mdot_uom, density_uom, length_uom
 from rocketforge.utils.helpers import updateentry
@@ -312,5 +313,7 @@ class TanksFrame(ctk.CTkFrame):
             updateentry(self.fuelmdotentry, mdot_fuel, True)
             updateentry(self.oxmentry, m_ox, True)
             updateentry(self.fuelmentry, m_fuel, True)
+
+            msa.set_engine()
         except Exception:
             pass
