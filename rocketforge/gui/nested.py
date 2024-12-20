@@ -1,7 +1,9 @@
 import tkinter as tk
+from contextlib import contextmanager
 import customtkinter as ctk
 import rocketforge.mission.config as config
 from customtkinter import CTkEntry, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMenu, CTkTextbox
+import rocketforge.performance.config as config
 from rocketforge.utils.conversions import pressure_uom
 from rocketforge.utils.helpers import updateentry, updatetextbox
 import os
@@ -134,3 +136,47 @@ class NestedFrame(CTkFrame):
                     widget.configure(state="normal")
                 else:
                     widget.configure(state="disabled")
+
+    @contextmanager
+    def _cache_config(self):
+        """
+        Cache the current configuration values and restore them after the
+        nested analysis, even if the nested analysis fails.
+
+        Yields:
+            None
+        """
+        # Setup: save the current config values
+        cached_mr = config.mr
+        cached_pc = config.pc
+        cached_epsc = config.epsc
+        cached_eps = config.eps
+        cached_cstar = config.cstar
+        cached_Isp_vac = config.Isp_vac
+        cached_Isp_vac_eq = config.Isp_vac_eq
+        cached_Isp_vac_fr = config.Isp_vac_fr
+        cached_Isp_sl = config.Isp_sl
+        cached_Isp_opt = config.Isp_opt
+        cached_td_props = config.td_props
+        cached_gammae = config.gammae
+        cached_Me = config.Me
+        try:
+            # Give control back to the code inside the 'with' block
+            yield
+        finally:
+            # Teardown: restore the original config values
+            # this code runs even if an exception is raised within the 'with' block
+            config.mr = cached_mr
+            config.pc = cached_pc
+            config.epsc = cached_epsc
+            config.eps = cached_eps
+            config.cstar = cached_cstar
+            config.Isp_vac = cached_Isp_vac
+            config.Isp_vac_eq = cached_Isp_vac_eq
+            config.Isp_vac_fr = cached_Isp_vac_fr
+            config.Isp_sl = cached_Isp_sl
+            config.Isp_opt = cached_Isp_opt
+            config.td_props = cached_td_props
+            config.gammae = cached_gammae
+            config.Me = cached_Me
+
