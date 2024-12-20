@@ -1,14 +1,17 @@
+import os
+import re
 import tkinter as tk
 import numpy as np
+from tabulate import tabulate
 from contextlib import contextmanager
 from tkinter.messagebox import showwarning
 import customtkinter as ctk
-import rocketforge.mission.config as config
 from customtkinter import CTkEntry, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMenu, CTkTextbox
+from rocketcea.cea_obj_w_units import CEA_Obj
 import rocketforge.performance.config as config
 from rocketforge.utils.conversions import pressure_uom
 from rocketforge.utils.helpers import updateentry, updatetextbox
-import os
+from rocketforge.performance.theoreticalperf import theoretical
 
 
 class NestedFrame(CTkFrame):
@@ -182,6 +185,99 @@ class NestedFrame(CTkFrame):
             config.gammae = cached_gammae
             config.Me = cached_Me
 
+    # TODO: Unfortunately the analyses cannot be multithreaded as they rely on the same config variables, in the future we could try fixing this
+    def run(self) -> None:
+        """
+        Executes the nested parameter configuration and performance calculation.
+        This method performs the following steps:
+        1. Retrieves nested input parameters.
+        2. Generates the Cartesian product of the input parameters using `numpy.meshgrid`.
+        3. Initializes a results array to store the output for each combination of parameters.
+        4. Iterates over all combinations of parameters and runs an analysis.
+        5. Stores the results in a dictionary and updates the results array.
+        6. Formats the results into a table and updates the GUI textbox with the table.
+
+        Returns:
+            None
+        """
+        with self._cache_config():
+            inputs = self.get_nested_inputs()
+            # Generate Cartesian product using meshgrid
+            mr, pc, epsc, eps = np.meshgrid(
+                inputs["mr"],
+                inputs["pc"],
+                inputs["epsc"],
+                inputs["eps"],
+                indexing='ij'
+            )
+            # Initialize results array with the appropriate shape
+            results = np.empty(mr.shape, dtype=object)
+            # Iterate over all combinations using a multidimensional index
+            for idx,index in enumerate(np.ndindex(mr.shape)):
+
+                # Apply the current nested parameters
+                config.mr = mr[index]
+                config.pc = pc[index]
+                config.epsc = epsc[index]
+
+                C = CEA_Obj(
+                    oxName=config.ox,
+                    fuelName=config.fuel,
+                    fac_CR=config.epsc,
+                    cstar_units="m/s",
+                    pressure_units="Pa",
+                    temperature_units="K",
+                    sonic_velocity_units="m/s",
+                    enthalpy_units="kJ/kg",
+                    density_units="kg/m^3",
+                    specific_heat_units="J/kg-K",
+                )         
+                # Manage exit condition
+                eps_row = self.rows[3]
+                if eps_row["checkbox"].get():
+                    eps_dropdown = eps_row["unit_dropdown"].get()
+                    if eps_dropdown == "Expansion Area Ratio (Ae/At)":
+                        eps_tmp = eps[index]
+                    else:
+                        if eps_dropdown == "Pressure Ratio (pc/pe)":
+                            pe = config.pc / eps[index]
+                        else: # Exit pressure
+                            # Capture content in parentheses
+                            match = re.search(r'\((.*?)\)', eps_dropdown)
+                            unit = match.group(1)
+                            pe = eps[index] * pressure_uom(unit)
+                        eps_tmp = C.get_eps_at_PcOvPe(Pc=config.pc, MR=config.mr, PcOvPe=config.pc / pe)
+                else:
+                    eps_tmp = eps[index]
+                config.eps = eps_tmp
+
+                # Calculate the theoretical performance
+                theoretical()
+                result_dict = {
+                    "mr": config.mr,
+                    "pc": config.pc,
+                    "epsc": config.epsc,
+                    "eps": config.eps,
+                    "cstar": config.cstar,
+                    "Isp_vac": config.Isp_vac,
+                    "Isp_vac_eq": config.Isp_vac_eq,
+                    "Isp_vac_fr": config.Isp_vac_fr,
+                    "Isp_sl": config.Isp_sl,
+                    "Isp_opt": config.Isp_opt,
+                    "td_props": config.td_props,
+                    "gammae": config.gammae,
+                    "Me": config.Me
+                }
+                results[index] = result_dict
+            headers = ["mr", "pc [Pa]", "epsc", "eps", "c* [m/s]", "Isp (SL) [s]", "Isp (opt) [s]", "Isp (vac) [s]", "gamma_e", "M_e"]
+            table_data = [
+                [result["mr"], result["pc"], result["epsc"], result["eps"], result["cstar"], result["Isp_sl"], result["Isp_opt"], result["Isp_vac"], result["gammae"], result["Me"]]
+                for result in results.flatten()
+            ]
+            
+            table = tabulate(table_data, headers, numalign="right")
+            updatetextbox(self.textbox, table, disabled=True)
+                
     def generate_range(self, step_mode, start, end, step) -> np.ndarray:
         """
         Generate a range of values based on the specified step mode.
