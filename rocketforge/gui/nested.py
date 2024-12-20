@@ -287,6 +287,27 @@ class NestedFrame(CTkFrame):
         else:
             return np.array([config.epsc])
 
+    def get_nested_eps(self, step_mode) -> np.ndarray:
+        """
+        Get the nozzle exit conditions for the nested analysis.
+
+        Args:
+            step_mode (str): The mode to be used to generate values, either "Step Size" or "Step No.".
+
+        Returns:
+            numpy.ndarray: An array of nozzle exit condition values.
+            If the checkbox is not selected, the value from the initial frame (config.eps) is returned. 
+            If the checkbox is selected, a range of values is generated based on the step_mode, start,
+            end, and step inputs. Note that these values do not necessarily correspond to the contraction
+            area ratio.
+        """
+        row = self.rows[3]
+        if row["checkbox"].get():
+            start, end, step = self.get_inputs(row)
+            return self.generate_range(step_mode, start, end, step)
+        else:
+            return np.array([config.eps])
+
     def get_inputs(self, row) -> tuple:
         """
         Extracts and returns the start, end, and step values from the given row.
