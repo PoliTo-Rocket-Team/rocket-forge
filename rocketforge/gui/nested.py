@@ -1,5 +1,7 @@
 import tkinter as tk
+import numpy as np
 from contextlib import contextmanager
+from tkinter.messagebox import showwarning
 import customtkinter as ctk
 import rocketforge.mission.config as config
 from customtkinter import CTkEntry, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMenu, CTkTextbox
@@ -179,4 +181,38 @@ class NestedFrame(CTkFrame):
             config.td_props = cached_td_props
             config.gammae = cached_gammae
             config.Me = cached_Me
+
+    def generate_range(self, step_mode, start, end, step) -> np.ndarray:
+        """
+        Generate a range of values based on the specified step mode.
+
+        If the step mode is "Step Size", the range will be generated using
+        the specified step size, if the step doesn't divide the range evenly,
+        the last value will be the first value that is greater than the end
+        value.
+        If the step mode is "Step No.", the range will be generated using
+        the specified number of steps.
+
+        Args:
+            step_mode (str): The mode to be used to generate values, either "Step Size" or "Step No.".
+            start (float): The starting value of the range.
+            end (float): The ending value of the range.
+            step (float): The step size or the number of steps, depending on the step mode.
+        Returns:
+            numpy.ndarray: An array of values generated based on the specified step mode.
+        """
+        if step_mode == "Step Size":
+            if step <= 0:
+                showwarning("Invalid Step Size", "Step size must be a positive number.")
+                raise ValueError("Invalid Step Size")
+            values = np.arange(start, end + step, step)
+        elif step_mode == "Step No.":
+            if step % 1 != 0:
+                showwarning("Invalid Step Count", "Step count must be an integer.")
+                raise ValueError("Invalid Step Count")
+            if step < 2:
+                showwarning("Invalid Step Count", "Step count must be greater than one.")
+                raise ValueError("Invalid Step Count")
+            values = np.linspace(start, end, int(step))
+        return values
 
