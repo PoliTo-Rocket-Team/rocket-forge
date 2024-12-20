@@ -216,6 +216,29 @@ class NestedFrame(CTkFrame):
             values = np.linspace(start, end, int(step))
         return values
 
+    def get_nested_mr(self, step_mode) -> np.ndarray:
+        """
+        Get the mixture ratio values for the nested analysis.
+
+        Args:
+            step_mode (str): The mode to be used to generate values, either "Step Size" or "Step No.".
+
+        Returns:
+            numpy.ndarray: An array of mixture ratio values.
+            If the checkbox is not selected, the value from the initial frame (config.mr) is returned.
+            If the checkbox is selected, a range of values is generated based on the step_mode, start,
+            end, and step inputs.
+        """
+        row = self.rows[0]
+        if row["checkbox"].get(): 
+            start, end, step = self.get_inputs(row)
+            if row["unit_dropdown"].get() == "alpha":
+                start, end = start * config.mr_s, end * config.mr_s
+                if step_mode == "Step Size": step *= config.mr_s
+            return self.generate_range(step_mode, start, end, step)
+        else:
+            return np.array([config.mr])
+        
     def get_inputs(self, row) -> tuple:
         """
         Extracts and returns the start, end, and step values from the given row.
