@@ -216,6 +216,22 @@ class NestedFrame(CTkFrame):
             values = np.linspace(start, end, int(step))
         return values
 
+    def get_nested_inputs(self) -> dict:
+        """
+        Get the ranges of nested analysis input values from the GUI fields.
+
+        Returns:
+            dict: A dictionary containing the input values for the nested analysis as numpy arrays.
+        """
+        step_mode = self.inputgrid.grid_slaves(row=0, column=3)[0].get() #TODO: implement choice for each entry
+        inputs = {
+            "mr":   self.get_nested_mr(step_mode),
+            "pc":   self.get_nested_pc(step_mode),
+            "epsc": self.get_nested_epsc(step_mode),
+            "eps":  self.get_nested_eps(step_mode)
+        }
+        return inputs
+
     def get_nested_mr(self, step_mode) -> np.ndarray:
         """
         Get the mixture ratio values for the nested analysis.
