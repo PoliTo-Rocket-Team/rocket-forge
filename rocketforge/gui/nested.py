@@ -216,3 +216,17 @@ class NestedFrame(CTkFrame):
             values = np.linspace(start, end, int(step))
         return values
 
+    def get_inputs(self, row) -> tuple:
+        """
+        Extracts and returns the start, end, and step values from the given row.
+
+        Args:
+            row (dict): A dictionary containing the entries 'start_entry', 'end_entry', and 'step_entry'.
+
+        Returns:
+            tuple: A tuple containing the start, end, and step values as floats.
+        """
+        start = float(row["start_entry"].get())
+        end = float(row["end_entry"].get())
+        step = float(row["step_entry"].get())
+        return start, end, step
