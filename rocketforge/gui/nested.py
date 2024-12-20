@@ -79,7 +79,18 @@ class NestedFrame(CTkFrame):
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
-    def create_row(self, row_num, label, units, plotoptions):
+    def create_row(self, row_num, label, units, plotoptions) -> dict:
+        """
+        Create a row in the input grid with the specified label and units.
+
+        Args:
+            row_num (int): The row number in the grid.
+            label (str): The label for the row.
+            units (list): A list of units for the unit dropdown menu.
+            plotoptions (list): A list of options for the plot dropdown menu.
+        Returns:
+            dict: A dictionary containing the widgets in the row.
+        """
         row = {}
         row["checkbox"] = CTkCheckBox(self.inputgrid, text=label, command=lambda: self.toggle_row(row))
         row["checkbox"].grid(row=row_num, column=0, padx=5, pady=5, sticky="w")
@@ -105,6 +116,15 @@ class NestedFrame(CTkFrame):
         return row
 
     def toggle_row(self, row, state=None):
+        """
+        Toggle the state of widgets in a given row based on the state of
+        a checkbox.
+
+        Args:
+            row (dict): A dictionary containing widgets, with one key being "checkbox".
+            state (bool, optional): The desired state to set for the widgets. If None,
+            the state is determined by the checkbox's current state.
+        """
         if state is None:
             state = row["checkbox"].get()
 
