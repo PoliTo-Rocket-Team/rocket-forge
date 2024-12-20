@@ -263,6 +263,30 @@ class NestedFrame(CTkFrame):
         else:
             return np.array([config.pc])
 
+    def get_nested_epsc(self, step_mode) -> np.ndarray:
+        """
+        Get the nozzle inlet conditions for the nested analysis.
+
+        Args:
+            step_mode (str): The mode to be used to generate values, either "Step Size" or "Step No.".
+
+        Returns:
+            numpy.ndarray: An array of nozzle inlet condition values.
+            If the checkbox is not selected, the value from the initial frame (config.epsc) is returned. 
+            If "Contraction Area Ratio (Ac/At)" is selected, a range of values is generated based on the
+            step_mode, start, end, and step inputs.
+            If "Infinite Area Combustor" is selected, an array containing None is returned.
+        """
+        row = self.rows[2]
+        if row["checkbox"].get():
+            if row["unit_dropdown"].get() == "Contraction Area Ratio (Ac/At)":
+                start, end, step = self.get_inputs(row)
+                return self.generate_range(step_mode, start, end, step)
+            elif row["unit_dropdown"].get() == "Infinite Area Combustor":
+                return np.array([None])
+        else:
+            return np.array([config.epsc])
+
     def get_inputs(self, row) -> tuple:
         """
         Extracts and returns the start, end, and step values from the given row.
