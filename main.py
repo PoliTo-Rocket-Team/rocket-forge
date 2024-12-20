@@ -204,7 +204,12 @@ class RocketForge(CTk):
                     self.performanceframe.loadengine(geometry)
         except Exception:
             pass
-
+        try:
+            self.statuslabel.configure(text="Status: running nested analysis...")
+            self.statuslabel.update()
+            self.nestedframe.run()
+        except Exception:
+            pass
         try: 
             self.statuslabel.configure(text="Status: loading tanks...")
             self.statuslabel.update()
