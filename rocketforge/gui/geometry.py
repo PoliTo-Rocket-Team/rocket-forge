@@ -18,6 +18,7 @@ from PIL import Image
 from numpy import *
 import os
 from tabulate import tabulate
+import pyvista as pv
 
 
 class GeometryFrame(ctk.CTkFrame):
@@ -223,10 +224,44 @@ class GeometryFrame(ctk.CTkFrame):
         ).place(anchor="center", relx=0.69, rely=0.53)
 
         CTkButton(
-            self, text="Help", command=self.help, width=100
+            self, text="Toggle 3D", command=self.toggle_3d, width=100
         ).place(anchor="center", relx=0.88, rely=0.53)
 
         # Plot
+        self.plot3dframe = CTkFrame(self)
+        self.plot3dframe.configure(border_width=5, height=200, width=590)
+
+        self.plot3dlabel = ctk.CTkLabel(self.plot3dframe, text="")
+        self.plot3dlabel.place(anchor="center", relx=0.5, rely=0.5)
+        self.view_angle = 0.0
+        self.distance = 4.0
+        self.enable_3d = False
+
+        CTkButton(
+            self.plot3dframe, text="↑", command=self.decrease_distance,
+            width=35, height=35, font=("Arial", 20, "bold")
+        ).place(anchor="center", relx=0.88, rely=0.65)
+    
+        CTkButton(
+            self.plot3dframe, text="↓", command=self.increase_distance,
+            width=35, height=35, font=("Arial", 20, "bold")
+        ).place(anchor="center", relx=0.88, rely=0.85)
+
+        CTkButton(
+            self.plot3dframe, text="↺", command=self.decrease_view_angle,
+            width=35, height=35, font=("Arial", 20, "bold")
+        ).place(anchor="center", relx=0.95, rely=0.75)
+    
+        CTkButton(
+            self.plot3dframe, text="↻", command=self.increase_view_angle,
+            width=35, height=35, font=("Arial", 20, "bold")
+        ).place(anchor="center", relx=0.81, rely=0.75)
+
+        CTkButton(
+            self.plot3dframe, text="↻", command=self.increase_view_angle,
+            width=35, height=35, font=("Arial", 20, "bold")
+        ).place(anchor="center", relx=0.81, rely=0.75)
+
         self.plotframe = CTkFrame(self)
         self.plotframe.configure(border_width=1, height=200, width=590)
         self.plotframe.place(anchor="s", relx=0.5, rely=0.99, x=0, y=0)
@@ -255,6 +290,31 @@ class GeometryFrame(ctk.CTkFrame):
         self.ptspar = 100
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
+
+    def toggle_3d(self):
+        if self.enable_3d:
+            self.plot3dframe.place_forget()
+            self.plotframe.place(anchor="s", relx=0.5, rely=0.99)
+        else:
+            self.plotframe.place_forget()
+            self.plot3dframe.place(anchor="s", relx=0.5, rely=0.99)
+        self.enable_3d = not self.enable_3d
+    
+    def increase_distance(self):
+        self.distance *= 1.1
+        self.update_3d_plot()
+    
+    def decrease_distance(self):
+        self.distance /= 1.1
+        self.update_3d_plot()
+
+    def increase_view_angle(self):
+        self.view_angle += radians(15)
+        self.update_3d_plot()
+    
+    def decrease_view_angle(self):
+        self.view_angle -= radians(15)
+        self.update_3d_plot()
 
     def plot(self):
         if config.thrust != None:
@@ -419,9 +479,43 @@ class GeometryFrame(ctk.CTkFrame):
             tconf.thetan = degrees(thetan)
             tconf.thetae = degrees(thetae)
 
+            self.update_3d_plot()
+
         except Exception:
             pass
-    
+
+    def update_3d_plot(self):
+        try:
+            Le = tconf.L_e
+            Lc = tconf.L_c
+            Re = sqrt(config.At * config.eps)
+            Rc = sqrt(config.At * config.epsc)
+            self.plotter = pv.Plotter(off_screen=True)
+            self.plotter.window_size = [580, 190]
+            self.plotter.set_background('#c1c1c1')
+            chamber = self.get_chamber()
+            self.plotter.add_mesh(chamber, color="#727472")
+            self.plotter.camera_position = [
+                ((Le - Lc) / 2 + self.distance * max((Re, Rc)) * sin(self.view_angle), 0, self.distance * max((Re, Rc)) * cos(self.view_angle)),
+                ((Le - Lc) / 2, 0, 0),
+                (0, 1, 0)
+            ]
+            self.plotter.screenshot(resource_path("chamber.png"))
+            self.plotter.close()
+            photo = CTkImage(Image.open(resource_path("chamber.png")), size=(580, 190))
+            self.plot3dlabel.configure(image=photo)
+            os.remove(resource_path("chamber.png"))
+        except Exception:
+            pass
+
+    def get_chamber(self):
+        ntheta = 180
+        theta = linspace(0, 2*pi, ntheta)
+        X = outer(self.x, ones((1, ntheta)))
+        Y = outer(self.y, cos(theta))
+        Z = outer(self.y, sin(theta))
+        return pv.StructuredGrid(X, Y, Z)
+
     def estimate_Tn(self):
         gamma = config.gammae
         Me = config.Me
@@ -433,7 +527,7 @@ class GeometryFrame(ctk.CTkFrame):
         if self.advancedwindow is None or not self.advancedwindow.winfo_exists():
             self.advancedwindow = ctk.CTkToplevel()
             self.advancedwindow.title("Advanced settings")
-            self.advancedwindow.configure(width=280, height=120)
+            self.advancedwindow.configure(width=280, height=200)
             self.advancedwindow.resizable(False, False)
             self.advancedwindow.after(
                 201,
@@ -443,23 +537,33 @@ class GeometryFrame(ctk.CTkFrame):
             )
 
             self.advanced_frame = CTkFrame(
-                self.advancedwindow, border_width=3, corner_radius=0, width=280, height=120,
+                self.advancedwindow, border_width=3, corner_radius=0, width=280, height=200,
             )
             self.advanced_frame.grid(column=0, row=0)
 
-            CTkLabel(self.advanced_frame, text="Pts/circle").place(anchor="w", relx=0.1, rely=1/4)
+            CTkLabel(self.advanced_frame, text="Pts/circle").place(anchor="w", relx=0.1, rely=1/6)
             self.ptscircentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=80)
-            self.ptscircentry.place(anchor="e", relx=0.9, rely=1/4)
+            self.ptscircentry.place(anchor="e", relx=0.9, rely=1/6)
             updateentry(self.ptscircentry, self.ptscirc)
 
-            CTkLabel(self.advanced_frame, text="Points per parabola").place(anchor="w", relx=0.1, rely=2/4)
+            CTkLabel(self.advanced_frame, text="Points per parabola").place(anchor="w", relx=0.1, rely=2/6)
             self.ptsparentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=80)
-            self.ptsparentry.place(anchor="e", relx=0.9, rely=2/4)
+            self.ptsparentry.place(anchor="e", relx=0.9, rely=2/6)
             updateentry(self.ptsparentry, self.ptspar)
+
+            CTkLabel(self.advanced_frame, text="3D plot view angle [°]").place(anchor="w", relx=0.1, rely=3/6)
+            self.viewangleentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=80)
+            self.viewangleentry.place(anchor="e", relx=0.9, rely=3/6)
+            updateentry(self.viewangleentry, degrees(self.view_angle))
+
+            CTkLabel(self.advanced_frame, text="3D plot distance factor").place(anchor="w", relx=0.1, rely=4/6)
+            self.distanceentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=80)
+            self.distanceentry.place(anchor="e", relx=0.9, rely=4/6)
+            updateentry(self.distanceentry, self.distance)
 
             CTkButton(
                 self.advanced_frame, text="Set", command=self.set_advanced, width=90
-            ).place(anchor="center", relx=0.5, rely=3.2/4)
+            ).place(anchor="center", relx=0.5, rely=5.2/6)
 
             self.advancedwindow.after(50, self.advancedwindow.lift)
             self.advancedwindow.after(50, self.advancedwindow.focus)
@@ -472,7 +576,10 @@ class GeometryFrame(ctk.CTkFrame):
         try:
             self.ptscirc = int(float(self.ptscircentry.get()))
             self.ptspar = int(float(self.ptsparentry.get()))
+            self.view_angle = radians(float(self.viewangleentry.get()))
+            self.distance = float(self.distanceentry.get())
             self.advancedwindow.destroy()
+            self.plot()
         except Exception:
             pass
 
