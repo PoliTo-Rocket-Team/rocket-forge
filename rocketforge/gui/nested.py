@@ -6,7 +6,7 @@ from tabulate import tabulate
 from contextlib import contextmanager
 from tkinter.messagebox import showwarning
 import customtkinter as ctk
-from customtkinter import CTkEntry, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMenu, CTkTextbox
+from customtkinter import CTkEntry, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMenu, CTkTextbox, CTkProgressBar
 from rocketcea.cea_obj_w_units import CEA_Obj
 import rocketforge.performance.config as config
 from rocketforge.utils.conversions import pressure_uom
@@ -78,11 +78,15 @@ class NestedFrame(CTkFrame):
             row = self.create_row(i+1, label, units, plotoptions)
             self.rows.append(row)
 
-
         # Create output textbox
         font_name = "Courier New" if os.name == "nt" else "Mono"
-        self.textbox = CTkTextbox(self, height=246, state="disabled", wrap="none", font=(font_name, 12))
-        self.textbox.place(relwidth=59/60, relx=0.5, rely=0.99, anchor="s")
+        self.textbox = CTkTextbox(self, height=235, state="disabled", wrap="none", font=(font_name, 12))
+        self.textbox.place(relwidth=59/60, relx=0.5, rely=0.965, anchor="s")
+
+        # Create a progress bar
+        self.progressbar = CTkProgressBar(self)
+        self.progressbar.place(relwidth=59/60, relx=0.5, rely=0.99, anchor="s")
+        self.progressbar.set(0)
 
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
@@ -214,6 +218,8 @@ class NestedFrame(CTkFrame):
             results = np.empty(mr.shape, dtype=object)
             # Iterate over all combinations using a multidimensional index
             for idx,index in enumerate(np.ndindex(mr.shape)):
+                self.progressbar.set((idx+1) / mr.size)
+                self.progressbar.update_idletasks()
 
                 # Apply the current nested parameters
                 config.mr = mr[index]
