@@ -221,12 +221,14 @@ class ThermalFrame(ctk.CTkFrame):
 
     def plot_g(self):
         if self.regen != None:
+            self.set_channels(destroy=False)
             self.regen.plot_g()
         else:
             showwarning(title="Warning", message="Channels geometry unavailable")
 
     def print_g(self):
         if self.regen != None:
+            self.set_channels(destroy=False)
             self.regen.print_g()
         else:
             showwarning(title="Warning", message="Channels geometry unavailable")
