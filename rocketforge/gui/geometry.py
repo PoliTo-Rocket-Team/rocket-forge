@@ -524,6 +524,10 @@ class GeometryFrame(ctk.CTkFrame):
                 self.details_frame, text="Save...", command=self.save_details
             ).place(anchor="center", relx=0.5, rely=0.95)
 
+            CTkButton(
+                self.details_frame, text="Help", command=self.help, width=59
+            ).place(anchor="center", relx=0.85, rely=0.95)
+
             updatetextbox(self.detailstextbox, self.details_output, True)
 
             self.details_window.after(50, self.details_window.lift)
