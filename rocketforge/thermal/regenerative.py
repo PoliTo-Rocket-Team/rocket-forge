@@ -5,6 +5,7 @@ import rocketforge.performance.config as pconf
 import rocketforge.geometry.convergent as convergent
 import rocketforge.geometry.top as top
 import rocketforge.geometry.conical as conical
+import rocketforge.thermal.channels as channels
 from rocketforge.thermal.friction_factor import moody, tkachenko, colebrook_white
 from rocketforge.thermal.heat_flux import bartz, rad
 from rocketprops.rocket_prop import get_prop
@@ -241,6 +242,9 @@ class Regen():
         axt.legend(loc="upper left")
         plt.title("Cooling channels")
         plt.show()
+
+    def plot_3D(self):
+        channels.plot_3D(self.x, self.R, self.a, self.b, self.delta, config.NC, config.t_w)
 
     def details(self):
         pass
