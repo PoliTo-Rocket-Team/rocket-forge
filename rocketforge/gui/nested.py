@@ -262,7 +262,7 @@ class NestedFrame(CTkFrame):
                     enthalpy_units="kJ/kg",
                     density_units="kg/m^3",
                     specific_heat_units="J/kg-K",
-                )         
+                )
                 # Manage exit condition
                 eps_row = self.rows[3]
                 if eps_row["checkbox"].get():
@@ -305,10 +305,10 @@ class NestedFrame(CTkFrame):
                 [result["mr"], result["pc"], result["epsc"], result["eps"], result["cstar"], result["Isp_sl"], result["Isp_opt"], result["Isp_vac"], result["gammae"], result["Me"]]
                 for result in results.flatten()
             ]
-            
+
             table = tabulate(table_data, headers, numalign="right")
             updatetextbox(self.textbox, table, disabled=True)
-                
+
     def generate_range(self, step_mode, start, end, step) -> np.ndarray:
         """
         Generate a range of values based on the specified step mode.
@@ -373,7 +373,7 @@ class NestedFrame(CTkFrame):
             end, and step inputs.
         """
         row = self.rows[0]
-        if row["checkbox"].get(): 
+        if row["checkbox"].get():
             start, end, step = self.get_inputs(row)
             if row["unit_dropdown"].get() == "alpha":
                 start, end = start * config.mr_s, end * config.mr_s
@@ -381,7 +381,7 @@ class NestedFrame(CTkFrame):
             return self.generate_range(step_mode, start, end, step)
         else:
             return np.array([config.mr])
-        
+
     def get_nested_pc(self, step_mode) -> np.ndarray:
         """
         Get the chamber pressure values for the nested analysis.
@@ -415,7 +415,7 @@ class NestedFrame(CTkFrame):
 
         Returns:
             numpy.ndarray: An array of nozzle inlet condition values.
-            If the checkbox is not selected, the value from the initial frame (config.epsc) is returned. 
+            If the checkbox is not selected, the value from the initial frame (config.epsc) is returned.
             If "Contraction Area Ratio (Ac/At)" is selected, a range of values is generated based on the
             step_mode, start, end, and step inputs.
             If "Infinite Area Combustor" is selected, an array containing None is returned.
@@ -439,7 +439,7 @@ class NestedFrame(CTkFrame):
 
         Returns:
             numpy.ndarray: An array of nozzle exit condition values.
-            If the checkbox is not selected, the value from the initial frame (config.eps) is returned. 
+            If the checkbox is not selected, the value from the initial frame (config.eps) is returned.
             If the checkbox is selected, a range of values is generated based on the step_mode, start,
             end, and step inputs. Note that these values do not necessarily correspond to the contraction
             area ratio.
