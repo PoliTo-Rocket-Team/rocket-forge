@@ -272,86 +272,121 @@ class ThermalFrame(ctk.CTkFrame):
             )
 
             self.channels_frame = CTkFrame(
-                self.channelswindow, border_width=3, corner_radius=0, width=420, height=260,
+                self.channelswindow, border_width=3, corner_radius=0, width=420, height=340,
             )
             self.channels_frame.grid(column=0, row=0)
 
-            CTkLabel(self.channels_frame, text="Chamber").place(anchor="center", relx=0.42, rely=0.8/13)
-            CTkLabel(self.channels_frame, text="Throat").place(anchor="center", relx=0.57, rely=0.8/13)
-            CTkLabel(self.channels_frame, text="Exit").place(anchor="center", relx=0.72, rely=0.8/13)
+            try:
+                if config.cmode == 0:
+                    self.regen.set_delta()
+                else:
+                    self.regen.set_a()
+            except Exception:
+                pass
 
-            CTkLabel(self.channels_frame, text="Channels width").place(anchor="w", relx=0.05, rely=2/13)
-            self.a1 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
-            self.a1.place(anchor="w", relx=0.35, rely=2/13)
-            self.a2 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
-            self.a2.place(anchor="w", relx=0.5, rely=2/13)
-            self.a3 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
-            self.a3.place(anchor="w", relx=0.65, rely=2/13)
-            self.auom = tk.StringVar(value="mm")
-            CTkOptionMenu(
-                self.channels_frame,
-                values=["m", "cm", "mm", "in", "ft"],
-                variable=self.auom, width=59
-            ).place(anchor="e", relx=0.95, rely=2/13)
-            updateentry(self.a1, config.a1 / length_uom(self.auom.get()))
-            updateentry(self.a2, config.a2 / length_uom(self.auom.get()))
-            updateentry(self.a3, config.a3 / length_uom(self.auom.get()))
+            CTkLabel(self.channels_frame, text="Number of channels").place(anchor="w", relx=0.05, rely=1.3/17)
+            self.ncentry = CTkEntry(self.channels_frame, placeholder_text="0", width=118)
+            self.ncentry.place(anchor="w", relx=0.35, rely=1.3/17)
+            updateentry(self.ncentry, config.NC)
 
-            CTkLabel(self.channels_frame, text="Channels height").place(anchor="w", relx=0.05, rely=4/13)
+            CTkLabel(self.channels_frame, text="Chamber").place(anchor="center", relx=0.42, rely=2.8/17)
+            CTkLabel(self.channels_frame, text="Throat").place(anchor="center", relx=0.57, rely=2.8/17)
+            CTkLabel(self.channels_frame, text="Exit").place(anchor="center", relx=0.72, rely=2.8/17)
+
+            CTkLabel(self.channels_frame, text="Channels height").place(anchor="w", relx=0.05, rely=4/17)
             self.b1 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
-            self.b1.place(anchor="w", relx=0.35, rely=4/13)
+            self.b1.place(anchor="w", relx=0.35, rely=4/17)
             self.b2 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
-            self.b2.place(anchor="w", relx=0.5, rely=4/13)
+            self.b2.place(anchor="w", relx=0.5, rely=4/17)
             self.b3 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
-            self.b3.place(anchor="w", relx=0.65, rely=4/13)
+            self.b3.place(anchor="w", relx=0.65, rely=4/17)
             self.buom = tk.StringVar(value="mm")
             CTkOptionMenu(
                 self.channels_frame,
                 values=["m", "cm", "mm", "in", "ft"],
                 variable=self.buom, width=59
-            ).place(anchor="e", relx=0.95, rely=4/13)
+            ).place(anchor="e", relx=0.95, rely=4/17)
             updateentry(self.b1, config.b1 / length_uom(self.buom.get()))
             updateentry(self.b2, config.b2 / length_uom(self.buom.get()))
             updateentry(self.b3, config.b3 / length_uom(self.buom.get()))
 
-            self.channelsmode = ctk.IntVar(value=1)
+            self.channelsmode = ctk.IntVar(value=config.cmode)
+
             ctk.CTkRadioButton(
-                self.channels_frame, text="Rib width", variable=self.channelsmode, value=0,
-            ).place(anchor="w", relx=0.05, rely=6/13)
+                self.channels_frame, text="Channels width", variable=self.channelsmode, value=0,
+            ).place(anchor="w", relx=0.05, rely=6/17)
+            self.a1 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
+            self.a1.place(anchor="w", relx=0.35, rely=6/17)
+            self.a2 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
+            self.a2.place(anchor="w", relx=0.5, rely=6/17)
+            self.a3 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
+            self.a3.place(anchor="w", relx=0.65, rely=6/17)
+            self.auom = tk.StringVar(value="mm")
+            CTkOptionMenu(
+                self.channels_frame,
+                values=["m", "cm", "mm", "in", "ft"],
+                variable=self.auom, width=59
+            ).place(anchor="e", relx=0.95, rely=6/17)
+            updateentry(self.a1, config.a1 / length_uom(self.auom.get()))
+            updateentry(self.a2, config.a2 / length_uom(self.auom.get()))
+            updateentry(self.a3, config.a3 / length_uom(self.auom.get()))
+
+            ctk.CTkRadioButton(
+                self.channels_frame, text="Rib width", variable=self.channelsmode, value=1,
+            ).place(anchor="w", relx=0.05, rely=8/17)
             self.d1 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
-            self.d1.place(anchor="w", relx=0.35, rely=6/13)
+            self.d1.place(anchor="w", relx=0.35, rely=8/17)
             self.d2 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
-            self.d2.place(anchor="w", relx=0.5, rely=6/13)
+            self.d2.place(anchor="w", relx=0.5, rely=8/17)
             self.d3 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
-            self.d3.place(anchor="w", relx=0.65, rely=6/13)
+            self.d3.place(anchor="w", relx=0.65, rely=8/17)
             self.duom = tk.StringVar(value="mm")
             CTkOptionMenu(
                 self.channels_frame,
                 values=["m", "cm", "mm", "in", "ft"],
                 variable=self.duom, width=59
-            ).place(anchor="e", relx=0.95, rely=6/13)
+            ).place(anchor="e", relx=0.95, rely=8/17)
             updateentry(self.d1, config.d1 / length_uom(self.duom.get()))
             updateentry(self.d2, config.d2 / length_uom(self.duom.get()))
             updateentry(self.d3, config.d3 / length_uom(self.duom.get()))
 
-            ctk.CTkRadioButton(
-                self.channels_frame, text="Number of channels", variable=self.channelsmode, value=1,
-            ).place(anchor="w", relx=0.05, rely=8/13)
-            self.ncentry = CTkEntry(self.channels_frame, placeholder_text="0", width=118)
-            self.ncentry.place(anchor="w", relx=0.5, rely=8/13)
-            if config.NC != None: updateentry(self.ncentry, config.NC)
+            CTkLabel(self.channels_frame, text="Aspect Ratio").place(anchor="w", relx=0.05, rely=10/17)
+            self.ar1 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
+            self.ar1.place(anchor="w", relx=0.35, rely=10/17)
+            self.ar2 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
+            self.ar2.place(anchor="w", relx=0.5, rely=10/17)
+            self.ar3 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
+            self.ar3.place(anchor="w", relx=0.65, rely=10/17)
+            updateentry(self.ar1, config.b1 / config.a1, True)
+            updateentry(self.ar2, config.b2 / config.a2, True)
+            updateentry(self.ar3, config.b3 / config.a3, True)
+
+            CTkLabel(self.channels_frame, text="Filling Ratio").place(anchor="w", relx=0.05, rely=12/17)
+            self.fr1 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
+            self.fr1.place(anchor="w", relx=0.35, rely=12/17)
+            self.fr2 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
+            self.fr2.place(anchor="w", relx=0.5, rely=12/17)
+            self.fr3 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
+            self.fr3.place(anchor="w", relx=0.65, rely=12/17)
+            updateentry(self.fr1, config.a1 / (config.a1 + config.d1), True)
+            updateentry(self.fr2, config.a2 / (config.a2 + config.d2), True)
+            updateentry(self.fr3, config.a3 / (config.a3 + config.d3), True)
 
             CTkButton(
-                self.channels_frame, text="Set", command=self.set_channels, width=90
-            ).place(anchor="center", relx=0.5, rely=10/13)
+                self.channels_frame, text="Plot...", command=self.plot_g, width=110
+            ).place(anchor="center", relx=0.2, rely=14/17)
 
             CTkButton(
-                self.channels_frame, text="Plot channels geometry", command=self.plot_g, width=140
-            ).place(anchor="center", relx=0.3, rely=12/13)
+                self.channels_frame, text="Plot 3D...", command=self.plot_3D, width=110
+            ).place(anchor="center", relx=0.5, rely=14/17)
 
             CTkButton(
-                self.channels_frame, text="Print channels geometry", command=self.print_g, width=140
-            ).place(anchor="center", relx=0.7, rely=12/13)
+                self.channels_frame, text="Print...", command=self.print_g, width=110
+            ).place(anchor="center", relx=0.8, rely=14/17)
+
+            CTkButton(
+                self.channels_frame, text="Set", command=self.set_channels, width=150
+            ).place(anchor="center", relx=0.5, rely=16/17)
 
             self.channelswindow.after(50, self.channelswindow.lift)
             self.channelswindow.after(50, self.channelswindow.focus)
