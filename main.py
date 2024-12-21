@@ -218,6 +218,13 @@ class RocketForge(CTk):
             pass
 
         try:
+            self.statuslabel.configure(text="Status: running nested analysis...")
+            self.statuslabel.update()
+            self.nestedframe.run()
+        except Exception:
+            pass
+
+        try:
             self.statuslabel.configure(text="Status: performing thermal analysis...")
             self.statuslabel.update()
             self.thermalframe.run()

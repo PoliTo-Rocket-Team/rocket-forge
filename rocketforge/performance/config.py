@@ -21,6 +21,8 @@ c = None
 Isp_vac = None
 Isp_vac_fr = None
 Isp_vac_eq = None
+Isp_sl = None
+Isp_opt = None
 
 # Delivered Performance
 cstar_d = None
