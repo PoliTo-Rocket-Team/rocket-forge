@@ -30,6 +30,7 @@ d1 = 1.0e-3
 d2 = 1.0e-3
 d3 = 1.0e-3
 NC = 100
+cmode = 0
 
 ## Chamber geometry
 shape = None
