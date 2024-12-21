@@ -18,29 +18,22 @@ class Regen():
         X, Y = get_geometry()
 
         L_tot = config.L_c + config.L_e
-        x = linspace(0.0, L_tot, config.n_stations)
-        R = interp(x, X, Y)
-        A = pi * R**2.0
-        A_w = 2.0 * pi * R * L_tot / config.n_stations
+        self.x = linspace(0.0, L_tot, config.n_stations)
+        self.R = interp(self.x, X, Y)
+        A = pi * self.R**2.0
+        A_w = 2.0 * pi * self.R * L_tot / config.n_stations
 
-        M = generate_profile(x, 0.0, 1.0, config.M_e, R)
-        Pr = generate_profile(x, config.Pr_0, config.Pr_t, config.Pr_e, R)
-        gamma = generate_profile(x, config.gamma, config.gamma, config.gamma_e, R)
+        M = generate_profile(self.x, 0.0, 1.0, config.M_e, self.R)
+        Pr = generate_profile(self.x, config.Pr_0, config.Pr_t, config.Pr_e, self.R)
+        gamma = generate_profile(self.x, config.gamma, config.gamma, config.gamma_e, self.R)
 
-        b = generate_profile(x, config.b1, config.b2, config.b3, R)
-        C = 2.0 * pi * (R + config.t_w + b / 2.0)
-        if config.NC:
-            NC = full(config.n_stations, config.NC)
-            if config.a1:
-                a = generate_profile(x, config.a1, config.a2, config.a3, R)
-                delta = C / NC - a
-            else:
-                delta = generate_profile(x, config.d1, config.d2, config.d3, R)
-                a = C / NC - delta
-        else:
-            a = generate_profile(x, config.a1, config.a2, config.a3, R)
-            delta = generate_profile(x, config.d1, config.d2, config.d3, R)
-            NC = C / (a + delta)
+        self.set_channels()
+
+        a = self.a
+        b = self.b
+        delta = self.delta
+
+        NC = full(config.n_stations, config.NC)
         d_e = 2.0 * a * b / (a + b)
 
         if config.enable_dp:
@@ -147,14 +140,10 @@ class Regen():
         if config.enable_dp:
             Dp = sum(dp)
 
-        self.x = x
         self.T_wg = T_wg
         self.T_wc = T_wc
         self.T_c = T_c
         self.q = q
-        self.a = a
-        self.b = b
-        self.delta = delta
         self.X = X
         self.Y = Y
 
