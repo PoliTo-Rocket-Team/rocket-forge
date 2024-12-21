@@ -246,6 +246,30 @@ class Regen():
     def plot_3D(self):
         channels.plot_3D(self.x, self.R, self.a, self.b, self.delta, config.NC, config.t_w)
 
+    def set_a(self):
+        Rt = sqrt(pconf.At / pi)
+        C1 = 2.0 * pi * (Rt * sqrt(pconf.epsc) + config.t_w + config.b1 / 2.0)
+        config.a1 = C1 / config.NC - config.d1
+        C2 = 2.0 * pi * (Rt + config.t_w + config.b2 / 2.0)
+        config.a2 = C2 / config.NC - config.d2
+        C3 = 2.0 * pi * (Rt * sqrt(pconf.eps) + config.t_w + config.b3 / 2.0)
+        config.a3 = C3 / config.NC - config.d3
+
+    def set_delta(self):
+        Rt = sqrt(pconf.At / pi)
+        C1 = 2.0 * pi * (Rt * sqrt(pconf.epsc) + config.t_w + config.b1 / 2.0)
+        config.d1 = C1 / config.NC - config.a1
+        C2 = 2.0 * pi * (Rt + config.t_w + config.b2 / 2.0)
+        config.d2 = C2 / config.NC - config.a2
+        C3 = 2.0 * pi * (Rt * sqrt(pconf.eps) + config.t_w + config.b3 / 2.0)
+        config.d3 = C3 / config.NC - config.a3
+
+    def set_channels(self):
+        self.set_delta
+        self.a = generate_profile(self.x, config.a1, config.a2, config.a3, self.R)
+        self.b = generate_profile(self.x, config.b1, config.b2, config.b3, self.R)
+        self.delta = generate_profile(self.x, config.d1, config.d2, config.d3, self.R)
+
     def details(self):
         pass
 
