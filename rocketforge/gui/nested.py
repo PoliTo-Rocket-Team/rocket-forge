@@ -2,6 +2,7 @@ import os
 import re
 import tkinter as tk
 import numpy as np
+import threading
 from tabulate import tabulate
 from contextlib import contextmanager
 from tkinter.messagebox import showwarning
@@ -189,8 +190,24 @@ class NestedFrame(CTkFrame):
             config.gammae = cached_gammae
             config.Me = cached_Me
 
-    # TODO: Unfortunately the analyses cannot be multithreaded as they rely on the same config variables, in the future we could try fixing this
+    # Unfortunately the analyses cannot be multithreaded as they rely on the same config variables, in the future we could try fixing this
     def run(self) -> None:
+        """
+        Starts the analysis thread if it is not already running.
+
+        This method checks if the 'analysis_thread' attribute exists and if it is alive.
+        If the thread does not exist or is not alive, it creates a new thread to run
+        the 'run_analysis' method and starts it.
+
+        Returns:
+            None
+        """
+        if not hasattr(self, 'analysis_thread') or not self.analysis_thread.is_alive():
+            self.analysis_thread = threading.Thread(target=self.run_analysis)
+            self.analysis_thread.start()
+
+    # Unfortunately the analyses cannot be multithreaded as they rely on the same config variables, in the future we could try fixing this
+    def run_analysis(self) -> None:
         """
         Executes the nested parameter configuration and performance calculation.
         This method performs the following steps:
