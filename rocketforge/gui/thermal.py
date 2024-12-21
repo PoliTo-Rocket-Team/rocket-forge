@@ -351,22 +351,41 @@ class ThermalFrame(ctk.CTkFrame):
             self.channelswindow.lift()
             self.channelswindow.focus()
 
-    def set_channels(self):
+    def set_channels(self, destroy=True):
         try:
-            config.a1 = float(self.a1.get()) * length_uom(self.auom.get())
-            config.a2 = float(self.a2.get()) * length_uom(self.auom.get())
-            config.a3 = float(self.a3.get()) * length_uom(self.auom.get())
+            config.NC = int(float(self.ncentry.get()))
             config.b1 = float(self.b1.get()) * length_uom(self.buom.get())
             config.b2 = float(self.b2.get()) * length_uom(self.buom.get())
             config.b3 = float(self.b3.get()) * length_uom(self.buom.get())
-            if self.channelsmode.get() == 0:
+            config.cmode = self.channelsmode.get()
+            if config.cmode == 0:
+                config.a1 = float(self.a1.get()) * length_uom(self.auom.get())
+                config.a2 = float(self.a2.get()) * length_uom(self.auom.get())
+                config.a3 = float(self.a3.get()) * length_uom(self.auom.get())
+                self.regen.set_delta()
+                updateentry(self.d1, config.d1 / length_uom(self.duom.get()))
+                updateentry(self.d2, config.d2 / length_uom(self.duom.get()))
+                updateentry(self.d3, config.d3 / length_uom(self.duom.get()))
+            else:
                 config.d1 = float(self.d1.get()) * length_uom(self.duom.get())
                 config.d2 = float(self.d2.get()) * length_uom(self.duom.get())
                 config.d3 = float(self.d3.get()) * length_uom(self.duom.get())
-                config.NC = None
+                self.regen.set_a()
+                updateentry(self.a1, config.a1 / length_uom(self.auom.get()))
+                updateentry(self.a2, config.a2 / length_uom(self.auom.get()))
+                updateentry(self.a3, config.a3 / length_uom(self.auom.get()))
+
+            self.regen.set_channels()
+
+            if destroy:
+                self.channelswindow.destroy()
             else:
-                config.NC = float(self.ncentry.get())
-            self.channelswindow.destroy()
+                updateentry(self.ar1, config.b1 / config.a1, True)
+                updateentry(self.ar2, config.b2 / config.a2, True)
+                updateentry(self.ar3, config.b3 / config.a3, True)
+                updateentry(self.fr1, config.a1 / (config.a1 + config.d1), True)
+                updateentry(self.fr2, config.a2 / (config.a2 + config.d2), True)
+                updateentry(self.fr3, config.a3 / (config.a3 + config.d3), True)
         except Exception:
             pass
 
