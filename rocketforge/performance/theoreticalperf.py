@@ -32,6 +32,10 @@ def theoretical(i=2, fr=0, fat=0):
     # Vacuum specific impulse
     Isp_vac = C.get_Isp(Pc=pc, MR=mr, eps=eps, frozen=fr, frozenAtThroat=fat)
 
+    # Ambient specific impulse
+    Isp_sl = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=101325, frozen=fr, frozenAtThroat=fat)[0]
+    Isp_opt = C.estimate_Ambient_Isp(Pc=pc, MR=mr, eps=eps, Pamb=config.pe, frozen=fr, frozenAtThroat=fat)[0]
+
     # Vacuum specific impulse (equilibrium)
     Isp_vac_eq = C.get_Isp(Pc=pc, MR=mr, eps=eps)
 
