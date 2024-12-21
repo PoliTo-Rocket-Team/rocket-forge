@@ -201,6 +201,14 @@ class NestedFrame(CTkFrame):
         5. Stores the results in a dictionary and updates the results array.
         6. Formats the results into a table and updates the GUI textbox with the table.
 
+        The `inputs` dictionary is expected to have the following structure:
+        {
+            "mr": numpy.ndarray,   # Mixture ratio values
+            "pc": numpy.ndarray,   # Chamber pressure values
+            "epsc": numpy.ndarray, # Inlet condition values
+            "eps": numpy.ndarray   # Exit condition values
+        }
+
         Returns:
             None
         """
