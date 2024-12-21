@@ -7,7 +7,7 @@ from customtkinter import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkOptionMenu
 from tabulate import tabulate
 from rocketcea.cea_obj_w_units import CEA_Obj
 from rocketforge.utils.conversions import pressure_uom, thrust_uom
-from rocketforge.utils.helpers import updatetextbox
+from rocketforge.utils.helpers import update_textbox
 from rocketforge.performance.mixtureratio import optimizemr, optimizermr_at_pe
 from rocketforge.performance.theoreticalperf import theoretical
 
@@ -403,7 +403,7 @@ class InitialFrame(ctk.CTkFrame):
         except Exception as err:
             output = str(err)
 
-        updatetextbox(self.textbox, output, True)
+        update_textbox(self.textbox, output, True)
 
         try:
             config.thrust = float(self.thrustentry.get()) * thrust_uom(self.thrustuom.get())

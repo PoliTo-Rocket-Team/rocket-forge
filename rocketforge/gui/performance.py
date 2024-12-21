@@ -6,7 +6,7 @@ from customtkinter          import CTkEntry, CTkFont, CTkFrame, CTkLabel, CTkBut
 from rocketforge.performance.theoreticalperf  import theoretical
 from rocketforge.performance.corrfactors      import correction_factors
 from rocketforge.performance.deliveredperf    import delivered
-from rocketforge.utils.helpers                import updateentry, updatetextbox
+from rocketforge.utils.helpers                import update_entry, update_textbox
 
 
 class PerformanceFrame(ctk.CTkFrame):
@@ -80,18 +80,18 @@ class PerformanceFrame(ctk.CTkFrame):
 
         x = theoretical(iter, frozen, frozenatthroat)
 
-        updatetextbox(self.thermodynamicframe.textbox, x, True)
+        update_textbox(self.thermodynamicframe.textbox, x, True)
 
         correction_factors()
 
-        updateentry(self.deliveredframe.reactioneffentry, config.z_r, True)
-        updateentry(self.deliveredframe.overalleffentry, config.z_overall, True)
-        updateentry(self.deliveredframe.BLeffentry, config.z_f, True)
-        updateentry(self.deliveredframe.diveffentry, config.z_d, True)
+        update_entry(self.deliveredframe.reactioneffentry, config.z_r, True)
+        update_entry(self.deliveredframe.overalleffentry, config.z_overall, True)
+        update_entry(self.deliveredframe.BLeffentry, config.z_f, True)
+        update_entry(self.deliveredframe.diveffentry, config.z_d, True)
 
         output = delivered()
 
-        updatetextbox(self.deliveredframe.textbox, output, True)
+        update_textbox(self.deliveredframe.textbox, output, True)
 
 
 class ThermodynamicFrame(CTkFrame):

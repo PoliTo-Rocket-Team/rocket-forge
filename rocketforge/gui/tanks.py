@@ -4,7 +4,7 @@ import rocketforge.mission.config as config
 import rocketforge.mission.analysis as msa
 from customtkinter import CTkEntry, CTkFrame, CTkLabel, CTkButton
 from rocketforge.utils.conversions import mass_uom, mdot_uom, density_uom, length_uom
-from rocketforge.utils.helpers import updateentry
+from rocketforge.utils.helpers import update_entry
 from numpy import pi
 
 
@@ -305,14 +305,14 @@ class TanksFrame(ctk.CTkFrame):
             h_ox = config.exc_ox * m_ox / config.ox_rho / (pi * config.r_ox**2)
             h_fuel = config.exc_fuel * m_fuel / config.fuel_rho / (pi * config.r_fuel**2)
 
-            updateentry(self.mtentry, config.tanks_mass, True)
-            updateentry(self.tbentry, config.prop_mass / config.mdot, True)
-            updateentry(self.oxhentry, h_ox, True)
-            updateentry(self.fuelhentry, h_fuel, True)
-            updateentry(self.oxmdotentry, mdot_ox, True)
-            updateentry(self.fuelmdotentry, mdot_fuel, True)
-            updateentry(self.oxmentry, m_ox, True)
-            updateentry(self.fuelmentry, m_fuel, True)
+            update_entry(self.mtentry, config.tanks_mass, True)
+            update_entry(self.tbentry, config.prop_mass / config.mdot, True)
+            update_entry(self.oxhentry, h_ox, True)
+            update_entry(self.fuelhentry, h_fuel, True)
+            update_entry(self.oxmdotentry, mdot_ox, True)
+            update_entry(self.fuelmdotentry, mdot_fuel, True)
+            update_entry(self.oxmentry, m_ox, True)
+            update_entry(self.fuelmentry, m_fuel, True)
 
             msa.set_engine()
         except Exception:

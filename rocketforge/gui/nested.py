@@ -11,7 +11,7 @@ from customtkinter import CTkEntry, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMe
 from rocketcea.cea_obj_w_units import CEA_Obj
 import rocketforge.performance.config as config
 from rocketforge.utils.conversions import pressure_uom
-from rocketforge.utils.helpers import updateentry, updatetextbox
+from rocketforge.utils.helpers import update_entry, update_textbox
 from rocketforge.performance.theoreticalperf import theoretical
 
 
@@ -307,7 +307,7 @@ class NestedFrame(CTkFrame):
             ]
 
             table = tabulate(table_data, headers, numalign="right")
-            updatetextbox(self.textbox, table, disabled=True)
+            update_textbox(self.textbox, table, disabled=True)
 
     def generate_range(self, step_mode, start, end, step) -> np.ndarray:
         """

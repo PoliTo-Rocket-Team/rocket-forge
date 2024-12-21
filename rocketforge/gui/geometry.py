@@ -10,7 +10,7 @@ import rocketforge.geometry.tic as tic
 import rocketforge.geometry.conical as conical
 import rocketforge.geometry.convergent as convergent
 from rocketforge.utils.conversions import angle_uom, area_uom, length_uom
-from rocketforge.utils.helpers import updateentry, updatetextbox
+from rocketforge.utils.helpers import update_entry, update_textbox
 from rocketforge.utils.resources import resource_path
 from matplotlib.figure import Figure 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -46,13 +46,13 @@ class GeometryFrame(ctk.CTkFrame):
         self.r1ovrtentry = CTkEntry(self)
         self.r1ovrtentry.configure(placeholder_text="0", width=118)
         self.r1ovrtentry.place(anchor="e", relx=0.48, rely=0.18, x=0, y=0)
-        updateentry(self.r1ovrtentry, "1.5")
+        update_entry(self.r1ovrtentry, "1.5")
 
         CTkLabel(self, text="Chamber length").place(anchor="w", relx=0.02, rely=0.25, x=0, y=0)
         self.chamberlengthentry = CTkEntry(self)
         self.chamberlengthentry.configure(placeholder_text="0", width=59)
         self.chamberlengthentry.place(anchor="e", relx=229/600, rely=0.25, x=0, y=0)
-        updateentry(self.chamberlengthentry, "1.0")
+        update_entry(self.chamberlengthentry, "1.0")
 
         self.chamberlengthoptmenu = CTkOptionMenu(self)
         self.chamberlengthuom = tk.StringVar(value="L* [m]")
@@ -65,7 +65,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.bentry = CTkEntry(self)
         self.bentry.configure(placeholder_text="0", width=59)
         self.bentry.place(anchor="e", relx=229/600, rely=0.32, x=0, y=0)
-        updateentry(self.bentry, "30")
+        update_entry(self.bentry, "30")
 
         self.boptmenu = CTkOptionMenu(self)
         self.buom = tk.StringVar(value="deg")
@@ -78,13 +78,13 @@ class GeometryFrame(ctk.CTkFrame):
         self.r2ovr2maxentry = CTkEntry(self)
         self.r2ovr2maxentry.configure(placeholder_text="0", width=118)
         self.r2ovr2maxentry.place(anchor="e", relx=0.48, rely=0.39, x=0, y=0)
-        updateentry(self.r2ovr2maxentry, "0.5")
+        update_entry(self.r2ovr2maxentry, "0.5")
 
         CTkLabel(self, text="Contraction Area Ratio").place(anchor="w", relx=0.02, rely=0.46, x=0, y=0)
         self.epscentry = CTkEntry(self)
         self.epscentry.configure(width=118, state="disabled")
         self.epscentry.place(anchor="e", relx=0.48, rely=0.46, x=0, y=0)
-        updateentry(self.epscentry, "Undefined", True)
+        update_entry(self.epscentry, "Undefined", True)
 
         # Divergent Section
         CTkLabel(self, text="Nozzle shape").place(anchor="w", relx=0.52, rely=0.11, x=0, y=0)
@@ -104,14 +104,14 @@ class GeometryFrame(ctk.CTkFrame):
         self.rnovrtentry = CTkEntry(self)
         self.rnovrtentry.configure(placeholder_text="0", width=118)
         self.rnovrtentry.place(anchor="e", relx=0.98, rely=0.18, x=0, y=0)
-        updateentry(self.rnovrtentry, "0.382")
+        update_entry(self.rnovrtentry, "0.382")
 
         CTkLabel(self, text="Expansion Area Ratio").place(anchor="w", relx=0.52, rely=0.46, x=0, y=0)
 
         self.epsentry = CTkEntry(self)
         self.epsentry.configure(width=118, state="disabled")
         self.epsentry.place(anchor="e", relx=0.98, rely=0.46, x=0, y=0)
-        updateentry(self.epsentry, "Undefined", True)
+        update_entry(self.epsentry, "Undefined", True)
 
         # Thrust-optimized parabolic (TOP)
         self.divergentlengthlabel = CTkLabel(self)
@@ -121,7 +121,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.divergentlengthentry = CTkEntry(self)
         self.divergentlengthentry.configure(placeholder_text="0", width=59)
         self.divergentlengthentry.place(anchor="e", relx=529/600, rely=0.25, x=0, y=0)
-        updateentry(self.divergentlengthentry, "0.8")
+        update_entry(self.divergentlengthentry, "0.8")
 
         self.divergentlengthoptmenu = CTkOptionMenu(self)
         self.divergentlengthuom = tk.StringVar(value="Le/Lc15")
@@ -152,7 +152,7 @@ class GeometryFrame(ctk.CTkFrame):
         self.thetaexentry = CTkEntry(self)
         self.thetaexentry.configure(placeholder_text="0", width=59)
         self.thetaexentry.place(anchor="e", relx=529/600, rely=0.39, x=0, y=0)
-        updateentry(self.thetaexentry, "8")
+        update_entry(self.thetaexentry, "8")
 
         self.thetaexoptmenu = CTkOptionMenu(self)
         self.thetaexuom = tk.StringVar(value="deg")
@@ -319,10 +319,10 @@ class GeometryFrame(ctk.CTkFrame):
     def plot(self):
         if config.thrust != None:
             if config.At > 0.01:
-                updateentry(self.throatareaentry, config.At)
+                update_entry(self.throatareaentry, config.At)
                 self.throatareauom.set("m2")
             else:
-                updateentry(self.throatareaentry, config.At * 10000)
+                update_entry(self.throatareaentry, config.At * 10000)
                 self.throatareauom.set("cm2")
 
         # Compute divergent section
@@ -331,7 +331,7 @@ class GeometryFrame(ctk.CTkFrame):
                 showwarning(title="Warning", message="Please define the area ratio and run the simulation first.")
                 raise Exception
             eps = config.eps
-            updateentry(self.epsentry, eps, True)
+            update_entry(self.epsentry, eps, True)
 
             At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
             RnOvRt = float(self.rnovrtentry.get())
@@ -382,9 +382,9 @@ class GeometryFrame(ctk.CTkFrame):
                     Le = conical.le(At, RnOvRt, eps, thetae)
                     Lf = Le / conical.lc15(At, RnOvRt, eps)
                 
-                updateentry(self.cleentry, Le / length_uom(self.cleuom.get()))
-                updateentry(self.clfentry, Lf)
-                updateentry(self.cthetaentry, thetae / angle_uom(self.cthetauom.get()))
+                update_entry(self.cleentry, Le / length_uom(self.cleuom.get()))
+                update_entry(self.clfentry, Lf)
+                update_entry(self.cthetaentry, thetae / angle_uom(self.cthetauom.get()))
                 thetan = thetae
 
                 xD, yD = conical.get(At, RnOvRt, eps, Le, thetae, self.ptscirc)
@@ -398,7 +398,7 @@ class GeometryFrame(ctk.CTkFrame):
             if config.epsc == None:
                 raise Exception
             epsc = float(config.epsc)
-            updateentry(self.epscentry, epsc, True)
+            update_entry(self.epscentry, epsc, True)
             
             At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
             R1OvRt = float(self.r1ovrtentry.get())
@@ -521,7 +521,7 @@ class GeometryFrame(ctk.CTkFrame):
         Me = config.Me
         if self.thetanentry.get() == "":
             thetan = (sqrt((gamma+1)/(gamma-1))*arctan(sqrt((gamma-1)*(Me**2-1)/(gamma+1)))-arctan(sqrt(Me**2-1)))/2
-            updateentry(self.thetanentry, thetan / angle_uom(self.thetanuom.get()))
+            update_entry(self.thetanentry, thetan / angle_uom(self.thetanuom.get()))
     
     def advanced(self):
         if self.advancedwindow is None or not self.advancedwindow.winfo_exists():
@@ -544,22 +544,22 @@ class GeometryFrame(ctk.CTkFrame):
             CTkLabel(self.advanced_frame, text="Pts/circle").place(anchor="w", relx=0.1, rely=1/6)
             self.ptscircentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=80)
             self.ptscircentry.place(anchor="e", relx=0.9, rely=1/6)
-            updateentry(self.ptscircentry, self.ptscirc)
+            update_entry(self.ptscircentry, self.ptscirc)
 
             CTkLabel(self.advanced_frame, text="Points per parabola").place(anchor="w", relx=0.1, rely=2/6)
             self.ptsparentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=80)
             self.ptsparentry.place(anchor="e", relx=0.9, rely=2/6)
-            updateentry(self.ptsparentry, self.ptspar)
+            update_entry(self.ptsparentry, self.ptspar)
 
             CTkLabel(self.advanced_frame, text="3D plot view angle [°]").place(anchor="w", relx=0.1, rely=3/6)
             self.viewangleentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=80)
             self.viewangleentry.place(anchor="e", relx=0.9, rely=3/6)
-            updateentry(self.viewangleentry, degrees(self.view_angle))
+            update_entry(self.viewangleentry, degrees(self.view_angle))
 
             CTkLabel(self.advanced_frame, text="3D plot distance factor").place(anchor="w", relx=0.1, rely=4/6)
             self.distanceentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=80)
             self.distanceentry.place(anchor="e", relx=0.9, rely=4/6)
-            updateentry(self.distanceentry, self.distance)
+            update_entry(self.distanceentry, self.distance)
 
             CTkButton(
                 self.advanced_frame, text="Set", command=self.set_advanced, width=90
@@ -635,13 +635,13 @@ class GeometryFrame(ctk.CTkFrame):
                 self.details_frame, text="Help", command=self.help, width=59
             ).place(anchor="center", relx=0.85, rely=0.95)
 
-            updatetextbox(self.detailstextbox, self.details_output, True)
+            update_textbox(self.detailstextbox, self.details_output, True)
 
             self.details_window.after(50, self.details_window.lift)
             self.details_window.after(50, self.details_window.focus)
 
         else:
-            updatetextbox(self.detailstextbox, self.details_output, True)
+            update_textbox(self.detailstextbox, self.details_output, True)
             self.details_window.lift()
             self.details_window.focus()
 

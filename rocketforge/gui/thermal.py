@@ -7,7 +7,7 @@ import rocketforge.performance.config as pconf
 from rocketforge.thermal.regenerative import Regen
 from rocketforge.utils.conversions import mdot_uom, temperature_uom, pressure_uom, length_uom
 from rocketforge.utils.resources import resource_path
-from rocketforge.utils.helpers import updateentry
+from rocketforge.utils.helpers import update_entry
 import warnings
 
 
@@ -248,13 +248,13 @@ class ThermalFrame(ctk.CTkFrame):
 
     def load_mdot_ox(self):
         try:
-            updateentry(self.mdotcentry, pconf.m_ox_d / mdot_uom(self.mdotcuom.get()))
+            update_entry(self.mdotcentry, pconf.m_ox_d / mdot_uom(self.mdotcuom.get()))
         except Exception:
             showwarning(title="Warning", message="Mass flow rate unavailable")
 
     def load_mdot_fuel(self):
         try:
-            updateentry(self.mdotcentry, pconf.m_f_d / mdot_uom(self.mdotcuom.get()))
+            update_entry(self.mdotcentry, pconf.m_f_d / mdot_uom(self.mdotcuom.get()))
         except Exception:
             showwarning(title="Warning", message="Mass flow rate unavailable")
 
@@ -287,7 +287,7 @@ class ThermalFrame(ctk.CTkFrame):
             CTkLabel(self.channels_frame, text="Number of channels").place(anchor="w", relx=0.05, rely=1.3/17)
             self.ncentry = CTkEntry(self.channels_frame, placeholder_text="0", width=118)
             self.ncentry.place(anchor="w", relx=0.35, rely=1.3/17)
-            updateentry(self.ncentry, config.NC)
+            update_entry(self.ncentry, config.NC)
 
             CTkLabel(self.channels_frame, text="Chamber").place(anchor="center", relx=0.42, rely=2.8/17)
             CTkLabel(self.channels_frame, text="Throat").place(anchor="center", relx=0.57, rely=2.8/17)
@@ -306,9 +306,9 @@ class ThermalFrame(ctk.CTkFrame):
                 values=["m", "cm", "mm", "in", "ft"],
                 variable=self.buom, width=59
             ).place(anchor="e", relx=0.95, rely=4/17)
-            updateentry(self.b1, config.b1 / length_uom(self.buom.get()))
-            updateentry(self.b2, config.b2 / length_uom(self.buom.get()))
-            updateentry(self.b3, config.b3 / length_uom(self.buom.get()))
+            update_entry(self.b1, config.b1 / length_uom(self.buom.get()))
+            update_entry(self.b2, config.b2 / length_uom(self.buom.get()))
+            update_entry(self.b3, config.b3 / length_uom(self.buom.get()))
 
             self.channelsmode = ctk.IntVar(value=config.cmode)
 
@@ -327,9 +327,9 @@ class ThermalFrame(ctk.CTkFrame):
                 values=["m", "cm", "mm", "in", "ft"],
                 variable=self.auom, width=59
             ).place(anchor="e", relx=0.95, rely=6/17)
-            updateentry(self.a1, config.a1 / length_uom(self.auom.get()))
-            updateentry(self.a2, config.a2 / length_uom(self.auom.get()))
-            updateentry(self.a3, config.a3 / length_uom(self.auom.get()))
+            update_entry(self.a1, config.a1 / length_uom(self.auom.get()))
+            update_entry(self.a2, config.a2 / length_uom(self.auom.get()))
+            update_entry(self.a3, config.a3 / length_uom(self.auom.get()))
 
             ctk.CTkRadioButton(
                 self.channels_frame, text="Rib width", variable=self.channelsmode, value=1,
@@ -346,9 +346,9 @@ class ThermalFrame(ctk.CTkFrame):
                 values=["m", "cm", "mm", "in", "ft"],
                 variable=self.duom, width=59
             ).place(anchor="e", relx=0.95, rely=8/17)
-            updateentry(self.d1, config.d1 / length_uom(self.duom.get()))
-            updateentry(self.d2, config.d2 / length_uom(self.duom.get()))
-            updateentry(self.d3, config.d3 / length_uom(self.duom.get()))
+            update_entry(self.d1, config.d1 / length_uom(self.duom.get()))
+            update_entry(self.d2, config.d2 / length_uom(self.duom.get()))
+            update_entry(self.d3, config.d3 / length_uom(self.duom.get()))
 
             CTkLabel(self.channels_frame, text="Aspect Ratio").place(anchor="w", relx=0.05, rely=10/17)
             self.ar1 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
@@ -357,9 +357,9 @@ class ThermalFrame(ctk.CTkFrame):
             self.ar2.place(anchor="w", relx=0.5, rely=10/17)
             self.ar3 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
             self.ar3.place(anchor="w", relx=0.65, rely=10/17)
-            updateentry(self.ar1, config.b1 / config.a1, True)
-            updateentry(self.ar2, config.b2 / config.a2, True)
-            updateentry(self.ar3, config.b3 / config.a3, True)
+            update_entry(self.ar1, config.b1 / config.a1, True)
+            update_entry(self.ar2, config.b2 / config.a2, True)
+            update_entry(self.ar3, config.b3 / config.a3, True)
 
             CTkLabel(self.channels_frame, text="Filling Ratio").place(anchor="w", relx=0.05, rely=12/17)
             self.fr1 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
@@ -368,9 +368,9 @@ class ThermalFrame(ctk.CTkFrame):
             self.fr2.place(anchor="w", relx=0.5, rely=12/17)
             self.fr3 = CTkEntry(self.channels_frame, placeholder_text="0", width=59)
             self.fr3.place(anchor="w", relx=0.65, rely=12/17)
-            updateentry(self.fr1, config.a1 / (config.a1 + config.d1), True)
-            updateentry(self.fr2, config.a2 / (config.a2 + config.d2), True)
-            updateentry(self.fr3, config.a3 / (config.a3 + config.d3), True)
+            update_entry(self.fr1, config.a1 / (config.a1 + config.d1), True)
+            update_entry(self.fr2, config.a2 / (config.a2 + config.d2), True)
+            update_entry(self.fr3, config.a3 / (config.a3 + config.d3), True)
 
             CTkButton(
                 self.channels_frame, text="Plot...", command=self.plot_g, width=110
@@ -407,29 +407,29 @@ class ThermalFrame(ctk.CTkFrame):
                 config.a2 = float(self.a2.get()) * length_uom(self.auom.get())
                 config.a3 = float(self.a3.get()) * length_uom(self.auom.get())
                 self.regen.set_delta()
-                updateentry(self.d1, config.d1 / length_uom(self.duom.get()))
-                updateentry(self.d2, config.d2 / length_uom(self.duom.get()))
-                updateentry(self.d3, config.d3 / length_uom(self.duom.get()))
+                update_entry(self.d1, config.d1 / length_uom(self.duom.get()))
+                update_entry(self.d2, config.d2 / length_uom(self.duom.get()))
+                update_entry(self.d3, config.d3 / length_uom(self.duom.get()))
             else:
                 config.d1 = float(self.d1.get()) * length_uom(self.duom.get())
                 config.d2 = float(self.d2.get()) * length_uom(self.duom.get())
                 config.d3 = float(self.d3.get()) * length_uom(self.duom.get())
                 self.regen.set_a()
-                updateentry(self.a1, config.a1 / length_uom(self.auom.get()))
-                updateentry(self.a2, config.a2 / length_uom(self.auom.get()))
-                updateentry(self.a3, config.a3 / length_uom(self.auom.get()))
+                update_entry(self.a1, config.a1 / length_uom(self.auom.get()))
+                update_entry(self.a2, config.a2 / length_uom(self.auom.get()))
+                update_entry(self.a3, config.a3 / length_uom(self.auom.get()))
 
             self.regen.set_channels()
 
             if destroy:
                 self.channelswindow.destroy()
             else:
-                updateentry(self.ar1, config.b1 / config.a1, True)
-                updateentry(self.ar2, config.b2 / config.a2, True)
-                updateentry(self.ar3, config.b3 / config.a3, True)
-                updateentry(self.fr1, config.a1 / (config.a1 + config.d1), True)
-                updateentry(self.fr2, config.a2 / (config.a2 + config.d2), True)
-                updateentry(self.fr3, config.a3 / (config.a3 + config.d3), True)
+                update_entry(self.ar1, config.b1 / config.a1, True)
+                update_entry(self.ar2, config.b2 / config.a2, True)
+                update_entry(self.ar3, config.b3 / config.a3, True)
+                update_entry(self.fr1, config.a1 / (config.a1 + config.d1), True)
+                update_entry(self.fr2, config.a2 / (config.a2 + config.d2), True)
+                update_entry(self.fr3, config.a3 / (config.a3 + config.d3), True)
         except Exception:
             pass
 
@@ -454,32 +454,32 @@ class ThermalFrame(ctk.CTkFrame):
             CTkLabel(self.advanced_frame, text="pInjectors/pChamber").place(anchor="w", relx=0.05, rely=1/16)
             self.pcoOvpcentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
             self.pcoOvpcentry.place(anchor="e", relx=0.95, rely=1/16)
-            updateentry(self.pcoOvpcentry, config.pcoOvpc)
+            update_entry(self.pcoOvpcentry, config.pcoOvpc)
 
             CTkLabel(self.advanced_frame, text="Number of stations").place(anchor="w", relx=0.05, rely=3/16)
             self.nsentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
             self.nsentry.place(anchor="e", relx=0.95, rely=3/16)
-            updateentry(self.nsentry, config.n_stations)
+            update_entry(self.nsentry, config.n_stations)
 
             CTkLabel(self.advanced_frame, text="Maximum iterations").place(anchor="w", relx=0.05, rely=5/16)
             self.maxiterentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
             self.maxiterentry.place(anchor="e", relx=0.95, rely=5/16)
-            updateentry(self.maxiterentry, config.max_iter)
+            update_entry(self.maxiterentry, config.max_iter)
 
             CTkLabel(self.advanced_frame, text="Tuning coefficient").place(anchor="w", relx=0.05, rely=7/16)
             self.tuningentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
             self.tuningentry.place(anchor="e", relx=0.95, rely=7/16)
-            updateentry(self.tuningentry, config.tuning_factor)
+            update_entry(self.tuningentry, config.tuning_factor)
 
             CTkLabel(self.advanced_frame, text="Stability coefficient").place(anchor="w", relx=0.05, rely=9/16)
             self.stabentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
             self.stabentry.place(anchor="e", relx=0.95, rely=9/16)
-            updateentry(self.stabentry, config.stability)
+            update_entry(self.stabentry, config.stability)
 
             CTkLabel(self.advanced_frame, text="Absolute roughness [mm]").place(anchor="w", relx=0.05, rely=11/16)
             self.roughentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
             self.roughentry.place(anchor="e", relx=0.95, rely=11/16)
-            updateentry(self.roughentry, config.absolute_roughness * 1000)
+            update_entry(self.roughentry, config.absolute_roughness * 1000)
 
             CTkLabel(self.advanced_frame, text="Friction factor relation").place(anchor="w", relx=0.05, rely=13/16)
             if config.dp_method == 0:
