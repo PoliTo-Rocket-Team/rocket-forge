@@ -22,11 +22,16 @@ def mass_uom(uom: str) -> float:
     return uoms[uom]
 
 
-def temperature_uom(value: float, uom : str) -> float:
+def temperature_uom(value: float, uom: str) -> float:
     """
     Converts temperature unit of measure to Kelvins
     """
-    uoms = {"K": (0.0, 1.0), "C": (273.15, 1.0), "F": (255.3722, 1.0/1.8), "R": (0.0, 1.0/1.8)}
+    uoms = {
+        "K": (0.0, 1.0),
+        "C": (273.15, 1.0),
+        "F": (255.3722, 1.0 / 1.8),
+        "R": (0.0, 1.0 / 1.8),
+    }
     return uoms[uom][0] + value * uoms[uom][1]
 
 
@@ -42,7 +47,14 @@ def density_uom(uom: str) -> float:
     """
     Converts density unit of measure to kg/m3
     """
-    uoms = {"kg/m3": 1, "g/ml": 1000, "g/cm3": 1000, "lb/in3": 27677.83, "lb/ft3": 16.02, "lb/gal": 119.83}
+    uoms = {
+        "kg/m3": 1,
+        "g/ml": 1000,
+        "g/cm3": 1000,
+        "lb/in3": 27677.83,
+        "lb/ft3": 16.02,
+        "lb/gal": 119.83,
+    }
     return uoms[uom]
 
 
