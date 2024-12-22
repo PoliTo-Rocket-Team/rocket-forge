@@ -500,11 +500,10 @@ class GeometryFrame(ctk.CTkFrame):
                 ((Le - Lc) / 2, 0, 0),
                 (0, 1, 0)
             ]
-            self.plotter.screenshot(resource_path("chamber.png"))
+            image_array = self.plotter.screenshot(return_img=True)
             self.plotter.close()
-            photo = CTkImage(Image.open(resource_path("chamber.png")), size=(580, 190))
+            photo = CTkImage(Image.fromarray(uint8(image_array)), size=(580, 190))
             self.plot3dlabel.configure(image=photo)
-            os.remove(resource_path("chamber.png"))
         except Exception:
             pass
 
