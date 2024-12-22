@@ -139,14 +139,30 @@ class RocketForge(CTk):
         self.sidebar.grid(column=0, row=0)
 
         # Status bar
-        self.statusbar = CTkFrame(self)
-        self.statusbar.configure(border_width=1, corner_radius=0, height=32, width=720)
-        self.runbutton = CTkButton(self.statusbar)
-        self.runbutton.configure(text="Run", command=self.run)
-        self.runbutton.place(anchor="e", relx=0.99, rely=0.5, x=0, y=0)
-        self.statuslabel = CTkLabel(self.statusbar)
-        self.statuslabel.configure(justify="right", text="Status: idle")
-        self.statuslabel.place(anchor="e", relx=0.77, rely=0.5, x=0, y=0)
+        self.statusbar = CTkFrame(
+            self, border_width=1, corner_radius=0, height=32, width=720
+        )
+
+        CTkButton(
+            self.statusbar, text="Run", command=self.run
+        ).place(anchor="e", relx=0.99, rely=0.5)
+
+        CTkButton(
+            self.statusbar,
+            text="☀️",
+            command=self.toggle_appearance_mode,
+            width=20,
+            corner_radius=10,
+            font=ctk.CTkFont(size=18),
+            fg_color="transparent",
+            text_color=["gray10", "gray95"],
+            hover_color=["gray95", "gray10"]
+        ).place(anchor="w", relx=0.01, rely=0.5)
+
+        self.statuslabel = CTkLabel(
+            self.statusbar, justify="right", text="Status: idle"
+        )
+        self.statuslabel.place(anchor="e", relx=0.77, rely=0.5)
         self.statusbar.grid(column=0, columnspan=2, row=1)
 
         # Raise initial frame
@@ -306,6 +322,13 @@ class RocketForge(CTk):
         else:
             self.about.lift()
             self.about.focus()
+
+    def toggle_appearance_mode(self):
+        if self._get_appearance_mode() == "dark":
+            new_mode = "light"
+        else:
+            new_mode = "dark"
+        ctk.set_appearance_mode(new_mode)
 
     def on_closing(self):
         """close the program"""
