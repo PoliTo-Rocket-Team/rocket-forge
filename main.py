@@ -289,14 +289,15 @@ class RocketForge(CTk):
             )
             self.aboutframe.grid(column=0, row=0)
 
-            if ctk.get_appearance_mode() == "Light":
+            if self._get_appearance_mode() == "light":
                 logo = CTkImage(Image.open(resource_path("rocketforge/resources/logo_dark.png")), size=(100, 100))
             else:
                 logo = CTkImage(Image.open(resource_path("rocketforge/resources/logo.png")), size=(100, 100))
             icon = CTkImage(Image.open(resource_path("rocketforge/resources/icon.png")), size=(128, 128))
-            CTkLabel(
+            self.logo = CTkLabel(
                 self.aboutframe, text="", image=logo
-            ).place(anchor="center", relx=0.3, y=70)
+            )
+            self.logo.place(anchor="center", relx=0.3, y=70)
             CTkLabel(
                 self.aboutframe, text="", image=icon
             ).place(anchor="center", relx=0.7, y=70)
@@ -329,6 +330,17 @@ class RocketForge(CTk):
         else:
             new_mode = "dark"
         ctk.set_appearance_mode(new_mode)
+        self.update_about_window_logo()
+
+    def update_about_window_logo(self):
+        if self.about is None or not self.about.winfo_exists():
+            pass
+        else:
+            if self._get_appearance_mode() == "light":
+                logo = CTkImage(Image.open(resource_path("rocketforge/resources/logo_dark.png")), size=(100, 100))
+            else:
+                logo = CTkImage(Image.open(resource_path("rocketforge/resources/logo.png")), size=(100, 100))
+            self.logo.configure(image=logo)
 
     def on_closing(self):
         """close the program"""
