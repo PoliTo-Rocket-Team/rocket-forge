@@ -147,17 +147,23 @@ class RocketForge(CTk):
             self.statusbar, text="Run", command=self.run
         ).place(anchor="e", relx=0.99, rely=0.5)
 
-        CTkButton(
+        if self._get_appearance_mode() == "light":
+            appearance_image = CTkImage(Image.open(resource_path("rocketforge/resources/moon.png")), size=(20, 20))
+        else:
+            appearance_image = CTkImage(Image.open(resource_path("rocketforge/resources/sun.png")), size=(20, 20))
+
+        self.appearance_button = CTkButton(
             self.statusbar,
-            text="☀️",
             command=self.toggle_appearance_mode,
-            width=20,
-            corner_radius=10,
-            font=ctk.CTkFont(size=18),
+            width=25,
+            corner_radius=5,
+            text="",
+            image=appearance_image,
             fg_color="transparent",
             text_color=["gray10", "gray95"],
             hover_color=["gray95", "gray10"]
-        ).place(anchor="w", relx=0.01, rely=0.5)
+        )
+        self.appearance_button.place(anchor="w", relx=0.01, rely=0.5)
 
         self.statuslabel = CTkLabel(
             self.statusbar, justify="right", text="Status: idle"
@@ -327,8 +333,10 @@ class RocketForge(CTk):
     def toggle_appearance_mode(self):
         if self._get_appearance_mode() == "dark":
             new_mode = "light"
+            self.appearance_button.configure(image=CTkImage(Image.open(resource_path("rocketforge/resources/moon.png")), size=(20, 20)))
         else:
             new_mode = "dark"
+            self.appearance_button.configure(image=CTkImage(Image.open(resource_path("rocketforge/resources/sun.png")), size=(20, 20)))
         ctk.set_appearance_mode(new_mode)
         self.update_about_window_logo()
 
