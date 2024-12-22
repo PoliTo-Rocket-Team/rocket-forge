@@ -203,7 +203,7 @@ class NestedFrame(CTkFrame):
             None
         """
         if not hasattr(self, 'analysis_thread') or not self.analysis_thread.is_alive():
-            self.analysis_thread = threading.Thread(target=self.run_analysis)
+            self.analysis_thread = threading.Thread(target=self.run_analysis, daemon=True)
             self.analysis_thread.start()
 
     # Unfortunately the analyses cannot be multithreaded as they rely on the same config variables, in the future we could try fixing this
