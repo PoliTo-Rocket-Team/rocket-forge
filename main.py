@@ -76,19 +76,13 @@ class RocketForge(CTk):
         )
         self.aboutbutton.place(anchor="center", relx=0.5, rely=0.96, x=0, y=0)
 
-        self.preferencesbutton = CTkButton(self.sidebar)
-        self.preferencesbutton.configure(
-            text="Preferences...", width=110, command=self.preferences_window
-        )
-        self.preferencesbutton.place(anchor="center", relx=0.5, rely=0.89, x=0, y=0)
+        self.savebutton = CTkButton(self.sidebar)
+        self.savebutton.configure(text="Save...", width=110, command=self.save_config)
+        self.savebutton.place(anchor="center", relx=0.5, rely=0.89, x=0, y=0)
 
         self.loadbutton = CTkButton(self.sidebar)
         self.loadbutton.configure(text="Load...", width=110, command=self.load_config)
         self.loadbutton.place(anchor="center", relx=0.5, rely=0.82, x=0, y=0)
-
-        self.savebutton = CTkButton(self.sidebar)
-        self.savebutton.configure(text="Save...", width=110, command=self.save_config)
-        self.savebutton.place(anchor="center", relx=0.5, rely=0.75, x=0, y=0)
 
         self.initialdatabutton = CTkButton(self.sidebar)
         self.initialdatabutton.configure(
@@ -312,45 +306,6 @@ class RocketForge(CTk):
         else:
             self.about.lift()
             self.about.focus()
-
-    def preferences_window(self):
-        if self.preferences is None or not self.preferences.winfo_exists():
-            self.preferences = ctk.CTkToplevel()
-            self.preferences.title("Preferences")
-            self.preferences.configure(width=300, height=70)
-            self.preferences.resizable(False, False)
-            self.preferences.after(
-                201,
-                lambda: self.preferences.iconphoto(
-                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
-                ),
-            )
-
-            self.prefsframe = CTkFrame(
-                self.preferences, border_width=3, corner_radius=0, width=300, height=70,
-            )
-            self.prefsframe.grid(column=0, row=0)
-
-            CTkLabel(
-                self.prefsframe, text="Appearance Mode:", anchor="w"
-            ).place(anchor="w", relx=0.05, rely=0.5)
-            self.appearance_mode_optionemenu = ctk.CTkOptionMenu(
-                self.prefsframe,
-                values=["System", "Light", "Dark"],
-                variable=self.appearance_mode,
-                command=self.change_appearance_mode_event,
-            )
-            self.appearance_mode_optionemenu.place(anchor="e", relx=0.95, rely=0.5)
-
-            self.preferences.after(50, self.preferences.lift)
-            self.preferences.after(50, self.preferences.focus)
-
-        else:
-            self.preferences.lift()
-            self.preferences.focus()
-
-    def change_appearance_mode_event(self, new_appearance_mode: str):
-        ctk.set_appearance_mode(new_appearance_mode)
 
     def on_closing(self):
         """close the program"""
