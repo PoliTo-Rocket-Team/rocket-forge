@@ -11,6 +11,7 @@ from rocketforge.gui.tanks          import TanksFrame
 from rocketforge.gui.mission        import MissionFrame
 from rocketforge.utils.resources    import resource_path
 from rocketforge.utils.helpers      import update_entry, update_textbox
+from rocketforge.utils.logger       import logger
 from customtkinter                  import CTk, CTkButton, CTkFont, CTkFrame, CTkLabel, CTkImage
 from tkinter                        import filedialog, messagebox
 from configparser                   import ConfigParser
@@ -22,6 +23,7 @@ copyright = "(C) 2023-2024 Polito Rocket Team"
 
 class RocketForge(CTk):
     def __init__(self, *args, **kwargs):
+        logger.info("Starting Rocket Forge.")
         ctk.set_appearance_mode("system")
         ctk.set_default_color_theme(resource_path("theme.json"))
 
@@ -183,68 +185,89 @@ class RocketForge(CTk):
         self.deiconify()
 
     def run(self):
+        logger.info("Starting analysis.")
         self.statuslabel.configure(text="Status: starting...")
         self.statuslabel.update()
 
         try:
+            logger.info("Running engine definition frame.")
             self.statuslabel.configure(text="Status: running...")
             self.statuslabel.update()
             self.initialframe.run()
+            logger.info("Engine definition completed.")
         except Exception:
-            pass
+            logger.error("Failed to run engine definition.")
 
         try:
+            logger.info("Loading regenerative cooling.")
             self.statuslabel.configure(text="Status: loading regenerative cooling...")
             self.statuslabel.update()
             self.thermalframe.load_regen_cooling()
+            logger.info("Regenerative cooling loaded.")
         except Exception:
+            logger.error("Could not load regenerative cooling.")
             self.thermalframe.regenvar.set(False)
             self.thermalframe.toggle_regen_cooling()
 
         try:
+            logger.info("Loading radiation cooling.")
             self.statuslabel.configure(text="Status: loading radiation cooling...")
             self.statuslabel.update()
             self.thermalframe.load_rad_cooling()
+            logger.info("Radiation cooling loaded.")
         except Exception:
+            logger.warning("Could not load radiation cooling.")
             self.thermalframe.radvar.set(False)
             self.thermalframe.toggle_rad_cooling()
 
         try:
+            logger.info("Loading film cooling.")
             self.statuslabel.configure(text="Status: loading film cooling...")
             self.statuslabel.update()
             self.thermalframe.load_film_cooling()
+            logger.info("Film cooling loaded.")
         except Exception:
+            logger.warning("Could not load film cooling.")
             self.thermalframe.filmvar.set(False)
             self.thermalframe.toggle_film_cooling()
 
         try:
+            logger.info("Computing geometry.")
             self.statuslabel.configure(text="Status: computing geometry...")
             self.statuslabel.update()
             self.geometryframe.estimate_Tn()
             self.geometryframe.plot()
+            logger.info("Geometry computed.")
         except Exception:
-            pass
+            logger.error("Failed to compute geometry.")
 
         try:
+            logger.info("Computing performance.")
             self.statuslabel.configure(text="Status: computing performance...")
             self.statuslabel.update()
             self.performanceframe.run()
             self.estimate_At()
+            logger.info("Performance computed.")
         except Exception:
-            pass
+            logger.error("Failed to compute performance.")
 
         try:
+            logger.info("Running nested analysis.")
             self.statuslabel.configure(text="Status: running nested analysis...")
             self.statuslabel.update()
             self.nestedframe.run()
+            logger.info("Nested analysis completed.")
         except Exception:
-            pass
+            logger.error("Failed to run nested analysis.")
 
         try:
+            logger.info("Performing thermal analysis.")
             self.statuslabel.configure(text="Status: performing thermal analysis...")
             self.statuslabel.update()
             self.thermalframe.run()
+            logger.info("Thermal analysis completed.")
         except Exception:
+            logger.error("Failed to perform thermal analysis.")
             self.thermalframe.regenvar.set(False)
             self.thermalframe.toggle_regen_cooling()
             self.thermalframe.radvar.set(False)
@@ -253,29 +276,36 @@ class RocketForge(CTk):
             self.thermalframe.toggle_film_cooling()
 
         try: 
+            logger.info("Loading tanks.")
             self.statuslabel.configure(text="Status: loading tanks...")
             self.statuslabel.update()
             self.tanksframe.compute()
+            logger.info("Tanks loaded.")
         except Exception:
-            pass
+            logger.error("Could not load tanks.")
 
         try:
+            logger.info("Running mission analysis.")
             self.statuslabel.configure(text="Status: running flight simulation...")
             self.statuslabel.update()
             self.missionframe.run()
+            logger.info("Mission analysis completed.")
         except Exception:
-            pass
+            logger.error("Failed to run mission analysis.")
 
+        logger.info("Analysis completed.")
         self.statuslabel.configure(text="Status: idle")
         self.statuslabel.update()
 
     def estimate_At(self):
         if conf.thrust is not None:
+            logger.info("Estimating throat area.")
             while abs((conf.thrust_d - conf.thrust)/conf.thrust_d) > 0.01:
                 self.geometryframe.estimate_Tn()
                 self.geometryframe.plot()
                 self.performanceframe.run()
                 conf.At = conf.thrust * conf.k_film / conf.CF_d / conf.pc
+            logger.info("Throat area estimated.")
 
     def about_window(self):
         if self.about is None or not self.about.winfo_exists():
@@ -354,9 +384,11 @@ class RocketForge(CTk):
         """close the program"""
         quit_ = messagebox.askokcancel(title="Exit?", message="Do you want to exit?")
         if quit_:
+            logger.info("Exiting Rocket Forge.")
             self.destroy()
 
     def save_config(self):
+        logger.info("Saving configuration file.")
         self.statuslabel.configure(text="Status: saving configuration file...")
         self.statuslabel.update()
 
@@ -475,14 +507,16 @@ class RocketForge(CTk):
 
             with open(filedialog.asksaveasfilename(defaultextension=".rf"), "w") as f:
                 config.write(f)
+            logger.info("Configuration file saved.")
 
         except Exception:
-            pass
+            logger.error("Failed to save configuration file.")
 
         self.statuslabel.configure(text="Status: idle")
         self.statuslabel.update()
         
     def load_config(self):
+        logger.info("Loading configuration file.")
         self.statuslabel.configure(text="Status: loading configuration file...")
         self.statuslabel.update()
 
@@ -601,9 +635,10 @@ class RocketForge(CTk):
             update_entry(ttf.fuelexcentry, config.get("Tanks", "exc_fuel"))
             update_entry(ttf.fuelxentry, config.get("Tanks", "pos_fuel"))
             ttf.fuelxuom.set(config.get("Tanks", "pos_fuel_uom"))
+            logger.info("Configuration file loaded.")
 
         except Exception:
-            pass
+            logger.error("Failed to load configuration file.")
 
         self.statuslabel.configure(text="Status: idle")
         self.statuslabel.update()
