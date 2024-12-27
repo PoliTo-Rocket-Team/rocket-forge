@@ -1,0 +1,12 @@
+configparser
+numpy
+scipy
+pillow
+matplotlib
+tabulate
+customtkinter
+rocketcea
+rocketprops
+rocketpy
+pyvista
+pyinstaller
