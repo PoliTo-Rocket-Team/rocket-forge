@@ -271,12 +271,11 @@ class RocketForge(CTk):
 
     def estimate_At(self):
         if conf.thrust is not None:
-            while abs((conf.thrust_d - conf.thrust)/conf.thrust_d) > 0.01:
+            while abs(conf.thrust_d - conf.thrust) > 1.0e-5 * conf.thrust_d:
+                conf.At = conf.thrust * conf.k_film / conf.CF_d / conf.pc
                 self.geometryframe.estimate_Tn()
                 self.geometryframe.plot()
                 self.performanceframe.run()
-                conf.At = conf.thrust * conf.k_film / conf.CF_d / conf.pc
-            self.geometryframe.plot()
 
     def about_window(self):
         if self.about is None or not self.about.winfo_exists():
