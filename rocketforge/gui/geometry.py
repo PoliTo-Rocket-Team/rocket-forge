@@ -452,6 +452,8 @@ class GeometryFrame(ctk.CTkFrame):
 
             try:
                 self.load_details(At, Le, Lc, Lstar, eps, epsc, RnOvRt, b, thetan, thetae, R1OvRt, R2OvR2max)
+                if self.details_window is not None:
+                    update_textbox(self.detailstextbox, self.details_output, True)
             except Exception:
                 pass
 
@@ -601,6 +603,7 @@ class GeometryFrame(ctk.CTkFrame):
             self.details_window.title("Geometry details")
             self.details_window.configure(width=450, height=480)
             self.details_window.resizable(False, False)
+            self.details_window.protocol("WM_DELETE_WINDOW", self.details_window.withdraw)
             self.details_window.after(
                 201,
                 lambda: self.details_window.iconphoto(
@@ -641,6 +644,7 @@ class GeometryFrame(ctk.CTkFrame):
 
         else:
             update_textbox(self.detailstextbox, self.details_output, True)
+            self.details_window.deiconify()
             self.details_window.lift()
             self.details_window.focus()
 
