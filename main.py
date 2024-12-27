@@ -276,6 +276,7 @@ class RocketForge(CTk):
                 self.geometryframe.plot()
                 self.performanceframe.run()
                 conf.At = conf.thrust * conf.k_film / conf.CF_d / conf.pc
+            self.geometryframe.plot()
 
     def about_window(self):
         if self.about is None or not self.about.winfo_exists():
