@@ -236,10 +236,14 @@ class GeometryFrame(ctk.CTkFrame):
         self.view_angle = 0.0
         self.distance = 4.0
         self.enable_3d = False
+        self.mesh = None
 
-        self.plotter = pv.Plotter(off_screen=True)
-        self.plotter.window_size = [588, 198]
+        self.plotter = pv.Plotter(off_screen=True, title="Geometry")
+        self.plotter.window_size = [590, 200]
         self.plotter.set_background('#c1c1c1')
+        image_array = self.plotter.screenshot(return_img=True)
+        photo = CTkImage(Image.fromarray(uint8(image_array)), size=(590, 200))
+        self.plot3dlabel.configure(image=photo)
 
         CTkButton(
             self.plot3dframe, text="↑", command=self.decrease_distance,
@@ -502,9 +506,11 @@ class GeometryFrame(ctk.CTkFrame):
                 ((Le - Lc) / 2, 0, 0),
                 (0, 1, 0)
             ]
-            self.plotter.add_mesh(chamber, color="#727472")
+            if self.mesh is not None:
+                self.plotter.remove_actor(self.mesh)
+            self.mesh = self.plotter.add_mesh(chamber, color="#727472")
             image_array = self.plotter.screenshot(return_img=True)
-            photo = CTkImage(Image.fromarray(uint8(image_array)), size=(588, 198))
+            photo = CTkImage(Image.fromarray(uint8(image_array)), size=(590, 200))
             self.plot3dlabel.configure(image=photo)
         except Exception:
             pass
