@@ -7,6 +7,7 @@ from rocketforge.performance.theoreticalperf  import theoretical
 from rocketforge.performance.corrfactors      import correction_factors
 from rocketforge.performance.deliveredperf    import delivered
 from rocketforge.utils.helpers                import update_entry, update_textbox
+from rocketforge.utils.fonts                  import get_font
 
 
 class PerformanceFrame(ctk.CTkFrame):
@@ -128,18 +129,9 @@ class ThermodynamicFrame(CTkFrame):
         self.stationsentry.insert("0", "1")
         self.stationsentry.place(anchor="e", relx=0.48, rely=0.27)
 
-        if os.name == "nt":
-            self.textbox = ctk.CTkTextbox(
-                self,
-                height=260,
-                state="disabled",
-                wrap="none",
-                font=("Courier New", 12),
-            )
-        else:
-            self.textbox = ctk.CTkTextbox(
-                self, height=260, state="disabled", wrap="none", font=("Mono", 12)
-            )
+        self.textbox = ctk.CTkTextbox(
+            self, height=260, state="disabled", wrap="none", font=get_font()
+        )
         self.textbox.place(relwidth=0.98, relx=0.5, rely=0.99, anchor="s")
 
 
@@ -183,16 +175,7 @@ class DeliveredFrame(CTkFrame):
         self.deliveredlabel.configure(text="Estimated delivered performance")
         self.deliveredlabel.place(anchor="w", relx=0.02, rely=0.27)
 
-        if os.name == "nt":
-            self.textbox = ctk.CTkTextbox(
-                self,
-                height=260,
-                state="disabled",
-                wrap="none",
-                font=("Courier New", 12),
-            )
-        else:
-            self.textbox = ctk.CTkTextbox(
-                self, height=260, state="disabled", wrap="none", font=("Mono", 12)
-            )
+        self.textbox = ctk.CTkTextbox(
+            self, height=260, state="disabled", wrap="none", font=get_font()
+        )
         self.textbox.place(relwidth=0.98, relx=0.5, rely=0.99, anchor="s")

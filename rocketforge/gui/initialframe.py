@@ -8,6 +8,7 @@ from tabulate import tabulate
 from rocketcea.cea_obj_w_units import CEA_Obj
 from rocketforge.utils.conversions import pressure_uom, thrust_uom
 from rocketforge.utils.helpers import update_textbox
+from rocketforge.utils.fonts import get_font
 from rocketforge.performance.mixtureratio import optimizemr, optimizermr_at_pe
 from rocketforge.performance.theoreticalperf import theoretical
 
@@ -218,18 +219,9 @@ class InitialFrame(ctk.CTkFrame):
         )
         self.peoptmenu.place(anchor="e", relx=0.48, rely=0.53, x=0, y=0)
 
-        if os.name == "nt":
-            self.textbox = ctk.CTkTextbox(
-                self,
-                height=102,
-                state="disabled",
-                wrap="none",
-                font=("Courier New", 12),
-            )
-        else:
-            self.textbox = ctk.CTkTextbox(
-                self, height=102, state="disabled", wrap="none", font=("Mono", 12)
-            )
+        self.textbox = ctk.CTkTextbox(
+            self, height=102, state="disabled", wrap="none", font=get_font()
+        )
         self.textbox.place(relwidth=0.98, relx=0.5, rely=0.99, anchor="s")
 
         self.optimizationlabel = CTkLabel(self)

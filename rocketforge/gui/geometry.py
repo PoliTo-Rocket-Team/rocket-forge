@@ -12,6 +12,7 @@ import rocketforge.geometry.convergent as convergent
 from rocketforge.utils.conversions import angle_uom, area_uom, length_uom
 from rocketforge.utils.helpers import update_entry, update_textbox
 from rocketforge.utils.resources import resource_path
+from rocketforge.utils.fonts import get_font
 from matplotlib.figure import Figure 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from PIL import Image
@@ -616,17 +617,9 @@ class GeometryFrame(ctk.CTkFrame):
             )
             self.details_frame.grid(column=0, row=0)
 
-            if os.name == "nt":
-                self.detailstextbox = ctk.CTkTextbox(
-                    self.details_frame,
-                    state="disabled",
-                    wrap="none",
-                    font=("Courier New", 12),
-                )
-            else:
-                self.detailstextbox = ctk.CTkTextbox(
-                    self.details_frame, state="disabled", wrap="none", font=("Mono", 12)
-                )
+            self.detailstextbox = ctk.CTkTextbox(
+                self.details_frame, state="disabled", wrap="none", font=get_font()
+            )
             self.detailstextbox.place(relwidth=0.95, relheight=13/15, relx=0.5, rely=0.025, anchor="n")
 
             CTkButton(

@@ -12,6 +12,7 @@ from rocketcea.cea_obj_w_units import CEA_Obj
 import rocketforge.performance.config as config
 from rocketforge.utils.conversions import pressure_uom
 from rocketforge.utils.helpers import update_entry, update_textbox
+from rocketforge.utils.fonts import get_font
 from rocketforge.performance.theoreticalperf import theoretical
 
 
@@ -80,8 +81,7 @@ class NestedFrame(CTkFrame):
             self.rows.append(row)
 
         # Create output textbox
-        font_name = "Courier New" if os.name == "nt" else "Mono"
-        self.textbox = CTkTextbox(self, height=235, state="disabled", wrap="none", font=(font_name, 12))
+        self.textbox = CTkTextbox(self, height=235, state="disabled", wrap="none", font=get_font())
         self.textbox.place(relwidth=59/60, relx=0.5, rely=0.965, anchor="s")
 
         # Create a progress bar
