@@ -17,7 +17,6 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from PIL import Image
 from numpy import *
-import os
 from tabulate import tabulate
 import pyvista as pv
 
@@ -230,13 +229,17 @@ class GeometryFrame(ctk.CTkFrame):
 
         # Plot
         self.plot3dframe = CTkFrame(self)
-        self.plot3dframe.configure(border_width=5, height=200, width=590)
+        self.plot3dframe.configure(border_width=1, height=200, width=590)
 
         self.plot3dlabel = ctk.CTkLabel(self.plot3dframe, text="")
         self.plot3dlabel.place(anchor="center", relx=0.5, rely=0.5)
         self.view_angle = 0.0
         self.distance = 4.0
         self.enable_3d = False
+
+        self.plotter = pv.Plotter(off_screen=True)
+        self.plotter.window_size = [588, 198]
+        self.plotter.set_background('#c1c1c1')
 
         CTkButton(
             self.plot3dframe, text="↑", command=self.decrease_distance,
@@ -493,19 +496,15 @@ class GeometryFrame(ctk.CTkFrame):
             Lc = tconf.L_c
             Re = sqrt(config.At * config.eps)
             Rc = sqrt(config.At * config.epsc)
-            self.plotter = pv.Plotter(off_screen=True)
-            self.plotter.window_size = [580, 190]
-            self.plotter.set_background('#c1c1c1')
             chamber = self.get_chamber()
-            self.plotter.add_mesh(chamber, color="#727472")
             self.plotter.camera_position = [
                 ((Le - Lc) / 2 + self.distance * max((Re, Rc)) * sin(self.view_angle), 0, self.distance * max((Re, Rc)) * cos(self.view_angle)),
                 ((Le - Lc) / 2, 0, 0),
                 (0, 1, 0)
             ]
+            self.plotter.add_mesh(chamber, color="#727472")
             image_array = self.plotter.screenshot(return_img=True)
-            self.plotter.close()
-            photo = CTkImage(Image.fromarray(uint8(image_array)), size=(580, 190))
+            photo = CTkImage(Image.fromarray(uint8(image_array)), size=(588, 198))
             self.plot3dlabel.configure(image=photo)
         except Exception:
             pass
