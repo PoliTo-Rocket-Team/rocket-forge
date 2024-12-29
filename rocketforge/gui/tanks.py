@@ -1,5 +1,7 @@
 import tkinter as tk
 import customtkinter as ctk
+import rocketforge.performance.config as pconf
+import rocketforge.thermal.config as tconf
 import rocketforge.mission.config as config
 import rocketforge.mission.analysis as msa
 from customtkinter import CTkEntry, CTkFrame, CTkLabel, CTkButton
@@ -283,6 +285,17 @@ class TanksFrame(ctk.CTkFrame):
         self.configure(border_width=1, corner_radius=0, height=480, width=600)
 
     def compute(self):
+        try:
+            if self.mdotentry.get() == "":
+                update_entry(self.mdotentry, (pconf.m_f_d + pconf.m_ox_d) /  mdot_uom(self.mdotuom.get()))
+            if self.mrentry.get() == "":
+                if tconf.film:
+                    update_entry(self.mrentry, pconf.mr * (100 + tconf.oxfilm) / (100 + tconf.fuelfilm))
+                else:
+                    update_entry(self.mrentry, pconf.mr)
+        except Exception:
+            pass
+
         try:
             config.mdot = float(self.mdotentry.get()) * mdot_uom(self.mdotuom.get())
             config.MR = float(self.mrentry.get())
