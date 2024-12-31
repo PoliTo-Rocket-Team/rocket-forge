@@ -3,43 +3,56 @@ import pyvista as pv
 
 
 def plot_3D(x, R, a, b, delta, NC, t_w):
+    chamber_color = "#727472"
+    coolant_color = "#D95319"
+
     phi = a / (R + t_w + b/2)
-    phi_d = delta / (R + t_w + b/2)
-    ntheta = 180
+    phi_d = phi * delta / a
+    ntheta = 180 * 5
     theta = linspace(0, 2*pi, ntheta)
     alpha = zeros((len(phi), 5))
     x_channels = tile(x, (5, 1)).T
 
+    plotter = pv.Plotter(title="Regenerative cooling channels")
+
     X = outer(x, ones((1, ntheta)))
+    X0 = outer([x[0], x[0]], ones((1, ntheta)))
+    Xe = outer([x[-1], x[-1]], ones((1, ntheta)))
+
     Y_inner = outer(R, cos(theta))
     Z_inner = outer(R, sin(theta))
-    Y_outer = outer(R + t_w, cos(theta))
-    Z_outer = outer(R + t_w, sin(theta))
+    inner = plotter.add_mesh(pv.StructuredGrid(X, Y_inner, Z_inner), color=chamber_color)
 
-    plotter = pv.Plotter(title="Regenerative cooling channels")
-    plotter.add_mesh(pv.StructuredGrid(X, Y_inner, Z_inner), color="#727472")
-    plotter.add_mesh(pv.StructuredGrid(X, Y_outer, Z_outer), color="#727472")
+    Y_inner_ext = outer(R + t_w, cos(theta))
+    Z_inner_ext = outer(R + t_w, sin(theta))
+    inner_ext = plotter.add_mesh(pv.StructuredGrid(X, Y_inner_ext, Z_inner_ext), color=chamber_color)
 
-    for k in range(int(NC)):
-        for i in range(len(phi)):
-            alpha[i, :] = linspace((2*k - 1) * pi / NC, (2*k + 1) * pi / NC, 5)
+    Y0_inner = outer([R[0], R[0] + t_w], cos(theta))
+    Z0_inner = outer([R[0], R[0] + t_w], sin(theta))
+    inner0 = plotter.add_mesh(pv.StructuredGrid(X0, Y0_inner, Z0_inner), color=chamber_color)
 
-        z_inner = (R)[:, newaxis] * cos(alpha)
-        z_outer = (R + t_w)[:, newaxis] * cos(alpha)
-        y_inner = (R)[:, newaxis] * sin(alpha)
-        y_outer = (R + t_w)[:, newaxis] * sin(alpha)
+    Ye_inner = outer([R[-1], R[-1] + t_w], cos(theta))
+    Ze_inner = outer([R[-1], R[-1] + t_w], sin(theta))
+    innere = plotter.add_mesh(pv.StructuredGrid(Xe, Ye_inner, Ze_inner), color=chamber_color)
 
-        plotter.add_mesh(pv.StructuredGrid(
-            c_[x_channels[-1, :], x_channels[-1, :]], 
-            c_[y_inner[-1, :], y_outer[-1, :]],
-            c_[z_inner[-1, :], z_outer[-1, :]],
-        ), color="#727472")
-        plotter.add_mesh(pv.StructuredGrid(
-            c_[x_channels[0, :], x_channels[0, :]], 
-            c_[y_inner[0, :], y_outer[0, :]],
-            c_[z_inner[0, :], z_outer[0, :]],
-        ), color="#727472")
+    Y_outer_int = outer(R + t_w + b, cos(theta))
+    Z_outer_int = outer(R + t_w + b, sin(theta))
+    outer_int = plotter.add_mesh(pv.StructuredGrid(X, Y_outer_int, Z_outer_int), color=chamber_color)
 
+    Y_outer = outer(R + 5 * t_w + b, cos(theta))
+    Z_outer = outer(R + 5 * t_w + b, sin(theta))
+    outerc = plotter.add_mesh(pv.StructuredGrid(X, Y_outer, Z_outer), color=chamber_color)
+
+    Y0_outer = outer([R[0] + t_w + b[0], R[0] + 5 * t_w + b[0]], cos(theta))
+    Z0_outer = outer([R[0] + t_w + b[0], R[0] + 5 * t_w + b[0]], sin(theta))
+    outer0 = plotter.add_mesh(pv.StructuredGrid(X0, Y0_outer, Z0_outer), color=chamber_color)
+
+    Ye_outer = outer([R[-1] + t_w + b[-1], R[-1] + 5 * t_w + b[-1]], cos(theta))
+    Ze_outer = outer([R[-1] + t_w + b[-1], R[-1] + 5 * t_w + b[-1]], sin(theta))
+    outere = plotter.add_mesh(pv.StructuredGrid(Xe, Ye_outer, Ze_outer), color=chamber_color)
+
+    # Cooling channels
+    channels = []
     for k in range(int(NC)):
         for i in range(len(phi)):
             alpha[i, :] = linspace(-phi[i] / 2 + k * 2 * pi / NC, phi[i] / 2 + k * 2 * pi / NC, 5)
@@ -49,22 +62,27 @@ def plot_3D(x, R, a, b, delta, NC, t_w):
         y_inner = (R + t_w)[:, newaxis] * sin(alpha)
         y_outer = (R + t_w + b)[:, newaxis] * sin(alpha)
 
-        plotter.add_mesh(pv.StructuredGrid(
+        c = plotter.add_mesh(pv.StructuredGrid(
             x_channels[:, :5],
             c_[y_inner[:, 0], y_outer[:, 0], y_outer[:, -1], y_inner[:, -1], y_inner[:, 0]],
             c_[z_inner[:, 0], z_outer[:, 0], z_outer[:, -1], z_inner[:, -1], z_inner[:, 0]],
-        ), color="#D95319", opacity=0.5)
-        plotter.add_mesh(pv.StructuredGrid(
+        ), color=coolant_color, opacity=0.5)
+        ce = plotter.add_mesh(pv.StructuredGrid(
             c_[x_channels[-1, :], x_channels[-1, :]], 
             c_[y_inner[-1, :], y_outer[-1, :]],
             c_[z_inner[-1, :], z_outer[-1, :]],
-        ), color="#D95319", opacity=0.5)
-        plotter.add_mesh(pv.StructuredGrid(
+        ), color=coolant_color, opacity=0.5)
+        c0 = plotter.add_mesh(pv.StructuredGrid(
             c_[x_channels[0, :], x_channels[0, :]], 
             c_[y_inner[0, :], y_outer[0, :]],
             c_[z_inner[0, :], z_outer[0, :]],
-        ), color="#D95319", opacity=0.5)
+        ), color=coolant_color, opacity=0.5)
+        channels.append(c)
+        channels.append(c0)
+        channels.append(ce)
 
+    # Ribs
+    ribs = []
     for k in range(int(NC)):
         for i in range(len(phi)):
             alpha[i, :] = linspace(phi[i] / 2 + k * 2 * pi / NC, phi[i] / 2 + phi_d[i] + k * 2 * pi / NC, 5)
@@ -74,21 +92,24 @@ def plot_3D(x, R, a, b, delta, NC, t_w):
         y_inner = (R + t_w)[:, newaxis] * sin(alpha)
         y_outer = (R + t_w + b)[:, newaxis] * sin(alpha)
 
-        plotter.add_mesh(pv.StructuredGrid(
+        r = plotter.add_mesh(pv.StructuredGrid(
             x_channels[:, :5],
             c_[y_inner[:, 0], y_outer[:, 0], y_outer[:, -1], y_inner[:, -1], y_inner[:, 0]],
             c_[z_inner[:, 0], z_outer[:, 0], z_outer[:, -1], z_inner[:, -1], z_inner[:, 0]],
-        ), color="#727472")
-        plotter.add_mesh(pv.StructuredGrid(
+        ), color=chamber_color)
+        re = plotter.add_mesh(pv.StructuredGrid(
             c_[x_channels[-1, :], x_channels[-1, :]], 
             c_[y_inner[-1, :], y_outer[-1, :]],
             c_[z_inner[-1, :], z_outer[-1, :]],
-        ), color="#727472")
-        plotter.add_mesh(pv.StructuredGrid(
+        ), color=chamber_color)
+        r0 = plotter.add_mesh(pv.StructuredGrid(
             c_[x_channels[0, :], x_channels[0, :]], 
             c_[y_inner[0, :], y_outer[0, :]],
             c_[z_inner[0, :], z_outer[0, :]],
-        ), color="#727472")
+        ), color=chamber_color)
+        ribs.append(r)
+        ribs.append(r0)
+        ribs.append(re)
 
     plotter.set_background('#242424')
     plotter.add_axes(color="#fafafa")
