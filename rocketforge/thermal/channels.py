@@ -111,7 +111,127 @@ def plot_3D(x, R, a, b, delta, NC, t_w):
         ribs.append(r0)
         ribs.append(re)
 
+    def toggle_inner(flag):
+        inner.SetVisibility(flag)
+        inner_ext.SetVisibility(flag)
+        inner0.SetVisibility(flag)
+        innere.SetVisibility(flag)
+
+    def toggle_ribs(flag):
+        for rib in ribs:
+            rib.SetVisibility(flag)
+
+    def toggle_channels(flag):
+        for channel in channels:
+            channel.SetVisibility(flag)
+
+    def toggle_outer(flag):
+        outer_int.SetVisibility(flag)
+        outerc.SetVisibility(flag)
+        outer0.SetVisibility(flag)
+        outere.SetVisibility(flag)
+
+    def toggle_parallel(flag):
+        if flag:
+            plotter.enable_parallel_projection()
+        else:
+            plotter.disable_parallel_projection()
+
+    plotter.add_checkbox_button_widget(
+        toggle_inner,
+        value=True,
+        position=(5.0, 132),
+        size=25,
+        border_size=3,
+        color_on='orange',
+        color_off='grey',
+        background_color='grey',
+    )
+
+    plotter.add_text(
+        'Toggle inner wall',
+        position=(35, 132),
+        color='white',
+        shadow=True,
+        font_size=8,
+    )
+
+    plotter.add_checkbox_button_widget(
+        toggle_outer,
+        value=True,
+        position=(5.0, 102),
+        size=25,
+        border_size=3,
+        color_on='orange',
+        color_off='grey',
+        background_color='grey',
+    )
+
+    plotter.add_text(
+        'Toggle outer wall',
+        position=(35, 102),
+        color='white',
+        shadow=True,
+        font_size=8,
+    )
+
+    plotter.add_checkbox_button_widget(
+        toggle_ribs,
+        value=True,
+        position=(5.0, 72),
+        size=25,
+        border_size=3,
+        color_on='orange',
+        color_off='grey',
+        background_color='grey',
+    )
+
+    plotter.add_text(
+        'Toggle ribs',
+        position=(35, 72),
+        color='white',
+        shadow=True,
+        font_size=8,
+    )
+
+    plotter.add_checkbox_button_widget(
+        toggle_channels,
+        value=True,
+        position=(5.0, 42),
+        size=25,
+        border_size=3,
+        color_on='orange',
+        color_off='grey',
+        background_color='grey',
+    )
+
+    plotter.add_text(
+        'Toggle channels',
+        position=(35, 42),
+        color='white',
+        shadow=True,
+        font_size=8,
+    )
+
+    plotter.add_checkbox_button_widget(
+        toggle_parallel,
+        value=False,
+        position=(5.0, 12),
+        size=25,
+        border_size=3,
+        color_on='orange',
+        color_off='grey',
+        background_color='grey',
+    )
+
+    plotter.add_text(
+        'Parallel projection',
+        position=(35, 12),
+        color='white',
+        shadow=True,
+        font_size=8,
+    )
+
     plotter.set_background('#242424')
-    plotter.add_axes(color="#fafafa")
 
     plotter.show()
