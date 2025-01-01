@@ -194,6 +194,8 @@ def plot_3D(x, R, a, b, delta, NC, t_w, rib_resolution=4, channel_resolution=4, 
     if not channels.is_manifold: logger.warning("Channels mesh is not watertight.")
     plotter.add_mesh(engine, color="#727472", show_edges=False, line_width=2, backface_culling=True)
     plotter.add_mesh(channels, color="#D95319", opacity=0.7, show_edges=False, line_width=2, backface_culling=True)
+
+    plotter.enable_anti_aliasing()
     plotter.set_background('#242424')
     plotter.add_axes(color="#fafafa")
     plotter.show()
