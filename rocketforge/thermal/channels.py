@@ -14,7 +14,6 @@ def plot_3D(x, R, a, b, delta, NC, t_w, rib_resolution=4, channel_resolution=4, 
     # phi = 2 * pi * (a / (NC * (a + delta)))
     # phi_d = 2 * pi * (delta / (NC * (a + delta)))
     alpha_total = zeros((len(phi), NC * (rib_resolution + channel_resolution)))
-        #), color="#D95319", opacity=0.5, backface_culling=bfc)
 
     for k in range(int(NC)):
         for i in range(len(phi)):
