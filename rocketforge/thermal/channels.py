@@ -137,7 +137,64 @@ def plot_3D(x, R, a, b, delta, NC, t_w, rib_resolution=4, channel_resolution=4, 
     faces = array(faces, dtype=int64)
     engine = pv.PolyData(points, faces)
     if not engine.is_manifold: logger.warning("Mesh is not watertight.")
+
+    faces_channels = []
+    for j in range(0, r_offset, rib_resolution + channel_resolution):
+        for i in range(channel_resolution):
+            next_i = (j + i + 1) % r_offset  # Wrap around for closed loop
+            faces_channels.extend([
+                4,                      # Quad (4 vertices)
+                j + i  + 1 * r_offset,  # Current point on middle circle
+                j + i  + 2 * r_offset,  # Corresponding point on outer circle
+                next_i + 2 * r_offset,  # Next point on outer circle
+                next_i + 1 * r_offset   # Corresponding point on middle circle
+            ])
+    for k in range(len(phi) - 1):
+        for j in range(0, r_offset, rib_resolution + channel_resolution):
+            # Side surfaces of the channel
+            faces_channels.extend([
+                4,                                    # Quad (4 vertices)
+                j + 1 * r_offset + k * x_offset,      # Current point on middle circle
+                j + 1 * r_offset + (k+1) * x_offset,  # Corresponding point on middle circle of next slice
+                j + 2 * r_offset + (k+1) * x_offset,  # Corresponding point on outer circle of next slice
+                j + 2 * r_offset + k * x_offset,      # Corresponding point on outer circle
+                4,                                                         # Quad (4 vertices)
+                j + channel_resolution + 1 * r_offset + k * x_offset,      # Current point on middle circle
+                j + channel_resolution + 2 * r_offset + k * x_offset,      # Corresponding point on outer circle of current slice    
+                j + channel_resolution + 2 * r_offset + (k+1) * x_offset,  # Corresponding point on outer circle
+                j + channel_resolution + 1 * r_offset + (k+1) * x_offset   # Corresponding point on middle circle of next slice
+            ])
+            # Bottom and top surfaces of the channel
+            for i in range(channel_resolution):
+                next_i = (j + i + 1) % r_offset
+                faces_channels.extend([
+                    4,                                         # Quad (4 vertices)
+                    j + i  + 1 * r_offset + k * x_offset,      # Current point on middle circle
+                    next_i + 1 * r_offset + k * x_offset,      # Corresponding point on middle circle of current slice
+                    next_i + 1 * r_offset + (k+1) * x_offset,  # Next point on middle circle of next slice
+                    j + i  + 1 * r_offset + (k+1) * x_offset, # Corresponding point on middle circle of next slice
+                    4,
+                    j + i  + 2 * r_offset + k * x_offset,      # Current point on middle circle
+                    j + i  + 2 * r_offset + (k+1) * x_offset,  # Corresponding point on middle circle of next slice
+                    next_i + 2 * r_offset + (k+1) * x_offset,  # Next point on middle circle of next slice
+                    next_i + 2 * r_offset + k * x_offset       # Corresponding point on middle circle of current slice
+                ])
+    for j in range(0, r_offset, rib_resolution + channel_resolution):
+        for i in range(channel_resolution):
+            next_i = (j + i + 1) % r_offset  # Wrap around for closed loop
+            faces_channels.extend([
+                4,                                         # Quad (4 vertices)
+                j + i + r_offset + last_face_offset,       # Current point on middle circle
+                next_i + r_offset + last_face_offset,      # Next point on middle circle
+                next_i + 2 * r_offset + last_face_offset,  # Corresponding point on outer circle
+                j + i + 2 * r_offset + last_face_offset    # Previous point on outer circle
+            ])
+    faces_channels = array(faces_channels, dtype=int64)
+    channels = pv.PolyData(points, faces_channels)
+    if not channels.is_manifold: logger.warning("Channels mesh is not watertight.")
     plotter.add_mesh(engine, color="#727472", show_edges=False, line_width=2, backface_culling=True)
+    plotter.add_mesh(channels, color="#D95319", opacity=0.7, show_edges=False, line_width=2, backface_culling=True)
     plotter.set_background('#242424')
     plotter.add_axes(color="#fafafa")
     plotter.show()
+
