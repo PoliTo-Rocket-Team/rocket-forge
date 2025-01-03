@@ -2,7 +2,7 @@ from numpy import *
 import pyvista as pv
 
 
-def plot_3D(x, R, a, b, delta, NC, t_w):
+def plot_3D(x, R, a, b, delta, NC, t_w, t_eOvt_w):
     plotter = pv.Plotter(title="Regenerative cooling channels")
 
     chamber_color = "#727472"
@@ -47,16 +47,16 @@ def plot_3D(x, R, a, b, delta, NC, t_w):
     Z_outer_int = ((R + t_w + b)[newaxis, :] * sin(theta)).T
     outer_int = plotter.add_mesh(pv.StructuredGrid(X, Y_outer_int, Z_outer_int), color=chamber_color)
 
-    Y_outer = ((R + 5 * t_w + b)[newaxis, :] * cos(theta)).T
-    Z_outer = ((R + 5 * t_w + b)[newaxis, :] * sin(theta)).T
+    Y_outer = ((R + (t_eOvt_w + 1) * t_w + b)[newaxis, :] * cos(theta)).T
+    Z_outer = ((R + (t_eOvt_w + 1) * t_w + b)[newaxis, :] * sin(theta)).T
     outerc = plotter.add_mesh(pv.StructuredGrid(X, Y_outer, Z_outer), color=chamber_color)
 
-    Y0_outer = outer([R[0] + t_w + b[0], R[0] + 5 * t_w + b[0]], cos(theta[:, 0]))
-    Z0_outer = outer([R[0] + t_w + b[0], R[0] + 5 * t_w + b[0]], sin(theta[:, 0]))
+    Y0_outer = outer([R[0] + t_w + b[0], R[0] + (t_eOvt_w + 1) * t_w + b[0]], cos(theta[:, 0]))
+    Z0_outer = outer([R[0] + t_w + b[0], R[0] + (t_eOvt_w + 1) * t_w + b[0]], sin(theta[:, 0]))
     outer0 = plotter.add_mesh(pv.StructuredGrid(X0, Y0_outer, Z0_outer), color=chamber_color)
 
-    Ye_outer = outer([R[-1] + t_w + b[-1], R[-1] + 5 * t_w + b[-1]], cos(theta[:, -1]))
-    Ze_outer = outer([R[-1] + t_w + b[-1], R[-1] + 5 * t_w + b[-1]], sin(theta[:, -1]))
+    Ye_outer = outer([R[-1] + t_w + b[-1], R[-1] + (t_eOvt_w + 1) * t_w + b[-1]], cos(theta[:, -1]))
+    Ze_outer = outer([R[-1] + t_w + b[-1], R[-1] + (t_eOvt_w + 1) * t_w + b[-1]], sin(theta[:, -1]))
     outere = plotter.add_mesh(pv.StructuredGrid(Xe, Ye_outer, Ze_outer), color=chamber_color)
 
     # Cooling channels
