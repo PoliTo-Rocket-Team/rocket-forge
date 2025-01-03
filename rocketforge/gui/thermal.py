@@ -438,7 +438,6 @@ class ThermalFrame(ctk.CTkFrame):
         if self.advancedwindow is None or not self.advancedwindow.winfo_exists():
             self.advancedwindow = ctk.CTkToplevel()
             self.advancedwindow.title("Advanced settings")
-            self.advancedwindow.configure(width=300, height=290)
             self.advancedwindow.resizable(False, False)
             self.advancedwindow.after(
                 201,
@@ -448,41 +447,46 @@ class ThermalFrame(ctk.CTkFrame):
             )
 
             self.advanced_frame = CTkFrame(
-                self.advancedwindow, border_width=3, corner_radius=0, width=300, height=290,
+                self.advancedwindow, border_width=3, corner_radius=0
             )
-            self.advanced_frame.grid(column=0, row=0)
+            self.advanced_frame.pack()
 
-            CTkLabel(self.advanced_frame, text="pInjectors/pChamber").place(anchor="w", relx=0.05, rely=1/16)
-            self.pcoOvpcentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
-            self.pcoOvpcentry.place(anchor="e", relx=0.95, rely=1/16)
+            CTkLabel(self.advanced_frame, text="pInjectors/pChamber").grid(column=0, row=0, padx=7, pady=7)
+            self.pcoOvpcentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=125)
+            self.pcoOvpcentry.grid(column=1, row=0, padx=7, pady=7)
             update_entry(self.pcoOvpcentry, config.pcoOvpc)
 
-            CTkLabel(self.advanced_frame, text="Number of stations").place(anchor="w", relx=0.05, rely=3/16)
-            self.nsentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
-            self.nsentry.place(anchor="e", relx=0.95, rely=3/16)
+            CTkLabel(self.advanced_frame, text="Number of stations").grid(column=0, row=1, padx=7, pady=7)
+            self.nsentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=125)
+            self.nsentry.grid(column=1, row=1, padx=7, pady=7)
             update_entry(self.nsentry, config.n_stations)
 
-            CTkLabel(self.advanced_frame, text="Maximum iterations").place(anchor="w", relx=0.05, rely=5/16)
-            self.maxiterentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
-            self.maxiterentry.place(anchor="e", relx=0.95, rely=5/16)
+            CTkLabel(self.advanced_frame, text="Maximum iterations").grid(column=0, row=2, padx=7, pady=7)
+            self.maxiterentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=125)
+            self.maxiterentry.grid(column=1, row=2, padx=7, pady=7)
             update_entry(self.maxiterentry, config.max_iter)
 
-            CTkLabel(self.advanced_frame, text="Tuning coefficient").place(anchor="w", relx=0.05, rely=7/16)
-            self.tuningentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
-            self.tuningentry.place(anchor="e", relx=0.95, rely=7/16)
+            CTkLabel(self.advanced_frame, text="Tuning coefficient").grid(column=0, row=3, padx=7, pady=7)
+            self.tuningentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=125)
+            self.tuningentry.grid(column=1, row=3, padx=7, pady=7)
             update_entry(self.tuningentry, config.tuning_factor)
 
-            CTkLabel(self.advanced_frame, text="Stability coefficient").place(anchor="w", relx=0.05, rely=9/16)
-            self.stabentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
-            self.stabentry.place(anchor="e", relx=0.95, rely=9/16)
+            CTkLabel(self.advanced_frame, text="Stability coefficient").grid(column=0, row=4, padx=7, pady=7)
+            self.stabentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=125)
+            self.stabentry.grid(column=1, row=4, padx=7, pady=7)
             update_entry(self.stabentry, config.stability)
 
-            CTkLabel(self.advanced_frame, text="Absolute roughness [mm]").place(anchor="w", relx=0.05, rely=11/16)
-            self.roughentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=118)
-            self.roughentry.place(anchor="e", relx=0.95, rely=11/16)
+            CTkLabel(self.advanced_frame, text="Absolute roughness [mm]").grid(column=0, row=5, padx=7, pady=7)
+            self.roughentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=125)
+            self.roughentry.grid(column=1, row=5, padx=7, pady=7)
             update_entry(self.roughentry, config.absolute_roughness * 1000)
 
-            CTkLabel(self.advanced_frame, text="Friction factor relation").place(anchor="w", relx=0.05, rely=13/16)
+            CTkLabel(self.advanced_frame, text="Outer to inner wall ratio").grid(column=0, row=6, padx=7, pady=7)
+            self.t_eOvt_wentry = CTkEntry(self.advanced_frame, placeholder_text="0", width=125)
+            self.t_eOvt_wentry.grid(column=1, row=6, padx=7, pady=7)
+            update_entry(self.t_eOvt_wentry, config.t_eOvt_w)
+
+            CTkLabel(self.advanced_frame, text="Friction factor relation").grid(column=0, row=7, padx=7, pady=7)
             if config.dp_method == 0:
                 self.dp_method = ctk.StringVar(value="Tkachenko")
             elif config.dp_method == 1:
@@ -493,17 +497,17 @@ class ThermalFrame(ctk.CTkFrame):
                 self.advanced_frame,
                 values=["Tkachenko", "Moody", "Colebrook-White"],
                 variable=self.dp_method,
-                width=118
+                width=125
             )
-            self.dp_methodoptmenu.place(anchor="e", relx=0.95, rely=13/16)
+            self.dp_methodoptmenu.grid(column=1, row=7, padx=7, pady=7)
 
             CTkButton(
                 self.advanced_frame, text="Reset", command=self.reset_advanced, width=90
-            ).place(anchor="center", relx=0.3, rely=15/16)
+            ). grid(column=0, row=8, padx=7, pady=7)
 
             CTkButton(
                 self.advanced_frame, text="Set", command=self.set_advanced, width=90
-            ).place(anchor="center", relx=0.7, rely=15/16)
+            ).grid(column=1, row=8, padx=7, pady=7)
 
             self.advancedwindow.after(50, self.advancedwindow.lift)
             self.advancedwindow.after(50, self.advancedwindow.focus)
@@ -520,6 +524,7 @@ class ThermalFrame(ctk.CTkFrame):
             config.tuning_factor = float(self.tuningentry.get())
             config.stability = float(self.stabentry.get())
             config.absolute_roughness = float(self.roughentry.get()) / 1000
+            config.t_eOvt_w = float(self.t_eOvt_wentry.get())
             if self.dp_method.get() == "Tkachenko":
                 config.dp_method = 0
             elif self.dp_method.get() == "Moody":
@@ -538,6 +543,7 @@ class ThermalFrame(ctk.CTkFrame):
         config.stability = 0.5
         config.absolute_roughness = 0.00025
         config.dp_method = 0
+        config.t_eOvt_w = 4.0
         self.advancedwindow.destroy()
 
     def toggle_regen_cooling(self):
