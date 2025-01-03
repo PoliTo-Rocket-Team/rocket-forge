@@ -40,12 +40,7 @@ conda activate rocket
 
 Install python requirements:
 ```
-pip install tabulate customtkinter
-```
-
-Install rocketcea, rocketprops and rocketpy:  
-```
-pip install rocketcea rocketprops rocketpy
+pip install -r requirements.txt
 ```
 
 You can check if rocketcea has been successfully installed using the following command:
@@ -88,7 +83,7 @@ Be sure to disable antivirus for the Rocket Forge installation folder.
 
 Use PyInstaller inside the Rocket Forge installation folder to compile the software using the %FOLDER% variable:
 ```
-pyinstaller --windowed --onefile --add-data "%FOLDER%/rocketcea:rocketcea/" --add-data "%FOLDER%/rocketprops:rocketprops/" --add-data "%FOLDER%/rocketpy:rocketpy/" --add-data "%FOLDER%/customtkinter:customtkinter/" --add-data "%FOLDER%/PIL:PIL/" --add-data "rocketforge/resources:rocketforge/resources/" --add-data "theme.json:." --icon=rocketforge/resources/icon.png -n "Rocket Forge" --clean main.py 
+pyinstaller --windowed --onefile --add-data "%FOLDER%/rocketcea:rocketcea/" --add-data "%FOLDER%/rocketprops:rocketprops/" --add-data "%FOLDER%/rocketpy:rocketpy/" --add-data "%FOLDER%/pyvista:pyvista/" --add-data "%FOLDER%/customtkinter:customtkinter/" --add-data "%FOLDER%/PIL:PIL/" --add-data "rocketforge/resources:rocketforge/resources/" --add-data "theme.json:." --icon=rocketforge/resources/icon.png -n "Rocket Forge" --clean main.py 
 ```
 Executable file will be built inside the `dist` folder. To build an updated version of the executable, just use:
 ```
@@ -142,19 +137,7 @@ conda activate rocket
 ```
 Install python dependencies using the following commands:
 ```
-pip3 install numpy
-
-pip3 install genericf2py
-
-pip3 install customtkinter
-
-pip3 install tabulate
-
-pip3 install rocketcea
-
-pip3 install rocketprops
-
-pip3 install rocketpy
+pip3 install -r requirements.txt
 ```
 Try a quick test of the install using the following command:
 ```
@@ -186,7 +169,7 @@ Install gfortran <https://fortran-lang.org/en/learn/os_setup/install_gfortran/>
 
 Install python requirements:
 ```
-pip install tabulate customtkinter rocketcea rocketprops rocketpy pyinstaller
+pip install -r requirements.txt
 ```
 Assign a temporary variable to python libraries folder:
 ```
@@ -194,5 +177,9 @@ FOLDER=/path/to/your/python/libraries/folder
 ```
 Use PyInstaller to compile the software using the $FOLDER variable:
 ```
-pyinstaller --windowed --onefile --add-data "$FOLDER/rocketcea:rocketcea/" --add-data "$FOLDER/rocketprops:rocketprops/" --add-data "$FOLDER/rocketpy:rocketpy/" --add-data "$FOLDER/customtkinter:customtkinter/" --add-data "$FOLDER/PIL:PIL/" --add-data "rocketforge/resources:rocketforge/resources/" --add-data "theme.json:." --icon=rocketforge/resources/icon.png -n "Rocket Forge" --clean main.py 
+pyinstaller --windowed --onefile --add-data "$FOLDER/rocketcea:rocketcea/" --add-data "$FOLDER/rocketprops:rocketprops/" --add-data "$FOLDER/rocketpy:rocketpy/" --add-data "$FOLDER/pyvista:pyvista/" --add-data "$FOLDER/vtkmodules:vtkmodules/" --add-data "$FOLDER/customtkinter:customtkinter/" --add-data "$FOLDER/PIL:PIL/" --add-data "rocketforge/resources:rocketforge/resources/" --add-data "theme.json:." --icon=rocketforge/resources/icon.png -n "Rocket Forge" --clean main.py 
+```
+Executable file will be built inside the `dist` folder. To build an updated version of the executable, just use:
+```
+pyinstaller "Rocket Forge.spec"
 ```
