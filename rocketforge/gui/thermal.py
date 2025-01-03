@@ -236,6 +236,7 @@ class ThermalFrame(ctk.CTkFrame):
     def plot_3D(self):
         if self.regen != None:
             self.set_channels(destroy=False)
+            self.channelswindow.update()
             self.regen.plot_3D()
         else:
             showwarning(title="Warning", message="Channels geometry unavailable")
