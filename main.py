@@ -441,6 +441,7 @@ class RocketForge(CTk):
                 "adv_stability": tconf.stability,
                 "adv_abs_roughness": tconf.absolute_roughness,
                 "adv_friction_method": tconf.dp_method,
+                "t_eOvt_w": tconf.t_eOvt_w,
                 "enable_rad": thf.radvar.get(),
                 "eps_w": thf.radepsentry.get(),
                 "enable_film": thf.filmvar.get(),
@@ -571,6 +572,7 @@ class RocketForge(CTk):
             tconf.stability = float(config.get("Thermal", "adv_stability"))
             tconf.absolute_roughness = float(config.get("Thermal", "adv_abs_roughness"))
             tconf.dp_method = int(float(config.get("Thermal", "adv_friction_method")))
+            tconf.t_eOvt_w = float(config.get("Thermal", "t_eOvt_w"))
             thf.radvar.set(config.get("Thermal", "enable_rad"))
             update_entry(thf.radepsentry, config.get("Thermal", "eps_w"))
             thf.filmvar.set(config.get("Thermal", "enable_film"))
