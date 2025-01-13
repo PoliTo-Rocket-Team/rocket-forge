@@ -77,7 +77,7 @@ class Regen():
             
             for i in range(config.n_stations):
                 cp_c[i] = P.CpAtTdegR(T_c[i] * 1.8) * 4186.8
-                mu_c[i] = P.Visc_compressed(T_c[i] * 1.8, p[i] / 6894.75728) / 10.0
+                mu_c[i] = P.ViscAtTdegR(T_c[i] * 1.8) / 10.0
                 lambda_c[i] = P.CondAtTdegR(T_c[i] * 1.8) * 1.72958
 
             Re_c = config.m_dot_c / a / b / NC * d_e / mu_c
