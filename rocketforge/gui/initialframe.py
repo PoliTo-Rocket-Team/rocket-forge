@@ -424,6 +424,7 @@ class InitialFrame(ctk.CTkFrame):
                 config.At = config.thrust * config.cstar / config.c / config.pc * (1 + (tconf.fuelfilm + config.mr*tconf.oxfilm)/100/(1+config.mr))
             else:
                 config.At = config.thrust * config.cstar / config.c / config.pc
-        except Exception:
+        except Exception as e:
             config.At = None
             config.thrust = None
+            print(f"Error in InitialFrame.run(): {e}")
