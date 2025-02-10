@@ -288,73 +288,78 @@ class GeometryFrame(ctk.CTkFrame):
 
         # Compute divergent section
         try:
-            if config.eps == None:
+            if config.eps is None:
                 showwarning(title="Warning", message="Please define the area ratio and run the simulation first.")
-                raise Exception
-            eps = config.eps
-            updateentry(self.epsentry, eps, True)
+                xD, yD = [], []
+            else:
+                try:
+                    eps = config.eps
+                    updateentry(self.epsentry, eps, True)
 
-            At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
-            RnOvRt = float(self.rnovrtentry.get())
+                    At = float(self.throatareaentry.get()) * area_uom(self.throatareauom.get())
+                    RnOvRt = float(self.rnovrtentry.get())
 
-            # Thrust-optimized parabolic (TOP)
-            if self.shape.get() == "Thrust-optimized parabolic":
-                tconf.shape = 1
+                    # Thrust-optimized parabolic (TOP)
+                    if self.shape.get() == "Thrust-optimized parabolic":
+                        tconf.shape = 1
 
-                if self.divergentlengthuom.get() == "Le/Lc15":
-                    Le = float(self.divergentlengthentry.get()) * conical.lc15(At, RnOvRt, eps)
-                else:
-                    Le = float(self.divergentlengthentry.get()) * length_uom(self.divergentlengthuom.get())
+                        if self.divergentlengthuom.get() == "Le/Lc15":
+                            Le = float(self.divergentlengthentry.get()) * conical.lc15(At, RnOvRt, eps)
+                        else:
+                            Le = float(self.divergentlengthentry.get()) * length_uom(self.divergentlengthuom.get())
 
-                thetan = float(self.thetanentry.get()) * angle_uom(self.thetanuom.get())
-                thetae = float(self.thetaexentry.get()) * angle_uom(self.thetaexuom.get())
+                        thetan = float(self.thetanentry.get()) * angle_uom(self.thetanuom.get())
+                        thetae = float(self.thetaexentry.get()) * angle_uom(self.thetaexuom.get())
 
-                if thetan <= thetae:
-                    showwarning(title="Warning", message="Final parabola angle must be greater than initial parabola angle")
-                    raise Exception
+                        if thetan <= thetae:
+                            showwarning(title="Warning", message="Final parabola angle must be greater than initial parabola angle")
+                            xD, yD = [], [] 
+                        else:
+                            xD, yD = top.get(At, RnOvRt, Le, thetan, thetae, eps)
             
-                xD, yD = top.get(At, RnOvRt, Le, thetan, thetae, eps)
-            
-            # Truncated ideal contour (TIC)
-            if self.shape.get() == "Truncated ideal contour":
-                ...
+                    # Truncated ideal contour (TIC)
+                    elif self.shape.get() == "Truncated ideal contour":
+                        ...
 
-            # Conical nozzle
-            if self.shape.get() == "Conical":
-                tconf.shape = 0
+                    # Conical nozzle
+                    elif self.shape.get() == "Conical":
+                        tconf.shape = 0
 
-                selected = self.cselected.get()
+                        selected = self.cselected.get()
+                        
+                        if selected == 0:
+                            Le = float(self.cleentry.get()) * length_uom(self.cleuom.get())
+                            Lf = Le / conical.lc15(At, RnOvRt, eps)
+                            thetae = conical.get_theta(At, RnOvRt, eps, Le)
+
+                        if selected == 1:
+                            Lf = float(self.clfentry.get())
+                            Le = Lf * conical.lc15(At, RnOvRt, eps)
+                            thetae = conical.get_theta(At, RnOvRt, eps, Le)
+
+                        if selected == 2:
+                            thetae = float(self.cthetaentry.get()) * angle_uom(self.cthetauom.get())
+                            if thetae <= 0:
+                                showwarning(title="Warning", message="Divergent angle must be positive")
+                                xD, yD = [], []
+                            Le = conical.le(At, RnOvRt, eps, thetae)
+                            Lf = Le / conical.lc15(At, RnOvRt, eps)
+                        
+                        updateentry(self.cleentry, Le / length_uom(self.cleuom.get()))
+                        updateentry(self.clfentry, Lf)
+                        updateentry(self.cthetaentry, thetae / angle_uom(self.cthetauom.get()))
+                        thetan = thetae
+
+                        xD, yD = conical.get(At, RnOvRt, eps, Le, thetae)
+
+                except ValueError as ve:
+                    print(f"Value error in divergent section: {ve}")
+                    xD, yD = [], []
                 
-                if selected == 0:
-                    Le = float(self.cleentry.get()) * length_uom(self.cleuom.get())
-                    Lf = Le / conical.lc15(At, RnOvRt, eps)
-                    thetae = conical.get_theta(At, RnOvRt, eps, Le)
-
-                if selected == 1:
-                    Lf = float(self.clfentry.get())
-                    Le = Lf * conical.lc15(At, RnOvRt, eps)
-                    thetae = conical.get_theta(At, RnOvRt, eps, Le)
-
-                if selected == 2:
-                    thetae = float(self.cthetaentry.get()) * angle_uom(self.cthetauom.get())
-                    if thetae <= 0:
-                        showwarning(title="Warning", message="Divergent angle must be positive")
-                        raise Exception
-                    Le = conical.le(At, RnOvRt, eps, thetae)
-                    Lf = Le / conical.lc15(At, RnOvRt, eps)
-                
-                updateentry(self.cleentry, Le / length_uom(self.cleuom.get()))
-                updateentry(self.clfentry, Lf)
-                updateentry(self.cthetaentry, thetae / angle_uom(self.cthetauom.get()))
-                thetan = thetae
-
-                xD, yD = conical.get(At, RnOvRt, eps, Le, thetae)
-
-        except Exception:
-            xD = []
-            yD = []
-            print("Error in divergent section")
-
+        except Exception as e:
+            print(f"Error in divergent section: {e}")
+            xD, yD = []
+    
         # Compute convergent section
         try:
             if config.epsc == None:
