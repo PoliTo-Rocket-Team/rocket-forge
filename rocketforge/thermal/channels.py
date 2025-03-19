@@ -4,6 +4,8 @@ from rocketforge.utils.logger import logger
 
 def plot_3D(x, R, a, b, delta, NC, t_w, t_eOvt_w = 4.0, radius_resolution=1):
     plotter = pv.Plotter(title="Regenerative cooling channels")
+    global export_stl
+    export_stl = False
 
     global channel_resolution, rib_resolution
     channel_resolution = max([1, int(180/NC * max(a / (a + delta)))])
@@ -70,6 +72,116 @@ def plot_3D(x, R, a, b, delta, NC, t_w, t_eOvt_w = 4.0, radius_resolution=1):
     if not channels_pd.is_manifold: logger.warning("Channels mesh is not watertight.")
     channels = plotter.add_mesh(channels_pd, color="#D95319", opacity=0.7, show_edges=False, line_width=2, backface_culling=True)
 
+    plotter.add_checkbox_button_widget(
+        lambda flag: outer_wall.SetVisibility(flag),
+        value=True,
+        position=(5.0, 162),
+        size=25,
+        border_size=3,
+        color_on='orange',
+        color_off='grey',
+        background_color='grey',
+    )
+    plotter.add_text(
+        'Outer wall',
+        position=(35, 162),
+        color='white',
+        shadow=True,
+        font_size=8,
+    )
+
+    plotter.add_checkbox_button_widget(
+        lambda flag: ribs.SetVisibility(flag),
+        value=True,
+        position=(5.0, 132),
+        size=25,
+        border_size=3,
+        color_on='orange',
+        color_off='grey',
+        background_color='grey',
+    )
+    plotter.add_text(
+        'Ribs',
+        position=(35, 132),
+        color='white',
+        shadow=True,
+        font_size=8,
+    )
+
+    plotter.add_checkbox_button_widget(
+        lambda flag: channels.SetVisibility(flag),
+        value=True,
+        position=(5.0, 102),
+        size=25,
+        border_size=3,
+        color_on='orange',
+        color_off='grey',
+        background_color='grey',
+    )
+    plotter.add_text(
+        'Channels',
+        position=(35, 102),
+        color='white',
+        shadow=True,
+        font_size=8,
+    )
+
+    plotter.add_checkbox_button_widget(
+        lambda flag: inner_wall.SetVisibility(flag),
+        value=True,
+        position=(5.0, 72),
+        size=25,
+        border_size=3,
+        color_on='orange',
+        color_off='grey',
+        background_color='grey',
+    )
+    plotter.add_text(
+        'Inner wall',
+        position=(35, 72),
+        color='white',
+        shadow=True,
+        font_size=8,
+    )
+
+    plotter.add_checkbox_button_widget(
+        lambda flag: plotter.enable_parallel_projection() if flag else plotter.disable_parallel_projection(),
+        value=False,
+        position=(5.0, 42),
+        size=25,
+        border_size=3,
+        color_on='orange',
+        color_off='grey',
+        background_color='grey',
+    )
+    plotter.add_text(
+        'Parallel projection',
+        position=(35, 42),
+        color='white',
+        shadow=True,
+        font_size=8,
+    )
+
+    def set_export_stl(flag):
+        global export_stl
+        export_stl = flag
+    plotter.add_checkbox_button_widget(
+        set_export_stl,
+        value=False,
+        position=(5.0, 12),
+        size=25,
+        border_size=3,
+        color_on='orange',
+        color_off='grey',
+        background_color='grey',
+    )
+    plotter.add_text(
+        'Export STL file (output.stl) when closing',
+        position=(35, 12),
+        color='white',
+        shadow=True,
+        font_size=8,
+    )
 
     plotter.enable_anti_aliasing()
     plotter.set_background("#242424")
