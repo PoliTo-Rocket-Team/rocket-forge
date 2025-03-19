@@ -233,7 +233,7 @@ class Regen():
         plt.show()
 
     def plot_3D(self):
-        channels.plot_3D(self.x, self.R, self.a, self.b, self.delta, config.NC, config.t_w)
+        channels.plot_3D(self.x, self.R, self.a, self.b, self.delta, config.NC, config.t_w, config.t_eOvt_w)
 
     def set_a(self):
         Rt = sqrt(pconf.At / pi)

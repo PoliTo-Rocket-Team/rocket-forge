@@ -64,6 +64,7 @@ tuning_factor = 1.0
 stability = 0.5
 absolute_roughness = 0.00025
 dp_method = 0
+t_eOvt_w = 4.0
 
 # Radiation cooling parameters
 eps_w = None
