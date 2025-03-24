@@ -185,7 +185,7 @@ def plot_3D(x, R, a, b, delta, NC, t_w, t_eOvt_w = 4.0, radius_resolution=1):
 
     plotter.enable_anti_aliasing()
     plotter.set_background("#242424")
-    plotter.add_axes(color="#fafafa")
+    plotter.add_axes(color="#fafafa", viewport=(0.8, 0, 1, 0.2))
     plotter.show()
     if export_stl:
         engine_faces = generate_single_engine_mesh()
