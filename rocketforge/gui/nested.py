@@ -355,7 +355,13 @@ class NestedFrame(CTkFrame):
             if step <= 0:
                 showwarning("Invalid Step Size", "Step size must be a positive number.")
                 raise ValueError("Invalid Step Size")
-            values = np.arange(start, end + step, step)
+            d = max(
+                len(str(start).rstrip('0').split('.')[-1]),
+                len(str(end).rstrip('0').split('.')[-1]),
+                len(str(step).rstrip('0').split('.')[-1])
+                )
+            return np.round(np.arange(start, end + step, step), decimals=d)
+
         elif step_mode == "Step No.":
             if step % 1 != 0:
                 showwarning("Invalid Step Count", "Step count must be an integer.")
@@ -363,8 +369,7 @@ class NestedFrame(CTkFrame):
             if step < 2:
                 showwarning("Invalid Step Count", "Step count must be greater than one.")
                 raise ValueError("Invalid Step Count")
-            values = np.linspace(start, end, int(step))
-        return values
+            return np.linspace(start, end, int(step))
 
     def get_nested_inputs(self) -> dict:
         """
