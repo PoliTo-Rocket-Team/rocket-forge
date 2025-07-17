@@ -1,19 +1,46 @@
-import os
+# Standard library
 import re
-import tkinter as tk
-import numpy as np
 import threading
-from tabulate import tabulate
 from contextlib import contextmanager
+from operator import countOf
+
+# Tkinter
+import tkinter as tk
 from tkinter.messagebox import showwarning
+
+# Third-party
 import customtkinter as ctk
-from customtkinter import CTkEntry, CTkFrame, CTkLabel, CTkCheckBox, CTkOptionMenu, CTkTextbox, CTkProgressBar
+import numpy as np
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 from rocketcea.cea_obj_w_units import CEA_Obj
+from tabulate import tabulate
+
+# CustomTkinter
+from customtkinter import (
+    CTkButton,
+    CTkCheckBox,
+    CTkEntry,
+    CTkFrame,
+    CTkLabel,
+    CTkOptionMenu,
+    CTkProgressBar,
+    CTkTextbox
+)
+
+# Project-specific
 import rocketforge.performance.config as config
-from rocketforge.utils.conversions import pressure_uom
-from rocketforge.utils.helpers import update_entry, update_textbox
-from rocketforge.utils.fonts import get_font
 from rocketforge.performance.theoreticalperf import theoretical
+from rocketforge.utils.conversions import pressure_uom
+from rocketforge.utils.custom.CTkScrollableFrameUpdated import CTkScrollableFrameUpdated
+from rocketforge.utils.fonts import get_font
+from rocketforge.utils.helpers import update_textbox
+from rocketforge.utils.logger import logger
+from rocketforge.utils.resources import resource_path
+from rocketforge.nested.helpers import abort_plot, extract_variable
+from rocketforge.nested.mapper import mapper
+from rocketforge.nested.nestedplot import format_2D_plot, plot_2D, plot_3D
+
 
 
 class NestedFrame(CTkFrame):
