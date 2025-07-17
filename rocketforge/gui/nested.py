@@ -245,7 +245,7 @@ class NestedFrame(CTkFrame):
                 indexing='ij'
             )
             # Initialize results array with the appropriate shape
-            results = np.empty(mr.shape, dtype=object)
+            self.results = np.empty(mr.shape, dtype=object)
             # Iterate over all combinations using a multidimensional index
             for idx,index in enumerate(np.ndindex(mr.shape)):
                 self.progressbar.set((idx+1) / mr.size)
@@ -304,11 +304,12 @@ class NestedFrame(CTkFrame):
                     "gammae": config.gammae,
                     "Me": config.Me
                 }
+                self.results[index] = result_dict
                 results[index] = result_dict
             headers = ["mr", "pc [Pa]", "epsc", "eps", "c* [m/s]", "Isp (SL) [s]", "Isp (opt) [s]", "Isp (vac) [s]", "gamma_e", "M_e"]
             table_data = [
                 [result["mr"], result["pc"], result["epsc"], result["eps"], result["cstar"], result["Isp_sl"], result["Isp_opt"], result["Isp_vac"], result["gammae"], result["Me"]]
-                for result in results.flatten()
+                for result in self.results.flatten()
             ]
 
             table = tabulate(table_data, headers, numalign="right")
