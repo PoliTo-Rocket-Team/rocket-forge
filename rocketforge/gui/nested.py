@@ -80,8 +80,14 @@ class NestedFrame(CTkFrame):
             row = self.create_row(i+1, label, units, plotoptions)
             self.rows.append(row)
 
+        # Create a plot button
+        self.plotbutton = ctk.CTkButton(
+            self, text="Plot...", command=self.plot_window, width=100, height=28
+        ).place(relx=0.993, rely=0.475, anchor="ne")
+        self.plotwindow = None
+
         # Create output textbox
-        self.textbox = CTkTextbox(self, height=235, state="disabled", wrap="none", font=get_font())
+        self.textbox = CTkTextbox(self, height=204, state="disabled", wrap="none", font=get_font())
         self.textbox.place(relwidth=59/60, relx=0.5, rely=0.965, anchor="s")
 
         # Create a progress bar
