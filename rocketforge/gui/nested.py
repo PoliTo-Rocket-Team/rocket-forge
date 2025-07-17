@@ -520,3 +520,294 @@ class NestedFrame(CTkFrame):
         end = float(row["end_entry"].get())
         step = float(row["step_entry"].get())
         return start, end, step
+    
+    def plot_window(self):
+        if not hasattr(self, "results") or not isinstance(self.results, np.ndarray):
+            logger.warning("Trying to open plot window without running the analysis.")
+            showwarning("No Results", "Run the nested analysis first.")
+            return
+        if self.results.shape == (1,1,1,1):
+            logger.warning("Trying to open plot window with insufficient data.")
+            showwarning("Insufficient Data", "At least one parameter must be selected.")
+            return
+            
+        if self.plotwindow is None or not self.plotwindow.winfo_exists():
+            plot_types = ["Variable", "Constant", "Parameter"]
+            uoms = ["O/F", "bar", "Ac/At", "Ae/At"]
+
+            # Create a new window for the plot
+            self.plotwindow = ctk.CTkToplevel()
+            self.plotwindow.title("Nested Analysis Plot")
+            self.plotwindow.geometry("1000x600")
+            self.plotwindow.resizable(True, True)
+            self.plotwindow.after(
+                201,
+                lambda: self.plotwindow.iconphoto(
+                    False, tk.PhotoImage(file=resource_path("rocketforge/resources/icon.png"))
+                ),
+            )
+
+            # Input Frame (left)
+            self.inputframe = CTkFrame(self.plotwindow, width=340, border_width=1)
+            self.inputframe.pack(side="left", fill="y", padx=5, pady=5)
+            self.inputframe.grid_propagate(False)
+            self.inputframe.grid_columnconfigure(0, weight=1, uniform="col")
+            self.inputframe.grid_columnconfigure(1, weight=1, uniform="col")
+
+            # Dependent Variable
+            self.inputframe.dependent_label = CTkLabel(
+                self.inputframe, text="Dependent Variable"
+            ).grid(row=0, column=0, columnspan=2, padx=10, pady=(5,0), sticky="ew")
+            self.inputframe.dependent_dropdown = CTkOptionMenu(self.inputframe, values=list(mapper.get_all_names("dependent")))
+            self.inputframe.dependent_dropdown.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+
+            # Mixture Ratio
+            CTkLabel(
+                self.inputframe, text=mapper.get_all_names("independent")[0] + f" [{uoms[0]}]"
+            ).grid(row=2, column=0, padx=5, pady=(5,0), sticky="ew")
+            
+            self.inputframe.mixture_mode = CTkOptionMenu(
+                self.inputframe,
+                values=plot_types,
+                command= lambda mode: self.update_selection_frame(self.inputframe.mixture_frame, mode)
+            )
+            self.inputframe.mixture_mode.grid(row=2, column=1, padx=5, pady=(5,0), sticky="ew")
+            self.inputframe.mixture_mode.set("Constant")
+            
+            self.inputframe.mixture_frame = CTkScrollableFrameUpdated(self.inputframe, height=66)
+            self.inputframe.mixture_frame.grid(row=3, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+            
+            mr_values = extract_variable(self, "mr")
+            self.inputframe.mixture_frame.checkboxes = []
+            for i, val in enumerate(mr_values):
+                def on_toggle(index=i):
+                    cb_clicked = self.inputframe.mixture_frame.checkboxes[index]
+                    is_selected = cb_clicked.get()
+                    if self.inputframe.mixture_mode.get() == "Constant" and is_selected:
+                        for j, cb in enumerate(self.inputframe.mixture_frame.checkboxes):
+                            if j != index:
+                                cb.deselect()
+                cb = CTkCheckBox(
+                    self.inputframe.mixture_frame,
+                    text=str(round(val, 3)),
+                    checkbox_height=16,
+                    checkbox_width=16,
+                    height=16,
+                    command=on_toggle
+                )
+                cb.pack(anchor="w", padx=5, pady=(5,2) if i == 0 else (2,5) if i == len(mr_values)-1 else 2)
+                self.inputframe.mixture_frame.checkboxes.append(cb)
+                if i == 0:
+                    cb.select()
+                if len(mr_values) == 1:
+                    cb.configure(state="disabled")
+                    self.inputframe.mixture_mode.configure(state="disabled")
+
+            # Chamber Pressure
+            CTkLabel(
+                self.inputframe, text=mapper.get_all_names("independent")[1] + f" [{uoms[1]}]"
+            ).grid(row=5, column=0, padx=5, pady=(5,0), sticky="ew")
+            
+            self.inputframe.pressure_mode = CTkOptionMenu(
+                self.inputframe,
+                values=plot_types,
+                command= lambda mode: self.update_selection_frame(self.inputframe.pressure_frame, mode)
+            )
+            self.inputframe.pressure_mode.grid(row=5, column=1, padx=5, pady=(5,0), sticky="ew")
+            self.inputframe.pressure_mode.set("Constant")
+
+            self.inputframe.pressure_frame = CTkScrollableFrameUpdated(self.inputframe, height=66)
+            self.inputframe.pressure_frame.grid(row=6, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+
+            pc_values = extract_variable(self, "pc")
+            self.inputframe.pressure_frame.checkboxes = []
+            for i, val in enumerate(pc_values):
+                def on_toggle(index=i):
+                    cb_clicked = self.inputframe.pressure_frame.checkboxes[index]
+                    is_selected = cb_clicked.get()
+                    if self.inputframe.pressure_mode.get() == "Constant" and is_selected:
+                        for j, cb in enumerate(self.inputframe.pressure_frame.checkboxes):
+                            if j != index:
+                                cb.deselect()
+                cb = CTkCheckBox(
+                    self.inputframe.pressure_frame,
+                    text=str(round(val / pressure_uom(uoms[1]))),
+                    checkbox_height=16,
+                    checkbox_width=16,
+                    height=16,
+                    command=on_toggle
+                )
+                cb.pack(anchor="w", padx=5, pady=(5,2) if i == 0 else (2,5) if i == len(pc_values)-1 else 2)
+                self.inputframe.pressure_frame.checkboxes.append(cb)
+                if i == 0:
+                    cb.select()
+                if len(pc_values) == 1:
+                    cb.configure(state="disabled")
+                    self.inputframe.pressure_mode.configure(state="disabled")
+
+            # Nozzle Inlet Conditions
+            CTkLabel(
+                self.inputframe, text=mapper.get_all_names("independent")[2] + f" [{uoms[2]}]"
+            ).grid(row=8, column=0, padx=5, pady=(5,0), sticky="ew")
+
+            self.inputframe.inlet_mode = CTkOptionMenu(
+                self.inputframe,
+                values=plot_types,
+                command= lambda mode: self.update_selection_frame(self.inputframe.inlet_frame, mode)
+            )
+            self.inputframe.inlet_mode.grid(row=8, column=1, padx=5, pady=(5,0), sticky="ew")
+            self.inputframe.inlet_mode.set("Constant")
+
+            self.inputframe.inlet_frame = CTkScrollableFrameUpdated(self.inputframe, height=66)
+            self.inputframe.inlet_frame.grid(row=9, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+
+            epsc_values = extract_variable(self, "epsc")
+            self.inputframe.inlet_frame.checkboxes = []
+            for i, val in enumerate(epsc_values):
+                def on_toggle(index=i):
+                    cb_clicked = self.inputframe.inlet_frame.checkboxes[index]
+                    is_selected = cb_clicked.get()
+                    if self.inputframe.inlet_mode.get() == "Constant" and is_selected:
+                        for j, cb in enumerate(self.inputframe.inlet_frame.checkboxes):
+                            if j != index:
+                                cb.deselect()
+                cb = CTkCheckBox(
+                    self.inputframe.inlet_frame,
+                    text=str(round(val, 3)),
+                    checkbox_height=16,
+                    checkbox_width=16,
+                    height=16,
+                    command=on_toggle
+                )
+                cb.pack(anchor="w", padx=5, pady=(5,2) if i == 0 else (2,5) if i == len(epsc_values)-1 else 2)
+                self.inputframe.inlet_frame.checkboxes.append(cb)
+                if i == 0:
+                    cb.select()
+                if len(epsc_values) == 1:
+                    cb.configure(state="disabled")
+                    self.inputframe.inlet_mode.configure(state="disabled")
+
+            # Nozzle Exit Conditions 
+            CTkLabel(
+                self.inputframe, text=mapper.get_all_names("independent")[3] + f" [{uoms[3]}]"
+            ).grid(row=11, column=0, padx=5, pady=(5,0), sticky="ew")
+
+            self.inputframe.outlet_mode = CTkOptionMenu(
+                self.inputframe,
+                values=plot_types,
+                command= lambda mode: self.update_selection_frame(self.inputframe.outlet_frame, mode)
+            )
+            self.inputframe.outlet_mode.grid(row=11, column=1, padx=5, pady=(5,0), sticky="ew")
+            self.inputframe.outlet_mode.set("Constant")
+
+            self.inputframe.outlet_frame = CTkScrollableFrameUpdated(self.inputframe, height=66)
+            self.inputframe.outlet_frame.grid(row=12, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+
+            eps_values = extract_variable(self, "eps")
+            self.inputframe.outlet_frame.checkboxes = []
+            for i, val in enumerate(eps_values):
+                def on_toggle(index=i):
+                    cb_clicked = self.inputframe.outlet_frame.checkboxes[index]
+                    is_selected = cb_clicked.get()
+                    if self.inputframe.outlet_mode.get() == "Constant" and is_selected:
+                        for j, cb in enumerate(self.inputframe.outlet_frame.checkboxes):
+                            if j != index:
+                                cb.deselect()
+                cb = CTkCheckBox(
+                    self.inputframe.outlet_frame,
+                    text=str(round(val, 3)),
+                    checkbox_height=16,
+                    checkbox_width=16,
+                    height=16,
+                    command=on_toggle
+                )
+                cb.pack(anchor="w", padx=5, pady=(5,2) if i == 0 else (2,5) if i == len(eps_values)-1 else 2)
+                self.inputframe.outlet_frame.checkboxes.append(cb)
+                if i == 0:
+                    cb.select()
+                if len(eps_values) == 1:
+                    cb.configure(state="disabled")
+                    self.inputframe.outlet_mode.configure(state="disabled")
+            self.inputframe.grid_rowconfigure(14, weight=2)
+
+            self.inputframe.plotbutton = CTkButton(self.inputframe, text="Plot", command=self.plot_wrap, height=28)
+            self.inputframe.plotbutton.grid(row=15, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+            
+            # Plot frame (right)
+            self.plotframe = CTkFrame(self.plotwindow)
+            self.plotframe.configure(border_width=1)
+            self.plotframe.pack(side="left", fill="both", expand=True, padx=(0,5), pady=5)
+
+            self.fig = Figure(figsize=(5,5), dpi=80)
+            self.fig.set_facecolor("none")
+            self.fig.patch.set_facecolor("none")
+
+            self.canvas = FigureCanvasTkAgg(self.fig, master=self.plotframe)
+            self.canvas.get_tk_widget().pack(side="top", fill="both", expand=True, padx=5, pady=5)
+            self.canvas.get_tk_widget().configure(bg="#212121")
+
+            self.ax = self.fig.add_subplot(111)
+            format_2D_plot(self)
+
+            self.plotwindow.after(100, self.plotwindow.lift)
+            self.plotwindow.after(100, self.plotwindow.focus)
+            
+            self.plotwindow.lift()
+            self.plotwindow.focus()
+        else:
+            self.plotwindow.lift()
+            self.plotwindow.focus()
+    
+    def plot_wrap(self):
+        if self.plot():
+            logger.info("Plotting successful.")
+        else:
+            logger.warning("Plotting aborted due to invalid settings or errors.")
+        
+    def plot(self):
+        logger.info("Plotting...")
+        try:
+            settings = {
+                "mr": self.inputframe.mixture_mode.get(),
+                "pc": self.inputframe.pressure_mode.get(),
+                "epsc": self.inputframe.inlet_mode.get(),
+                "eps": self.inputframe.outlet_mode.get()
+            }
+
+            var_count = countOf(settings.values(), "Variable")
+            param_count = countOf(settings.values(), "Parameter")
+            dependent_symbol = mapper.get_symbol(self.inputframe.dependent_dropdown.get())
+            
+            if var_count == 0:
+                return abort_plot("No variable selected", "Select at least one variable to plot.")
+
+            if var_count > 2:
+                return abort_plot("Too many variables selected", "One or two variables must be selected for plotting.")
+
+            if param_count > 1:
+                return abort_plot("Too many parametric variables selected", "Only one variable can be selected for parametric plotting.")
+            
+            if var_count == 1:
+                return plot_2D(self, settings, dependent_symbol, param_count)
+            
+            if var_count == 2:
+                return plot_3D(self, settings, dependent_symbol, param_count)
+        except Exception as e:
+            logger.error(f"Error during plotting: {e}")
+            raise
+
+    def update_selection_frame(self, frame, mode):
+        first_selected_found = False
+        for checkbox in frame.winfo_children():
+            if isinstance(checkbox, CTkCheckBox):
+                if mode == "Variable":
+                    checkbox.configure(state="disabled")
+                elif mode == "Parameter":
+                    checkbox.configure(state="normal")
+                elif mode == "Constant":
+                    checkbox.configure(state="normal")
+                    if not first_selected_found and checkbox.get():
+                        first_selected_found = True
+                    else:
+                        checkbox.deselect()
+   
