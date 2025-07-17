@@ -196,7 +196,6 @@ class NestedFrame(CTkFrame):
             config.gammae = cached_gammae
             config.Me = cached_Me
 
-    # Unfortunately the analyses cannot be multithreaded as they rely on the same config variables, in the future we could try fixing this
     def run(self) -> None:
         """
         Starts the analysis thread if it is not already running.
