@@ -305,7 +305,24 @@ class NestedFrame(CTkFrame):
                     "Me": config.Me
                 }
                 self.results[index] = result_dict
-                results[index] = result_dict
+
+            #    The results are stored in a 4D array, where each axis corresponds
+            #    to a different variable (mr, pc, epsc, eps).
+            #    Each element of the array is a dictionary containing the variables
+            #    and the results of the analysis executed with those variables.
+            #
+            #               ,-'‾‾,-'‾‾,-'‾‾,-'|                ,-'‾‾,-'‾‾,-'‾‾,-'|  
+            #           ,-'‾‾,-'‾‾,-'‾‾,-'|   |            ,-'‾‾,-'‾‾,-'‾‾,-'|   |  
+            #       ,-'‾‾,-'‾‾,-'‾‾,-'|   |,-'|        ,-'‾‾,-'‾‾,-'‾‾,-'|   |,-'|  
+            #      |‾‾‾‾|‾‾‾‾|‾‾‾‾|   |,-'|   |       |‾‾‾‾|‾‾‾‾|‾‾‾‾|   |,-'|   |   
+            #      |____|____|____|,-'|   |,-'|       |____|____|____|,-'|   |,-'|  
+            #    pc|    |    |    |   |,-'|   |     pc|    |    |    |   |,-'|   |  
+            #      |____|____|____|,-'|   |,-'        |____|____|____|,-'|   |,-'   
+            #      |    |    |    |   |,-' epsc       |    |    |    |   |,-' epsc  
+            #      |____|____|____|,-'                |____|____|____|,-'           
+            #             mr                                 mr
+            #               ----------------eps---------------->
+
             headers = ["mr", "pc [Pa]", "epsc", "eps", "c* [m/s]", "Isp (SL) [s]", "Isp (opt) [s]", "Isp (vac) [s]", "gamma_e", "M_e"]
             table_data = [
                 [result["mr"], result["pc"], result["epsc"], result["eps"], result["cstar"], result["Isp_sl"], result["Isp_opt"], result["Isp_vac"], result["gammae"], result["Me"]]
