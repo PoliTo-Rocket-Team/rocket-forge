@@ -1,0 +1,16 @@
+{
+    "independent": {
+        "Mixture Ratio": "mr",
+        "Chamber Pressure": "pc",
+        "Inlet Conditions": "epsc",
+        "Exit Conditions": "eps"
+    },
+    "dependent": {
+        "Characteristic Velocity (c*)": "cstar",
+        "Sea Level Specific Impulse": "Isp_sl",
+        "Adapted Specific Impulse": "Isp_opt",
+        "Vacuum Specific Impulse": "Isp_vac",
+        "Exit Gamma": "gammae",
+        "Exit Mach Number": "Me"
+    }
+}
