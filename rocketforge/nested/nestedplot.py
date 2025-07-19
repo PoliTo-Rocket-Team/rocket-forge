@@ -172,13 +172,15 @@ def format_3D_plot(nestedframe, variable_symbols: list[str] = None, dependent_sy
         dependent_symbol (str, optional): Symbol for the dependent variable. If None, uses a default label.
     """
     variable_names = ["Independent Variable 1", "Independent Variable 2"] if variable_symbols is None else [mapper.get_name(sym) for sym in variable_symbols]
+    variable_uoms = [f" [{mapper.get_uom(sym)}]" for sym in variable_symbols] if variable_symbols else ["", ""]
     dependent_name = "Dependent Variable" if dependent_symbol is None else mapper.get_name(dependent_symbol)
-    nestedframe.fig.subplots_adjust(top=0.9, bottom=0, left=0, right=1)
+    dependent_uom = f" [{mapper.get_uom(dependent_symbol)}]" if dependent_symbol else ""
+    nestedframe.fig.subplots_adjust(top=0.95, bottom=0, left=0, right=1)
     nestedframe.ax.set(
         title=f"{dependent_name} vs {variable_names[0]} and {variable_names[1]}",
         xlabel=variable_names[0] + variable_uoms[0],
         ylabel=variable_names[1] + variable_uoms[1],
-        zlabel=dependent_name
+        zlabel=dependent_name + dependent_uom
     )
     nestedframe.ax.grid()
     nestedframe.ax.set_facecolor("none")
