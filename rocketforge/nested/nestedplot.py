@@ -1,7 +1,7 @@
 import numpy as np
 import operator
 from functools import reduce
-from itertools import product 
+from itertools import product
 from matplotlib import cm
 from rocketforge.utils.logger import logger
 from rocketforge.utils.conversions import pressure_uom
@@ -68,7 +68,7 @@ def plot_2D(nestedframe, settings: dict, dependent_symbol: str, param_count: int
         legend.get_title().set_color('white')
     nestedframe.canvas.draw()
     return True
-    
+
 def format_2D_plot(nestedframe, variable_symbol: str = None, dependent_symbol: str = None) -> None:
     """
     Formats a 2D plot for a given frame object by adjusting subplot layout, setting axis labels, title, grid, and colors.
@@ -161,7 +161,7 @@ def plot_3D(nestedframe, settings: dict, dependent_symbol: str, param_count: int
         legend.get_title().set_color('white')
     nestedframe.canvas.draw()
     return True
-        
+
 def format_3D_plot(nestedframe, variable_symbols: list[str] = None, dependent_symbol: str = None) -> None:
     """
     Formats a 3D plot for a given frame object by adjusting subplot layout, setting axis labels, title, grid, and colors.

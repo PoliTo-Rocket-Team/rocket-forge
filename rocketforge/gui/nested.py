@@ -338,15 +338,15 @@ class NestedFrame(CTkFrame):
             #    Each element of the array is a dictionary containing the variables
             #    and the results of the analysis executed with those variables.
             #
-            #               ,-'‾‾,-'‾‾,-'‾‾,-'|                ,-'‾‾,-'‾‾,-'‾‾,-'|  
-            #           ,-'‾‾,-'‾‾,-'‾‾,-'|   |            ,-'‾‾,-'‾‾,-'‾‾,-'|   |  
-            #       ,-'‾‾,-'‾‾,-'‾‾,-'|   |,-'|        ,-'‾‾,-'‾‾,-'‾‾,-'|   |,-'|  
-            #      |‾‾‾‾|‾‾‾‾|‾‾‾‾|   |,-'|   |       |‾‾‾‾|‾‾‾‾|‾‾‾‾|   |,-'|   |   
-            #      |____|____|____|,-'|   |,-'|       |____|____|____|,-'|   |,-'|  
-            #    pc|    |    |    |   |,-'|   |     pc|    |    |    |   |,-'|   |  
-            #      |____|____|____|,-'|   |,-'        |____|____|____|,-'|   |,-'   
-            #      |    |    |    |   |,-' epsc       |    |    |    |   |,-' epsc  
-            #      |____|____|____|,-'                |____|____|____|,-'           
+            #               ,-'‾‾,-'‾‾,-'‾‾,-'|                ,-'‾‾,-'‾‾,-'‾‾,-'|
+            #           ,-'‾‾,-'‾‾,-'‾‾,-'|   |            ,-'‾‾,-'‾‾,-'‾‾,-'|   |
+            #       ,-'‾‾,-'‾‾,-'‾‾,-'|   |,-'|        ,-'‾‾,-'‾‾,-'‾‾,-'|   |,-'|
+            #      |‾‾‾‾|‾‾‾‾|‾‾‾‾|   |,-'|   |       |‾‾‾‾|‾‾‾‾|‾‾‾‾|   |,-'|   |
+            #      |____|____|____|,-'|   |,-'|       |____|____|____|,-'|   |,-'|
+            #    pc|    |    |    |   |,-'|   |     pc|    |    |    |   |,-'|   |
+            #      |____|____|____|,-'|   |,-'        |____|____|____|,-'|   |,-'
+            #      |    |    |    |   |,-' epsc       |    |    |    |   |,-' epsc
+            #      |____|____|____|,-'                |____|____|____|,-'
             #             mr                                 mr
             #               ----------------eps---------------->
 
@@ -520,7 +520,7 @@ class NestedFrame(CTkFrame):
         end = float(row["end_entry"].get())
         step = float(row["step_entry"].get())
         return start, end, step
-    
+
     def plot_window(self):
         if not hasattr(self, "results") or not isinstance(self.results, np.ndarray):
             logger.warning("Trying to open plot window without running the analysis.")
@@ -530,7 +530,7 @@ class NestedFrame(CTkFrame):
             logger.warning("Trying to open plot window with insufficient data.")
             showwarning("Insufficient Data", "At least one parameter must be selected.")
             return
-            
+
         if self.plotwindow is None or not self.plotwindow.winfo_exists():
             plot_types = ["Variable", "Constant", "Parameter"]
             uoms = ["O/F", "bar", "Ac/At", "Ae/At"]
@@ -565,7 +565,7 @@ class NestedFrame(CTkFrame):
             CTkLabel(
                 self.inputframe, text=mapper.get_name('mr') + f" [{mapper.get_uom('mr')}]"
             ).grid(row=2, column=0, padx=5, pady=(5,0), sticky="ew")
-            
+
             self.inputframe.mixture_mode = CTkOptionMenu(
                 self.inputframe,
                 values=plot_types,
@@ -573,10 +573,10 @@ class NestedFrame(CTkFrame):
             )
             self.inputframe.mixture_mode.grid(row=2, column=1, padx=5, pady=(5,0), sticky="ew")
             self.inputframe.mixture_mode.set("Constant")
-            
+
             self.inputframe.mixture_frame = CTkScrollableFrameUpdated(self.inputframe, height=66)
             self.inputframe.mixture_frame.grid(row=3, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
-            
+
             mr_values = extract_variable(self, "mr")
             self.inputframe.mixture_frame.checkboxes = []
             for i, val in enumerate(mr_values):
@@ -607,7 +607,7 @@ class NestedFrame(CTkFrame):
             CTkLabel(
                 self.inputframe, text=mapper.get_name('pc') + f" [{mapper.get_uom('pc')}]"
             ).grid(row=5, column=0, padx=5, pady=(5,0), sticky="ew")
-            
+
             self.inputframe.pressure_mode = CTkOptionMenu(
                 self.inputframe,
                 values=plot_types,
@@ -687,7 +687,7 @@ class NestedFrame(CTkFrame):
                     cb.configure(state="disabled")
                     self.inputframe.inlet_mode.configure(state="disabled")
 
-            # Nozzle Exit Conditions 
+            # Nozzle Exit Conditions
             CTkLabel(
                 self.inputframe, text=mapper.get_name('eps') + f" [{mapper.get_uom('eps')}]"
             ).grid(row=11, column=0, padx=5, pady=(5,0), sticky="ew")
@@ -732,7 +732,7 @@ class NestedFrame(CTkFrame):
 
             self.inputframe.plotbutton = CTkButton(self.inputframe, text="Plot", command=self.plot_wrap, height=28)
             self.inputframe.plotbutton.grid(row=15, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
-            
+
             # Plot frame (right)
             self.plotframe = CTkFrame(self.plotwindow)
             self.plotframe.configure(border_width=1)
@@ -751,19 +751,19 @@ class NestedFrame(CTkFrame):
 
             self.plotwindow.after(100, self.plotwindow.lift)
             self.plotwindow.after(100, self.plotwindow.focus)
-            
+
             self.plotwindow.lift()
             self.plotwindow.focus()
         else:
             self.plotwindow.lift()
             self.plotwindow.focus()
-    
+
     def plot_wrap(self):
         if self.plot():
             logger.info("Plotting successful.")
         else:
             logger.warning("Plotting aborted due to invalid settings or errors.")
-        
+
     def plot(self):
         logger.info("Plotting...")
         try:
@@ -777,7 +777,7 @@ class NestedFrame(CTkFrame):
             var_count = countOf(settings.values(), "Variable")
             param_count = countOf(settings.values(), "Parameter")
             dependent_symbol = mapper.get_symbol(self.inputframe.dependent_dropdown.get())
-            
+
             if var_count == 0:
                 return abort_plot("No variable selected", "Select at least one variable to plot.")
 
@@ -786,10 +786,10 @@ class NestedFrame(CTkFrame):
 
             if param_count > 1:
                 return abort_plot("Too many parametric variables selected", "Only one variable can be selected for parametric plotting.")
-            
+
             if var_count == 1:
                 return plot_2D(self, settings, dependent_symbol, param_count)
-            
+
             if var_count == 2:
                 return plot_3D(self, settings, dependent_symbol, param_count)
         except Exception as e:
@@ -810,4 +810,3 @@ class NestedFrame(CTkFrame):
                         first_selected_found = True
                     else:
                         checkbox.deselect()
-   
