@@ -265,11 +265,6 @@ class GeometryFrame(ctk.CTkFrame):
             width=35, height=35, font=("Arial", 20, "bold")
         ).place(anchor="center", relx=0.81, rely=0.75)
 
-        CTkButton(
-            self.plot3dframe, text="↻", command=self.increase_view_angle,
-            width=35, height=35, font=("Arial", 20, "bold")
-        ).place(anchor="center", relx=0.81, rely=0.75)
-
         self.plotframe = CTkFrame(self)
         self.plotframe.configure(border_width=1, height=200, width=590)
         self.plotframe.place(anchor="s", relx=0.5, rely=0.99, x=0, y=0)
