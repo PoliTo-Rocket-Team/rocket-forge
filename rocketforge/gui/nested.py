@@ -563,7 +563,7 @@ class NestedFrame(CTkFrame):
 
             # Mixture Ratio
             CTkLabel(
-                self.inputframe, text=mapper.get_all_names("independent")[0] + f" [{uoms[0]}]"
+                self.inputframe, text=mapper.get_name('mr') + f" [{mapper.get_uom('mr')}]"
             ).grid(row=2, column=0, padx=5, pady=(5,0), sticky="ew")
             
             self.inputframe.mixture_mode = CTkOptionMenu(
@@ -605,7 +605,7 @@ class NestedFrame(CTkFrame):
 
             # Chamber Pressure
             CTkLabel(
-                self.inputframe, text=mapper.get_all_names("independent")[1] + f" [{uoms[1]}]"
+                self.inputframe, text=mapper.get_name('pc') + f" [{mapper.get_uom('pc')}]"
             ).grid(row=5, column=0, padx=5, pady=(5,0), sticky="ew")
             
             self.inputframe.pressure_mode = CTkOptionMenu(
@@ -631,7 +631,7 @@ class NestedFrame(CTkFrame):
                                 cb.deselect()
                 cb = CTkCheckBox(
                     self.inputframe.pressure_frame,
-                    text=str(round(val / pressure_uom(uoms[1]))),
+                    text=str(round(val / pressure_uom(uoms[1]), 1)),
                     checkbox_height=16,
                     checkbox_width=16,
                     height=16,
@@ -647,7 +647,7 @@ class NestedFrame(CTkFrame):
 
             # Nozzle Inlet Conditions
             CTkLabel(
-                self.inputframe, text=mapper.get_all_names("independent")[2] + f" [{uoms[2]}]"
+                self.inputframe, text=mapper.get_name('epsc') + f" [{mapper.get_uom('epsc')}]"
             ).grid(row=8, column=0, padx=5, pady=(5,0), sticky="ew")
 
             self.inputframe.inlet_mode = CTkOptionMenu(
@@ -689,7 +689,7 @@ class NestedFrame(CTkFrame):
 
             # Nozzle Exit Conditions 
             CTkLabel(
-                self.inputframe, text=mapper.get_all_names("independent")[3] + f" [{uoms[3]}]"
+                self.inputframe, text=mapper.get_name('eps') + f" [{mapper.get_uom('eps')}]"
             ).grid(row=11, column=0, padx=5, pady=(5,0), sticky="ew")
 
             self.inputframe.outlet_mode = CTkOptionMenu(

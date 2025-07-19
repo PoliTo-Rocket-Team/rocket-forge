@@ -1,16 +1,46 @@
 {
     "independent": {
-        "Mixture Ratio": "mr",
-        "Chamber Pressure": "pc",
-        "Inlet Conditions": "epsc",
-        "Exit Conditions": "eps"
+        "Mixture Ratio": {
+            "symbol": "mr",
+            "unit": "O/F"
+        },
+        "Chamber Pressure": {
+            "symbol": "pc",
+            "unit": "bar"
+        },
+        "Inlet Conditions": {
+            "symbol": "epsc",
+            "unit": "Ac/At"
+        },
+        "Exit Conditions": {
+            "symbol": "eps",
+            "unit": "Ae/At"
+        }
     },
     "dependent": {
-        "Characteristic Velocity (c*)": "cstar",
-        "Sea Level Specific Impulse": "Isp_sl",
-        "Adapted Specific Impulse": "Isp_opt",
-        "Vacuum Specific Impulse": "Isp_vac",
-        "Exit Gamma": "gammae",
-        "Exit Mach Number": "Me"
+        "Characteristic Velocity (c*)": {
+            "symbol": "cstar",
+            "unit": "m/s"
+        },
+        "Sea Level Specific Impulse": {
+            "symbol": "Isp_sl",
+            "unit": "s"
+        },
+        "Adapted Specific Impulse": {
+            "symbol": "Isp_opt",
+            "unit": "s"
+        },
+        "Vacuum Specific Impulse": {
+            "symbol": "Isp_vac",
+            "unit": "s"
+        },
+        "Exit Gamma": {
+            "symbol": "gammae",
+            "unit": ""
+        },
+        "Exit Mach Number": {
+            "symbol": "Me",
+            "unit": ""
+        }
     }
 }

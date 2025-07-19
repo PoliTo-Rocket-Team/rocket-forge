@@ -4,17 +4,16 @@ from functools import reduce
 from itertools import product 
 from matplotlib import cm
 from rocketforge.utils.logger import logger
-from tkinter.messagebox import showwarning
+from rocketforge.utils.conversions import pressure_uom
 from rocketforge.nested.mapper import mapper
 from rocketforge.nested.helpers import extract_variable, get_slice_index, validate_slice_index, abort_plot
 
-
-def plot_2D(nestedframe, settings, dependent_symbol, param_count) -> bool:
+def plot_2D(nestedframe, settings: dict, dependent_symbol: str, param_count: int) -> bool:
     """
     Plots a 2D graph based on the provided settings.
 
     Args:
-        nestedframe (NestedFrame): The frame containing plot and data references.
+        nestedframe: The frame containing plot and data references.
         settings (dict): Dictionary mapping variable/parameter names to their roles.
         dependent_symbol (str): Symbol for the dependent variable.
         param_count (int): Number of parameters being varied.
@@ -34,6 +33,7 @@ def plot_2D(nestedframe, settings, dependent_symbol, param_count) -> bool:
     if not parametric:
         logger.info("Plotting non-parametric 2D graph...")
         x = extract_variable(nestedframe, variable_symbol)
+        x = [_x / pressure_uom("bar") for _x in x] if variable_symbol == "pc" else x
         y = extract_variable(nestedframe, variable_symbol, dependent_symbol, slice_index)
         nestedframe.ax.plot(x, y, color=cm.YlOrRd(0.5), linewidth=2)
     else:
@@ -48,38 +48,44 @@ def plot_2D(nestedframe, settings, dependent_symbol, param_count) -> bool:
         nestedframe.ax.set_prop_cycle('color', colors)
         parameter_symbol = next(k for k, v in settings.items() if v == "Parameter")
         param = extract_variable(nestedframe, parameter_symbol)
+        param = [p / pressure_uom("bar") for p in param] if parameter_symbol == "pc" else param
+        param_uom = f" {mapper.get_uom(parameter_symbol)}" if parameter_symbol == "pc" else ""
         x = extract_variable(nestedframe, variable_symbol)
+        x = [_x / pressure_uom("bar") for _x in x] if variable_symbol == "pc" else x
         for i, idx in enumerate(idxs):
             y = extract_variable(nestedframe, variable_symbol, dependent_symbol, list(idx))
-            nestedframe.ax.plot(x, y, linewidth=2, label=param[idx[param_axis]])
+            nestedframe.ax.plot(x, y, linewidth=2, label=f"{param[idx[param_axis]]}{param_uom}")
         legend = nestedframe.ax.legend(
+            loc='upper right',
             title=mapper.get_name(parameter_symbol),
             title_fontsize='large',
+            alignment='left',
             labelcolor='white',
             facecolor='black',
             edgecolor='white',
-            framealpha=0.8,
-            loc='upper right'
+            framealpha=0.8
         )
         legend.get_title().set_color('white')
     nestedframe.canvas.draw()
     return True
     
-def format_2D_plot(nestedframe, variable_symbol=None, dependent_symbol=None) -> None:
+def format_2D_plot(nestedframe, variable_symbol: str = None, dependent_symbol: str = None) -> None:
     """
-    Formats a 2D plot for a given NestedFrame object by adjusting subplot layout, setting axis labels, title, grid, and colors.
+    Formats a 2D plot for a given frame object by adjusting subplot layout, setting axis labels, title, grid, and colors.
 
     Args:
-        nestedframe: An object containing the figure (`fig`) and axes (`ax`) to be formatted.
-        variable_symbol (optional): Symbol representing the independent variable. If None, defaults to "Independent Variable".
-        dependent_symbol (optional): Symbol representing the dependent variable. If None, defaults to "Dependent Variable".
+        nestedframe: The frame containing the figure (`fig`) and axes (`ax`) to be formatted.
+        variable_symbol (str, optional): Symbol for the independent variable. If None, uses a default label.
+        dependent_symbol (str, optional): Symbol for the dependent variable. If None, uses a default label.
     """
     variable_name = "Independent Variable" if variable_symbol is None else mapper.get_name(variable_symbol)
+    variable_uom = f" [{mapper.get_uom(variable_symbol)}]" if variable_symbol else ""
     dependent_name = "Dependent Variable" if dependent_symbol is None else mapper.get_name(dependent_symbol)
+    dependent_uom = f" [{mapper.get_uom(dependent_symbol)}]" if dependent_symbol else ""
     nestedframe.fig.subplots_adjust(top=0.9, bottom=0.15, left=0.15, right=0.9)
-    nestedframe.ax.set(title=f"{dependent_name} vs {variable_name}", #TODO: Add varying parameters to title
-                xlabel=variable_name,
-                ylabel=dependent_name) #TODO: review this
+    nestedframe.ax.set(title=f"{dependent_name} vs {variable_name}",
+                xlabel=variable_name + variable_uom,
+                ylabel=dependent_name + dependent_uom)
     nestedframe.ax.grid()
     nestedframe.ax.set_facecolor("none")
     for side in ["top", "bottom", "left", "right"]: nestedframe.ax.spines[side].set_color("white")
@@ -89,12 +95,12 @@ def format_2D_plot(nestedframe, variable_symbol=None, dependent_symbol=None) -> 
     nestedframe.ax.xaxis.label.set_color("white")
     nestedframe.ax.yaxis.label.set_color("white")
 
-def plot_3D(nestedframe, settings, dependent_symbol, param_count) -> bool:
+def plot_3D(nestedframe, settings: dict, dependent_symbol: str, param_count: int) -> bool:
     """
     Plots a 3D graph based on the provided settings.
 
     Args:
-        nestedframe (NestedFrame): The frame containing plot and data references.
+        nestedframe: The frame containing plot and data references.
         settings (dict): Dictionary mapping variable/parameter names to their roles.
         dependent_symbol (str): Symbol for the dependent variable.
         param_count (int): Number of parameters being varied.
@@ -116,7 +122,9 @@ def plot_3D(nestedframe, settings, dependent_symbol, param_count) -> bool:
     if not parametric:
         logger.info("Plotting non-parametric 3D graph...")
         X = extract_variable(nestedframe, variable_symbols[0])
+        X = [x / pressure_uom("bar") for x in X] if variable_symbols[0] == "pc" else X
         Y = extract_variable(nestedframe, variable_symbols[1])
+        Y = [y / pressure_uom("bar") for y in Y] if variable_symbols[1] == "pc" else Y
         X, Y = np.meshgrid(X, Y)
         Z = extract_variable(nestedframe, variable_symbols, dependent_symbol, slice_index)
         col = cm.YlOrRd(0.5)
@@ -132,33 +140,44 @@ def plot_3D(nestedframe, settings, dependent_symbol, param_count) -> bool:
         colors = [cm.YlOrRd(i) for i in np.linspace(.3, .9, length)]
         parameter_symbol = next(k for k, v in settings.items() if v == "Parameter")
         param = extract_variable(nestedframe, parameter_symbol)
+        param = [p / pressure_uom("bar") for p in param] if parameter_symbol == "pc" else param
+        param_uom = f" {mapper.get_uom(parameter_symbol)}" if parameter_symbol  == "pc" else ""
         X = extract_variable(nestedframe, variable_symbols[0])
         Y = extract_variable(nestedframe, variable_symbols[1])
         X, Y = np.meshgrid(X, Y)
         for i, idx in enumerate(idxs):
             Z = extract_variable(nestedframe, variable_symbols, dependent_symbol, list(idx))
-            nestedframe.ax.plot_surface(X, Y, Z, color=colors[i], edgecolor=colors[i], linewidth=2, alpha=0.6, label=param[idx[param_axis]])
+            nestedframe.ax.plot_surface(X, Y, Z, color=colors[i], edgecolor=colors[i], linewidth=2, alpha=0.6, label=f"{param[idx[param_axis]]}{param_uom}")
         legend = nestedframe.ax.legend(
+            loc='upper right',
             title=mapper.get_name(parameter_symbol),
             title_fontsize='large',
+            alignment='left',
             labelcolor='white',
             facecolor='black',
             edgecolor='white',
-            framealpha=0.8,
-            loc='upper right'
+            framealpha=0.8
         )
         legend.get_title().set_color('white')
     nestedframe.canvas.draw()
     return True
         
-def format_3D_plot(nestedframe, variable_symbols=None, dependent_symbol=None) -> None:
+def format_3D_plot(nestedframe, variable_symbols: list[str] = None, dependent_symbol: str = None) -> None:
+    """
+    Formats a 3D plot for a given frame object by adjusting subplot layout, setting axis labels, title, grid, and colors.
+
+    Args:
+        nestedframe: The frame containing the figure (`fig`) and axes (`ax`) to be formatted.
+        variable_symbols (list[str], optional): Symbols for the independent variables. If None, uses default labels.
+        dependent_symbol (str, optional): Symbol for the dependent variable. If None, uses a default label.
+    """
     variable_names = ["Independent Variable 1", "Independent Variable 2"] if variable_symbols is None else [mapper.get_name(sym) for sym in variable_symbols]
     dependent_name = "Dependent Variable" if dependent_symbol is None else mapper.get_name(dependent_symbol)
     nestedframe.fig.subplots_adjust(top=0.9, bottom=0, left=0, right=1)
     nestedframe.ax.set(
         title=f"{dependent_name} vs {variable_names[0]} and {variable_names[1]}",
-        xlabel=variable_names[0],
-        ylabel=variable_names[1],
+        xlabel=variable_names[0] + variable_uoms[0],
+        ylabel=variable_names[1] + variable_uoms[1],
         zlabel=dependent_name
     )
     nestedframe.ax.grid()
@@ -166,6 +185,8 @@ def format_3D_plot(nestedframe, variable_symbols=None, dependent_symbol=None) ->
     nestedframe.ax.tick_params(axis="both", colors="white")
     nestedframe.ax.title.set_color("white")
     nestedframe.ax.title.set_fontsize(14)
-    nestedframe.ax.xaxis.label.set_color("white")
-    nestedframe.ax.yaxis.label.set_color("white")
-    nestedframe.ax.zaxis.label.set_color("white")
+    for axis in [nestedframe.ax.xaxis, nestedframe.ax.yaxis, nestedframe.ax.zaxis]:
+        axis.label.set_color('white')
+        axis.pane.set_facecolor('white')
+        axis.line.set_color('white')
+        axis.pane.set_alpha(.05)
